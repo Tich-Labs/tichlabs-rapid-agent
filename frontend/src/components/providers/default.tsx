@@ -1,15 +1,15 @@
 import type { ReactNode } from 'react'
-import { SupabaseProvider } from './supabase'
+import { FirebaseAuthProvider } from './firebase'
 import { QueryClientProvider } from './query-client'
 
-export { useAuth } from './supabase'
+export { useAuth, useFirebaseAuth } from './firebase'
 
 export function Provider({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider>
-      <SupabaseProvider>
+      <FirebaseAuthProvider>
         {children}
-      </SupabaseProvider>
+      </FirebaseAuthProvider>
     </QueryClientProvider>
   )
 }

@@ -1,29 +1,18 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '@/lib/supabase'
+import { auth } from '@/lib/firebase'
 import { Spinner } from '@/components/ui/spinner'
-import { Button } from '@/components/ui/button'
 
 export default function AuthCallback() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const handleAuthCallback = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession()
-        if (error) throw error
-        
-        if (data.session) {
-          navigate('/', { replace: true })
-        } else {
-          navigate('/', { replace: true })
-        }
-      } catch (error) {
-        console.error('Auth callback error:', error)
+    const unsub = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigate('/', { replace: true })
       }
-    }
-
-    handleAuthCallback()
+    })
+    return () => unsub()
   }, [navigate])
 
   return (
