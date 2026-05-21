@@ -5,6 +5,8 @@ A trauma-informed, AI-powered SGBV incident management platform. Built with **Ge
 [![Deploy to Firebase](https://github.com/Tich-Labs/tichlabs-rapid-agent/actions/workflows/deploy-firebase.yml/badge.svg)](https://github.com/Tich-Labs/tichlabs-rapid-agent/actions/workflows/deploy-firebase.yml)
 
 **Live app**: https://sgbv-incidenttracker.web.app/
+**Docs / Interactive guide**: https://sgbv-incidenttracker.web.app/docs/
+**Agent card (A2A)**: https://sgbv-incidenttracker.web.app/docs/agent-card.json
 **MCP server**: https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app/
 
 ---
