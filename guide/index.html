@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tich Labs Incident Tracker - Interactive Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hotspot { position: relative; cursor: pointer; }
+    .tooltip { display: none; position: absolute; background: white; border: 2px solid #6b1010; border-radius: 8px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 50; min-width: 250px; }
+    .hotspot:hover .tooltip, .hotspot.active .tooltip { display: block; }
+    .step-highlight { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(107, 16, 16, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(107, 16, 16, 0.1); } }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto p-6">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Tich Labs Incident Tracker</h1>
+      <p class="text-xl text-gray-600">Interactive Admin Guide</p>
+      <div class="mt-4 flex justify-center gap-2">
+        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Step 1 of 8</span>
+      </div>
+    </header>
+
+    <!-- Platform Overview Hotspot -->
+    <section class="mb-16 hotspot" id="overview">
+      <div class="bg-white rounded-xl shadow-lg p-8 step-highlight">
+        <h2 class="text-2xl font-bold mb-4">1. Platform Overview</h2>
+        <p class="text-gray-600 mb-6">Tich Labs is an AI-powered SGBV support platform for Kakamega and Vihiga Counties.</p>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="p-4 bg-blue-50 rounded-lg">
+            <h3 class="font-bold text-blue-900">Mission</h3>
+            <p class="text-sm text-blue-700">Protect survivors, empower responders through trauma-informed tech</p>
+          </div>
+          <div class="p-4 bg-green-50 rounded-lg">
+            <h3 class="font-bold text-green-900">Coverage</h3>
+            <p class="text-sm text-green-700">Kakamega & Vihiga Counties, Kenya</p>
+          </div>
+          <div class="p-4 bg-purple-50 rounded-lg">
+            <h3 class="font-bold text-purple-900">Status</h3>
+            <p class="text-sm text-purple-700">Operational PWA ready for pilot testing</p>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">💡 Key Point</h4>
+          <p class="text-sm">This guide walks you through all admin features. Click each section to learn more.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Role Hierarchy Hotspot -->
+    <section class="mb-16 hotspot" id="roles">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">2. Role Hierarchy & Permissions</h2>
+        <div class="space-y-4">
+          <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-12 h-12 bg-red-100 text-red-800 rounded-full flex items-center justify-center font-bold">ED</div>
+            <div>
+              <h3 class="font-bold">Executive Director</h3>
+              <p class="text-sm text-gray-600">Full system access, user management, audit logs</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-12 h-12 bg-orange-100 text-orange-800 rounded-full flex items-center justify-center font-bold">PL</div>
+            <div>
+              <h3 class="font-bold">Program Lead</h3>
+              <p class="text-sm text-gray-600">Manage incidents, assign counselors, view reports</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-12 h-12 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center font-bold">C</div>
+            <div>
+              <h3 class="font-bold">Counselor</h3>
+              <p class="text-sm text-gray-600">View assigned cases, update status, add notes</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-12 h-12 bg-green-100 text-green-800 rounded-full flex items-center justify-center font-bold">V</div>
+            <div>
+              <h3 class="font-bold">Volunteer</h3>
+              <p class="text-sm text-gray-600">Submit incidents, view own submissions</p>
+            </div>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">🔐 Permissions</h4>
+          <p class="text-sm">Each role has specific permissions. Executive Directors can manage all users and services.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Incident Workflow Hotspot -->
+    <section class="mb-16 hotspot" id="workflow">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">3. Incident Workflow</h2>
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+          <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full">New</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-purple-100 text-purple-800 rounded-full">Assigned</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-amber-100 text-amber-800 rounded-full">PFA In Progress</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-orange-100 text-orange-800 rounded-full">Under Review</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-red-100 text-red-800 rounded-full">Escalated</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">Resolved</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-gray-100 text-gray-800 rounded-full">Closed</span>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">✅ Assignment</h4>
+            <p class="text-sm text-gray-600">Staff assign cases to counselors based on type and location</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">📝 Notes</h4>
+            <p class="text-sm text-gray-600">Timestamped notes track all case activity</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">🔼 Escalation</h4>
+            <p class="text-sm text-gray-600">Complex cases escalate to Program Leads</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">📧 Notifications</h4>
+            <p class="text-sm text-gray-600">Email alerts at every workflow stage</p>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">⚡ Workflow Tip</h4>
+          <p class="text-sm">Use the status tabs on the Incidents page to filter cases by stage.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Exit Hotspot -->
+    <section class="mb-16 hotspot" id="safety">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">4. Safety & Privacy Features</h2>
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <div class="p-6 bg-red-50 rounded-lg text-center">
+            <div class="text-4xl mb-2">🚪</div>
+            <h3 class="font-bold">Quick Exit</h3>
+            <p class="text-sm text-gray-600">Persistent button clears session, redirects to Google</p>
+          </div>
+          <div class="p-6 bg-blue-50 rounded-lg text-center">
+            <div class="text-4xl mb-2">🔒</div>
+            <h3 class="font-bold">Safety Gate</h3>
+            <p class="text-sm text-gray-600">Consent checkbox before reporting form</p>
+          </div>
+          <div class="p-6 bg-green-50 rounded-lg text-center">
+            <div class="text-4xl mb-2">� Anonymous</div>
+            <h3 class="font-bold">Anonymous</h3>
+            <p class="text-sm text-gray-600">No PII required for incident reporting</p>
+          </div>
+        </div>
+        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p class="text-sm text-yellow-800">⚠️ <strong>Safety Note:</strong> The Quick Exit button appears on ALL pages and immediately clears sessionStorage before redirecting.</p>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">🛡️ Trauma-Informed</h4>
+          <p class="text-sm">All UX uses calm language, anonymity notices, and progressive disclosure.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reports Hotspot -->
+    <section class="mb-16 hotspot" id="reports">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">5. Reports & Analytics</h2>
+        <div class="grid md:grid-cols-4 gap-4 mb-6">
+          <div class="p-4 bg-blue-50 rounded-lg text-center">
+            <div class="text-2xl font-bold text-blue-800">127</div>
+            <div class="text-sm text-blue-600">Total Incidents</div>
+          </div>
+          <div class="p-4 bg-red-50 rounded-lg text-center">
+            <div class="text-2xl font-bold text-red-800">8</div>
+            <div class="text-sm text-red-600">Escalated</div>
+          </div>
+          <div class="p-4 bg-green-50 rounded-lg text-center">
+            <div class="text-2xl font-bold text-green-800">89</div>
+            <div class="text-sm text-green-600">Resolved</div>
+          </div>
+          <div class="p-4 bg-amber-50 rounded-lg text-center">
+            <div class="text-2xl font-bold text-amber-800">15</div>
+            <div class="text-sm text-amber-600">In Progress</div>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-4">Generate CSV exports for donor reporting. Filter by time range: 7 days, 1 month, 3/6 months, 1 year, or custom.</p>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">📊 Data Anonymization</h4>
+          <p class="text-sm">All exports automatically anonymize survivor data. No PII in any reports.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Offline Mode Hotspot -->
+    <section class="mb-16 hotspot" id="offline">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">6. Offline-First PWA</h2>
+        <div class="flex items-center gap-6 mb-6">
+          <div class="text-6xl">📱</div>
+          <div>
+            <h3 class="font-bold mb-2">Works Without Internet</h3>
+            <p class="text-gray-600">Submit incidents offline → Queue in localStorage → Auto-sync when connected</p>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center">✓</span>
+            <span>Service Worker caches app shell</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center">✓</span>
+            <span>Dead-letter handling for failed syncs</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center">✓</span>
+            <span>Install as PWA on mobile/desktop</span>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">🌍 Critical for Kenya</h4>
+          <p class="text-sm">Low-connectivity areas can still report incidents. Data syncs when back online.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- User Management Hotspot -->
+    <section class="mb-16 hotspot" id="users">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">7. User Management</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="border-b">
+                <th class="p-3">Email</th>
+                <th class="p-3">Role</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b">
+                <td class="p-3">admin@tichlabs.com</td>
+                <td class="p-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded">Executive Director</span></td>
+                <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded">Active</span></td>
+                <td class="p-3 text-sm text-blue-600">Edit</td>
+              </tr>
+              <tr class="border-b">
+                <td class="p-3">counselor@tichlabs.com</td>
+                <td class="p-3"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">Counselor</span></td>
+                <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded">Active</span></td>
+                <td class="p-3 text-sm text-blue-600">Edit</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">Approve pending users, change roles, deactivate accounts. Role changes take effect immediately.</p>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">👥 Staff Workflow</h4>
+          <p class="text-sm">New staff sign up → Status "Pending" → Admin approves → Role assigned</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Next Steps Hotspot -->
+    <section class="mb-16 hotspot" id="next">
+      <div class="bg-gradient-to-r from-blue-900 to-purple-900 text-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">8. Next Steps for Pilot</h2>
+        <div class="space-y-4">
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🏥</span>
+            <div>
+              <h3 class="font-bold">Build Referral Database</h3>
+              <p class="text-sm opacity-90">Add 44+ verified services (health facilities, police, legal aid)</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🤖</span>
+            <div>
+              <h3 class="font-bold">AI Referral Matching</h3>
+              <p class="text-sm opacity-90">Integrate AI to match incidents with nearby services</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🌍</span>
+            <div>
+              <h3 class="font-bold">FHIR Integration</h3>
+              <p class="text-sm opacity-90">Map to Kenya MoH standards for healthcare interoperability</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🏆</span>
+            <div>
+              <h3 class="font-bold">Agents Assemble Hackathon</h3>
+              <p class="text-sm opacity-90">Submit by May 11, 2026 - Demo AI + FHIR + Offline PWA</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-center py-8 text-gray-500">
+      <p>Tich Labs Incident Tracker - Interactive Guide</p>
+      <p class="text-sm">Built for Youth Changers Kenya - Agents Assemble Healthcare AI Challenge</p>
+    </footer>
+  </div>
+
+  <script>
+    // Simple hotspot interaction
+    document.querySelectorAll('.hotspot').forEach(section => {
+      section.addEventListener('click', function() {
+        document.querySelectorAll('.hotspot.active').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

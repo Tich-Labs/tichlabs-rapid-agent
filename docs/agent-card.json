@@ -1,0 +1,124 @@
+{
+  "name": "Tich Labs SGBV Agent",
+  "description": "Trauma-informed SGBV incident triage, referral matching, risk assessment, and FHIR-interoperable case management for youth protection in Kenya. Designed for counselors, volunteers, and program leads responding to gender-based violence.",
+  "url": "https://tichlabs-mcp-server-production.up.railway.app/",
+  "version": "1.0.0",
+  "documentation_url": "https://tich-labs.github.io/tichlabs-rapid-agent/docs/",
+  "capabilities": {
+    "extensions": [
+      {
+        "uri": "https://app.promptopinion.ai/schemas/a2a/v1/fhir-context",
+        "description": "FHIR context allowing the Tich Labs SGBV agent to query a FHIR server for patient context and write SGBV observations, referrals, and consent resources securely.",
+        "required": false,
+        "params": {
+          "scopes": [
+            {
+              "name": "patient/Observation.rs",
+              "required": false,
+              "description": "Read existing SGBV observations"
+            },
+            {
+              "name": "patient/Observation.write",
+              "required": false,
+              "description": "Write SGBV incident observations to EHR"
+            },
+            {
+              "name": "patient/Patient.rs",
+              "required": false,
+              "description": "Read patient demographics (minimal — Tich Labs works anonymized)"
+            },
+            {
+              "name": "patient/ServiceRequest.rs",
+              "required": false,
+              "description": "Read existing service requests / referrals"
+            },
+            {
+              "name": "patient/ServiceRequest.write",
+              "required": false,
+              "description": "Write referral recommendations as ServiceRequests"
+            },
+            {
+              "name": "patient/Consent.write",
+              "required": false,
+              "description": "Write anonymized consent records"
+            },
+            {
+              "name": "patient/Location.rs",
+              "required": false,
+              "description": "Read service provider locations"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "skills": [
+    {
+      "id": "incident_triage",
+      "name": "SGBV Incident Triage & Trauma-Informed Guidance",
+      "description": "Analyzes a reported SGBV incident (type, description, survivor demographics) and provides trauma-informed guidance to the responder. Outputs include: safety check suggestions, forensic preservation steps, appropriate follow-up questions, and immediate PFA (Psychological First Aid) recommendations.",
+      "inputs": [
+        { "name": "incidentType", "type": "string", "description": "Type of incident (physical_abuse, sexual_abuse, emotional_abuse, neglect, bullying_harassment, domestic_violence, child_exploitation, missing_child, tech_enabled_abuse, other)" },
+        { "name": "description", "type": "string", "description": "Free-text description of the incident (min 30 characters)" },
+        { "name": "location", "type": "string", "description": "Location where the incident occurred" },
+        { "name": "survivorAgeGroup", "type": "string", "description": "Age group of survivor (under_10, 10_14, 15_18, 18_22, 23_27, 28_35, 35_plus, unknown)", "optional": true },
+        { "name": "survivorGender", "type": "string", "description": "Gender of survivor (male, female, other, prefer_not_to_say)", "optional": true }
+      ],
+      "outputMimeType": "application/json"
+    },
+    {
+      "id": "referral_matching",
+      "name": "Referral Service Matching",
+      "description": "Matches an SGBV incident to verified local referral services across Kakamega and Vihiga counties. Considers incident type, location proximity, and service category (health, police, shelter, psychosocial, legal). Uses AI-powered semantic matching when available, falls back to keyword-based scoring. Returns ranked recommendations with relevance scores and reasoning.",
+      "inputs": [
+        { "name": "incidentType", "type": "string", "description": "Type of incident" },
+        { "name": "location", "type": "string", "description": "Location of the incident" },
+        { "name": "description", "type": "string", "description": "Incident description for context", "optional": true },
+        { "name": "survivorAgeGroup", "type": "string", "description": "Age group for additional context", "optional": true },
+        { "name": "survivorGender", "type": "string", "description": "Gender for additional context", "optional": true },
+        { "name": "limit", "type": "number", "description": "Maximum number of recommendations", "optional": true }
+      ],
+      "outputMimeType": "application/json"
+    },
+    {
+      "id": "risk_assessment",
+      "name": "SGBV Risk Assessment",
+      "description": "Assesses the risk level and urgency of an SGBV incident. Returns a risk score (0-100), severity level (low/medium/high/critical), urgency (routine/urgent/emergency), contributing risk factors, and recommended actions. Uses AI-powered assessment when available, falls back to rule-based evaluation.",
+      "inputs": [
+        { "name": "incidentType", "type": "string", "description": "Type of incident" },
+        { "name": "description", "type": "string", "description": "Description of the incident" },
+        { "name": "survivorAgeGroup", "type": "string", "description": "Age group of survivor", "optional": true },
+        { "name": "survivorGender", "type": "string", "description": "Gender of survivor", "optional": true },
+        { "name": "isEscalated", "type": "boolean", "description": "Whether the incident has been escalated", "optional": true }
+      ],
+      "outputMimeType": "application/json"
+    },
+    {
+      "id": "generate_fhir_bundle",
+      "name": "FHIR Bundle Generation & Submission",
+      "description": "Generates a FHIR R4 transaction Bundle from an SGBV incident. Creates Observation (incident details with SNOMED CT coding), Patient (anonymized survivor), Consent (privacy consent), Location (service providers), and ServiceRequest (referrals) resources. Can optionally submit the bundle directly to a FHIR server using SHARP context credentials.",
+      "inputs": [
+        { "name": "incident", "type": "object", "description": "Full incident object with all fields" },
+        { "name": "matchedServiceIds", "type": "array", "description": "IDs of matched referral services to include as ServiceRequests", "optional": true },
+        { "name": "fhirServerUrl", "type": "string", "description": "FHIR server URL (from SHARP context)", "optional": true },
+        { "name": "fhirToken", "type": "string", "description": "FHIR server access token (from SHARP context)", "optional": true },
+        { "name": "patientId", "type": "string", "description": "Patient ID from SHARP context", "optional": true }
+      ],
+      "outputMimeType": "application/json"
+    }
+  ],
+  "authentication": {
+    "schemes": [
+      {
+        "type": "oauth2",
+        "name": "Prompt Opinion Workspace Auth",
+        "description": "Authentication is handled by the Prompt Opinion platform. The agent receives FHIR context tokens from the workspace session."
+      }
+    ]
+  },
+  "defaultInputMimeType": "application/json",
+  "tags": ["sgbv", "youth-protection", "kenya", "trauma-informed", "fhir", "referral-matching"],
+  "agent_origin": "https://tichlabs-mcp-server-production.up.railway.app",
+  "privacy_policy_url": "https://tichlabs.com/privacy",
+  "terms_of_service_url": "https://tichlabs.com/terms"
+}

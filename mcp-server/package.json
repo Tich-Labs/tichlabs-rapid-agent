@@ -1,0 +1,32 @@
+{
+  "name": "tichlabs-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for Tich Labs Incident Tracker - FHIR, referral matching, risk assessment, MongoDB integration",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "node --env-file=.env --import tsx/esm --watch src/index.ts",
+    "dev:http": "MCP_TRANSPORT=http node --env-file=.env --import tsx/esm --watch src/index.ts",
+    "start": "node --env-file=.env --import tsx/esm src/index.ts",
+    "start:http": "MCP_TRANSPORT=http node --import tsx/esm src/index.ts",
+    "build": "tsc",
+    "inspect": "npx @modelcontextprotocol/inspector node --env-file=.env --import tsx/esm src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "@supabase/supabase-js": "^2.39.3",
+    "@types/ws": "^8.18.1",
+    "mongodb": "^6.3.0",
+    "openai": "^4.86.0",
+    "ws": "^8.20.0",
+    "zod": "^3.24.0",
+    "zod-to-json-schema": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

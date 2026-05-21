@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Environment variables (never commit real credentials)
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# TypeScript
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# Archives
+*.tar.gz
+*.zip
+
+# Data exports (Convex snapshot — not used with Supabase)
+db_export/
+
+# Sub-project env files for safety
+mcp-server/.env
+frontend/.env.local

@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "sgbv-incidenttracker"
+  },
+  "targets": {
+    "sgbv-incidenttracker": {
+      "hosting": {
+        "rapid-agent": [
+          "tichlabs-rapid-agent"
+        ]
+      }
+    }
+  }
+}

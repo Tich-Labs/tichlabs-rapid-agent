@@ -1,0 +1,43 @@
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_BASE_URL: /
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_MCP_SERVER_URL: ${{ secrets.VITE_MCP_SERVER_URL }}
+          VITE_MCP_API_KEY: ${{ secrets.VITE_MCP_API_KEY }}
+
+      - name: Copy docs into build output
+        run: cp -r docs frontend/dist/docs
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: sgbv-incidenttracker
+          channelId: live

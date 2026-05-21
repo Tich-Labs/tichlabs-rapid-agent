@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script>
+      // GitHub Pages SPA redirect: store the path and redirect to index
+      var path = window.location.pathname;
+      var base = '/tichlabs-rapid-agent';
+      var redirect = base + '/?p=' + encodeURIComponent(path.slice(base.length));
+      window.location.replace(redirect + window.location.search.slice(1) + window.location.hash);
+    </script>
+  </head>
+  <body></body>
+</html>

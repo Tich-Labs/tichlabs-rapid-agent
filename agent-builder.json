@@ -1,0 +1,59 @@
+{
+  "name": "tichlabs-sgbv-agent",
+  "displayName": "Tich Labs SGBV Case Management Agent",
+  "description": "Trauma-informed SGBV incident triage, referral matching, risk assessment, and FHIR-interoperable case management agent. Built with Gemini 2.5 Flash and MongoDB MCP integration for rich case search and analytics.",
+  "model": "gemini-2.5-flash",
+  "tools": [
+    {
+      "name": "match_services",
+      "description": "Match SGBV incidents to appropriate referral services",
+      "source": "mcp",
+      "mcpServer": "tichlabs-incident-tracker"
+    },
+    {
+      "name": "generate_fhir_bundle",
+      "description": "Generate FHIR R4 transaction bundles from incidents",
+      "source": "mcp",
+      "mcpServer": "tichlabs-incident-tracker"
+    },
+    {
+      "name": "assess_risk",
+      "description": "Assess risk level and urgency of SGBV incidents",
+      "source": "mcp",
+      "mcpServer": "tichlabs-incident-tracker"
+    },
+    {
+      "name": "store_case_document",
+      "description": "Store case narratives in MongoDB for search and analytics",
+      "source": "mcp",
+      "mcpServer": "tichlabs-incident-tracker"
+    },
+    {
+      "name": "search_case_documents",
+      "description": "Full-text search across stored case documents in MongoDB",
+      "source": "mcp",
+      "mcpServer": "tichlabs-incident-tracker"
+    },
+    {
+      "name": "aggregate_cases",
+      "description": "Aggregate case data from MongoDB for analytics",
+      "source": "mcp",
+      "mcpServer": "tichlabs-incident-tracker"
+    }
+  ],
+  "partner": {
+    "name": "MongoDB",
+    "mcpServer": "mongodb-atlas",
+    "description": "MongoDB Atlas MCP Server provides document storage, full-text search, and aggregation capabilities for case management analytics."
+  },
+  "deployment": {
+    "frontend": {
+      "platform": "Firebase Hosting",
+      "url": "https://sgbv-incidenttracker.web.app"
+    },
+    "mcpServer": {
+      "platform": "Railway",
+      "url": "https://tichlabs-mcp-server-production.up.railway.app"
+    }
+  }
+}

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tich Labs Incident Tracker - Interactive User Journey</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hotspot { position: relative; cursor: pointer; border: 2px solid transparent; transition: all 0.3s; }
+    .hotspot:hover { border-color: #6b1010; border-radius: 8px; }
+    .tooltip { display: none; position: absolute; background: white; border: 2px solid #6b1010; border-radius: 8px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 50; min-width: 300px; }
+    .hotspot:hover .tooltip, .hotspot.active .tooltip { display: block; }
+    .screenshot { border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 16px; }
+    .journey-tab { padding: 8px 16px; cursor: pointer; border-bottom: 2px solid transparent; }
+    .journey-tab.active { border-bottom: 2px solid #6b1010; font-weight: bold; }
+    .step { display: none; }
+    .step.active { display: block; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto p-6">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Tich Labs Incident Tracker</h1>
+      <p class="text-xl text-gray-600 mb-6">Interactive User Journey Guide</p>
+      
+      <!-- Journey Tabs -->
+      <div class="flex justify-center gap-4 mb-4">
+        <div class="journey-tab active" onclick="showJourney('survivor')">🚺 Survivor Journey</div>
+        <div class="journey-tab" onclick="showJourney('admin')">👥 Admin Journey</div>
+      </div>
+      
+      <div class="mt-4 flex items-center justify-center gap-4">
+        <button onclick="prevStep()" id="btn-prev" class="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed" disabled>← Prev</button>
+        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm" id="step-counter">Step 1 of 6</span>
+        <button onclick="nextStep()" id="btn-next" class="px-4 py-2 rounded-lg bg-[#6b1010] text-white hover:bg-[#8b1010] disabled:opacity-30 disabled:cursor-not-allowed">Next →</button>
+      </div>
+    </header>
+
+    <!-- Survivor Journey -->
+    <div id="survivor-journey">
+
+    <!-- Step 1: Safety Gate -->
+    <section class="mb-16 step active" id="survivor-step-1">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">1. Safety Gate</h2>
+        <p class="text-gray-600 mb-6">Mandatory consent screen — "Your Safety Matters" — before accessing the form. <strong>PWA install prompt</strong> appears here and on any step of the incident tracker or Find Help experience.</p>
+        <img src="screenshots/survivor/consent.png" alt="Safety Gate" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">🔒 Trauma-Informed</h4>
+          <p class="text-sm">Consent checkbox required. "Leave Site" button exits immediately for survivor safety.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 2: Who is reporting? -->
+    <section class="mb-16 step" id="survivor-step-2">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">2. Step 1 of 5 — Who is reporting?</h2>
+        <p class="text-gray-600 mb-6">Select reporter type: Self (Survivor), On Behalf of Survivor, or Volunteer. If volunteer, enter unique Volunteer ID (e.g. MARY-KM-001) to track reports to their profile.</p>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">👤 Reporter Identity</h4>
+          <p class="text-sm">Three options: Self (survivor), On Behalf (relative/friend), Volunteer (field worker with unique ID). No account required.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 3: Incident Type -->
+    <section class="mb-16 step" id="survivor-step-3">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">3. Step 2 of 5 — Incident Type</h2>
+        <p class="text-gray-600 mb-6">Tap-friendly icon grid with 10 incident categories. Date and time fields below.</p>
+        <img src="screenshots/survivor/step1.png" alt="Incident Type" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">📝 10 Categories</h4>
+          <p class="text-sm">Physical, Sexual, Emotional, Neglect, Bullying, Domestic Violence, Child Exploitation, Missing Child, Tech-Enabled Abuse, Other.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 4: Location & Description -->
+    <section class="mb-16 step" id="survivor-step-4">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">4. Step 3 of 5 — Location & Description</h2>
+        <p class="text-gray-600 mb-6">Where it happened and a factual description of the incident.</p>
+        <img src="screenshots/survivor/step2.png" alt="Location and Description" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">📍 No GPS Required</h4>
+          <p class="text-sm">Free-text location — area, sub-location, or landmark. 180-char description limit.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 5: Survivor Info -->
+    <section class="mb-16 step" id="survivor-step-5">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">5. Step 4 of 5 — Survivor Info</h2>
+        <p class="text-gray-600 mb-6">Age group and gender only — no names or identifying details collected.</p>
+        <img src="screenshots/survivor/step3.png" alt="Survivor Info" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">🛡️ Fully Anonymized</h4>
+          <p class="text-sm">Warning banner: "Do NOT record the survivor's name, ID number, or contact details."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 6: Review & Submit -->
+    <section class="mb-16 step" id="survivor-step-6">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">6. Step 5 of 5 — Review & Submit</h2>
+        <p class="text-gray-600 mb-6">Summary of all entered details before final submission. Reporter type shown. Self/on-behalf reporters get optional reference code; volunteers see their Volunteer ID instead.</p>
+        <img src="screenshots/survivor/steps4.png" alt="Review and Submit" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">🔁 Reference Code or Volunteer ID</h4>
+          <p class="text-sm">Self/on-behalf: initials + birth month + year (e.g. NT111974). Volunteer: unique Volunteer ID (e.g. MARY-KM-001) replaces the reference code.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 7: Success -->
+    <section class="mb-16 step" id="survivor-step-7">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">7. Report Submitted</h2>
+        <p class="text-gray-600 mb-6">Confirmation screen with unique reference ID and next-steps guide.</p>
+        <img src="screenshots/survivor/submission_confimred.png" alt="Success Page" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">✅ What Happens Next</h4>
+          <p class="text-sm">Review → Assign counselor → PFA initiated → Escalate if urgent. All within 24 hours.</p>
+        </div>
+      </div>
+    </section>
+    </div>
+
+    <!-- Admin Journey -->
+    <div id="admin-journey" style="display:none;">
+    
+    <!-- Step 1: Dashboard -->
+    <section class="mb-16 step active" id="admin-step-1">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">1. Dashboard</h2>
+        <p class="text-gray-600 mb-6">Personalized greeting with role badge, summary cards, incidents awaiting assignment.</p>
+        <img src="screenshots/05_dashboard.png" alt="Dashboard" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">📊 Quick Actions</h4>
+          <p class="text-sm">Review All Incidents, Manage Users, Audit Log panels for admins.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 2: Incidents List -->
+    <section class="mb-16 step" id="admin-step-2">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">2. Incidents List</h2>
+        <p class="text-gray-600 mb-6">Filterable list with status tabs (New, Assigned, In Progress, Escalated, etc.).</p>
+        <img src="screenshots/06_incidents_list.png" alt="Incidents List" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">🔍 Filter & Search</h4>
+          <p class="text-sm">Category icons, location, date, status badges. Click row for details.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 3: Reports -->
+    <section class="mb-16 step" id="admin-step-3">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">3. Reports & Analytics</h2>
+        <p class="text-gray-600 mb-6">Anonymized analytics with time-range filters, CSV export.</p>
+        <img src="screenshots/07_reports.png" alt="Reports" class="screenshot w-full" />
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">📊 Data Anonymization</h4>
+          <p class="text-sm">All exports automatically anonymize survivor data. No PII in reports.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 4: User Management -->
+    <section class="mb-16 step" id="admin-step-4">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">4. User Management</h2>
+        <p class="text-gray-600 mb-6">Search, filter, approve pending users, change roles, deactivate accounts.</p>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">👥 Staff Workflow</h4>
+          <p class="text-sm">New staff sign up → Status "Pending" → Admin approves → Role assigned</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 5: Services Management -->
+    <section class="mb-16 step" id="admin-step-5">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">5. Referral Services</h2>
+        <p class="text-gray-600 mb-6">Full CRUD table of 44+ verified services (health facilities, police, legal aid).</p>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">🏥 Kakamega & Vihiga</h4>
+          <p class="text-sm">County filters, service categories, active/inactive status management.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 6: Admin Manual -->
+    <section class="mb-16 step" id="admin-step-6">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">6. Admin Manual</h2>
+        <p class="text-gray-600 mb-6">In-app documentation with sidebar navigation for all operational workflows.</p>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">📖 Self-Service</h4>
+          <p class="text-sm">Overview, RBAC, Incident Workflow, Reports, Privacy, Audit Log, Support.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 7: Next Steps -->
+    <section class="mb-16 step" id="admin-step-7">
+      <div class="bg-gradient-to-r from-blue-900 to-purple-900 text-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">7. Next Steps for Pilot</h2>
+        <div class="space-y-4">
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🏥</span>
+            <div>
+              <h3 class="font-bold">Build Referral Database</h3>
+              <p class="text-sm opacity-90">Add 44+ verified services (health facilities, police, legal aid)</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🤖</span>
+            <div>
+              <h3 class="font-bold">AI Referral Matching</h3>
+              <p class="text-sm opacity-90">Integrate AI to match incidents with nearby services</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🌍</span>
+            <div>
+              <h3 class="font-bold">FHIR Integration</h3>
+              <p class="text-sm opacity-90">Map to Kenya MoH standards for healthcare interoperability</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🏆</span>
+            <div>
+              <h3 class="font-bold">Agents Assemble Hackathon</h3>
+              <p class="text-sm opacity-90">Submit by May 11, 2026 - Demo AI + FHIR + Offline PWA</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </div>
+
+    <footer class="text-center py-8 text-gray-500">
+      <p>Tich Labs Incident Tracker - Interactive Guide</p>
+      <p class="text-sm">Built for Youth Changers Kenya - Agents Assemble Healthcare AI Challenge</p>
+      <p class="text-xs mt-2">Live at: <a href="https://tich-labs.github.io/tichlabs-rapid-agent/docs/" class="text-blue-600">https://tich-labs.github.io/tichlabs-rapid-agent/docs/</a></p>
+    </footer>
+  </div>
+
+  <script>
+    const journeySteps = { survivor: 7, admin: 7 };
+    let currentJourney = 'survivor';
+    let currentStep = 1;
+
+    function showJourney(type) {
+      currentJourney = type;
+      currentStep = 1;
+      document.getElementById('survivor-journey').style.display = type === 'survivor' ? 'block' : 'none';
+      document.getElementById('admin-journey').style.display = type === 'admin' ? 'block' : 'none';
+      document.querySelectorAll('.journey-tab').forEach((el, idx) => {
+        el.classList.toggle('active', (type === 'survivor' && idx === 0) || (type === 'admin' && idx === 1));
+      });
+      renderStep();
+    }
+
+    function renderStep() {
+      const total = journeySteps[currentJourney];
+      document.querySelectorAll(`#${currentJourney}-journey .step`).forEach((s, idx) => {
+        s.classList.toggle('active', idx + 1 === currentStep);
+      });
+      document.getElementById('step-counter').textContent = `Step ${currentStep} of ${total}`;
+      document.getElementById('btn-prev').disabled = currentStep === 1;
+      document.getElementById('btn-next').disabled = currentStep === total;
+    }
+
+    function nextStep() {
+      if (currentStep < journeySteps[currentJourney]) { currentStep++; renderStep(); window.scrollTo(0,0); }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) { currentStep--; renderStep(); window.scrollTo(0,0); }
+    }
+
+    showJourney('survivor');
+  </script>
+</body>
+</html>
