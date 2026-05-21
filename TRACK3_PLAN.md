@@ -8,7 +8,7 @@ This branch currently includes:
 
 - Rebranded the app to **Tich Labs SGBV Case Management** and updated UI copy, meta tags, and Swahili/English localization.
 - Documented the branch changes and deployment approach in `README.md`.
-- Added deployment artifacts for Cloud Run and Railway.
+- Added deployment artifacts for Cloud Run and Firebase.
 - Added demo workflow seed data in `supabase/seed-workflow.sql`.
 - Added `TRACK3_PLAN.md` as the branch planning and status document.
 

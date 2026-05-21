@@ -5,7 +5,7 @@ A trauma-informed, AI-powered SGBV incident management platform. Built with **Ge
 [![Deploy to Firebase](https://github.com/Tich-Labs/tichlabs-rapid-agent/actions/workflows/deploy-firebase.yml/badge.svg)](https://github.com/Tich-Labs/tichlabs-rapid-agent/actions/workflows/deploy-firebase.yml)
 
 **Live app**: https://sgbv-incidenttracker.web.app/
-**MCP server**: https://tichlabs-mcp-server-production.up.railway.app/
+**MCP server**: https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app/
 
 ---
 
@@ -143,9 +143,9 @@ Required GitHub secrets:
 - `VITE_MCP_API_KEY`
 - `FIREBASE_SERVICE_ACCOUNT`
 
-### Railway (MCP Server)
+### Cloud Run (MCP Server)
 
-Deployed from `mcp-server/` using `railway.toml`.
+Deployed from `mcp-server/Dockerfile` via GitHub Actions (`deploy-cloud-run.yml`).
 
 ---
 

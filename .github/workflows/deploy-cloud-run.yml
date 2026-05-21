@@ -7,13 +7,14 @@ on:
 
 env:
   PROJECT_ID: project-7743396c-e1bc-40ff-a7e
-  SERVICE_NAME: tichlabs-tracker-preview
   REGION: us-central1
-  ARTIFACT_REGISTRY_REPO: tichlabs-tracker
-  IMAGE: us-central1-docker.pkg.dev/project-7743396c-e1bc-40ff-a7e/tichlabs-tracker/tichlabs-tracker-preview
+  AR_REPO_FRONTEND: tichlabs-frontend
+  AR_REPO_MCP: tichlabs-mcp
+  FRONTEND_SERVICE: tichlabs-sgbv-frontend
+  MCP_SERVICE: tichlabs-sgbv-mcp
 
 jobs:
-  deploy:
+  deploy-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,25 +31,25 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
-      - name: Build Docker image
+      - name: Build and push frontend image
         run: |
+          IMAGE=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_FRONTEND }}/frontend
           docker build frontend/ \
             --build-arg VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
             --build-arg VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
             --build-arg VITE_MCP_SERVER_URL="${{ secrets.VITE_MCP_SERVER_URL }}" \
             --build-arg VITE_MCP_API_KEY="${{ secrets.VITE_MCP_API_KEY }}" \
-            -t ${{ env.IMAGE }}:${{ github.sha }} \
-            -t ${{ env.IMAGE }}:latest
+            -t $IMAGE:${{ github.sha }} \
+            -t $IMAGE:latest
+          docker push $IMAGE --all-tags
 
-      - name: Push to Artifact Registry
-        run: docker push ${{ env.IMAGE }} --all-tags
-
-      - name: Deploy to Cloud Run
+      - name: Deploy frontend to Cloud Run
         run: |
-          gcloud run deploy ${{ env.SERVICE_NAME }} \
+          IMAGE=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_FRONTEND }}/frontend
+          gcloud run deploy ${{ env.FRONTEND_SERVICE }} \
             --project ${{ env.PROJECT_ID }} \
             --region ${{ env.REGION }} \
-            --image ${{ env.IMAGE }}:${{ github.sha }} \
+            --image $IMAGE:${{ github.sha }} \
             --allow-unauthenticated \
             --memory 256Mi \
             --min-instances 0 \
@@ -56,14 +57,59 @@ jobs:
             --cpu 1 \
             --concurrency 80
 
-      - name: Show URL
+      - name: Show frontend URL
         run: |
-          URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+          URL=$(gcloud run services describe ${{ env.FRONTEND_SERVICE }} \
             --project ${{ env.PROJECT_ID }} \
             --region ${{ env.REGION }} \
             --format='value(status.url)')
-          echo "### ✅ Deployed to Cloud Run" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "[$URL]($URL)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Branch: \`${{ github.ref_name }}\` · Commit: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "### Frontend → $URL" >> $GITHUB_STEP_SUMMARY
+
+  deploy-mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build and push MCP server image
+        run: |
+          IMAGE=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_MCP }}/mcp-server
+          docker build mcp-server/ \
+            -t $IMAGE:${{ github.sha }} \
+            -t $IMAGE:latest
+          docker push $IMAGE --all-tags
+
+      - name: Deploy MCP server to Cloud Run
+        run: |
+          IMAGE=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_MCP }}/mcp-server
+          gcloud run deploy ${{ env.MCP_SERVICE }} \
+            --project ${{ env.PROJECT_ID }} \
+            --region ${{ env.REGION }} \
+            --image $IMAGE:${{ github.sha }} \
+            --allow-unauthenticated \
+            --memory 512Mi \
+            --min-instances 0 \
+            --max-instances 2 \
+            --cpu 1 \
+            --concurrency 80 \
+            --set-env-vars "MCP_TRANSPORT=http,SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }},SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }},GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},GEMINI_MODEL=${{ secrets.GEMINI_MODEL }},MONGODB_URI=${{ secrets.MONGODB_URI }},MONGODB_DB_NAME=tichlabs_cases,MCP_API_KEY=${{ secrets.MCP_API_KEY }}"
+
+      - name: Show MCP server URL
+        run: |
+          URL=$(gcloud run services describe ${{ env.MCP_SERVICE }} \
+            --project ${{ env.PROJECT_ID }} \
+            --region ${{ env.REGION }} \
+            --format='value(status.url)')
+          echo "### MCP Server → $URL" >> $GITHUB_STEP_SUMMARY
+          echo "MCP_SERVER_URL=$URL" >> $GITHUB_ENV

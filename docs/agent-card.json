@@ -1,7 +1,7 @@
 {
   "name": "Tich Labs SGBV Agent",
   "description": "Trauma-informed SGBV incident triage, referral matching, risk assessment, and FHIR-interoperable case management for youth protection in Kenya. Designed for counselors, volunteers, and program leads responding to gender-based violence.",
-  "url": "https://tichlabs-mcp-server-production.up.railway.app/",
+  "url": "https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app/",
   "version": "1.0.0",
   "documentation_url": "https://tich-labs.github.io/tichlabs-rapid-agent/docs/",
   "capabilities": {
@@ -118,7 +118,7 @@
   },
   "defaultInputMimeType": "application/json",
   "tags": ["sgbv", "youth-protection", "kenya", "trauma-informed", "fhir", "referral-matching"],
-  "agent_origin": "https://tichlabs-mcp-server-production.up.railway.app",
+  "agent_origin": "https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app",
   "privacy_policy_url": "https://tichlabs.com/privacy",
   "terms_of_service_url": "https://tichlabs.com/terms"
 }

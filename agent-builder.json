@@ -1,50 +1,75 @@
 {
   "name": "tichlabs-sgbv-agent",
   "displayName": "Tich Labs SGBV Case Management Agent",
-  "description": "Trauma-informed SGBV incident triage, referral matching, risk assessment, and FHIR-interoperable case management agent. Built with Gemini 2.5 Flash and MongoDB MCP integration for rich case search and analytics.",
+  "description": "Trauma-informed SGBV incident triage, referral matching, risk assessment, FHIR interoperability, and case analytics agent. Built for the Google Cloud Rapid Agent Hackathon (MongoDB track).",
   "model": "gemini-2.5-flash",
-  "tools": [
-    {
-      "name": "match_services",
-      "description": "Match SGBV incidents to appropriate referral services",
-      "source": "mcp",
-      "mcpServer": "tichlabs-incident-tracker"
-    },
-    {
-      "name": "generate_fhir_bundle",
-      "description": "Generate FHIR R4 transaction bundles from incidents",
-      "source": "mcp",
-      "mcpServer": "tichlabs-incident-tracker"
-    },
-    {
-      "name": "assess_risk",
-      "description": "Assess risk level and urgency of SGBV incidents",
-      "source": "mcp",
-      "mcpServer": "tichlabs-incident-tracker"
-    },
-    {
-      "name": "store_case_document",
-      "description": "Store case narratives in MongoDB for search and analytics",
-      "source": "mcp",
-      "mcpServer": "tichlabs-incident-tracker"
-    },
-    {
-      "name": "search_case_documents",
-      "description": "Full-text search across stored case documents in MongoDB",
-      "source": "mcp",
-      "mcpServer": "tichlabs-incident-tracker"
-    },
-    {
-      "name": "aggregate_cases",
-      "description": "Aggregate case data from MongoDB for analytics",
-      "source": "mcp",
-      "mcpServer": "tichlabs-incident-tracker"
-    }
-  ],
+  "generationConfig": {
+    "temperature": 0.3,
+    "topP": 0.95,
+    "maxOutputTokens": 4096
+  },
+  "grounding": {
+    "sources": [
+      {
+        "type": "data_store",
+        "description": "SGBV referral pathways, FHIR documentation, trauma-informed response protocols indexed from docs/"
+      }
+    ]
+  },
+  "tools": {
+    "mcpServers": [
+      {
+        "name": "tichlabs-mcp",
+        "description": "Tich Labs SGBV MCP Server — provides incident matching, risk assessment, and FHIR generation tools",
+        "url": "https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app/mcp",
+        "transport": "streamable-http",
+        "auth": {
+          "type": "api_key",
+          "header": "X-API-Key",
+          "secretName": "mcp-api-key"
+        },
+        "tools": [
+          "match_services",
+          "assess_risk",
+          "generate_fhir_bundle"
+        ]
+      },
+      {
+        "name": "mongodb-atlas",
+        "description": "MongoDB Atlas MCP Server — provides document storage, full-text search, and aggregation for case analytics",
+        "url": "https://mcp.mongodb.com",
+        "transport": "streamable-http",
+        "tools": [
+          "store_case_document",
+          "search_case_documents",
+          "aggregate_cases"
+        ]
+      }
+    ],
+    "customTools": [
+      {
+        "name": "store_case_document",
+        "description": "Store a case narrative/document in MongoDB for rich search and analytics",
+        "mcpServer": "mongodb-atlas"
+      },
+      {
+        "name": "search_case_documents",
+        "description": "Full-text search across stored case documents in MongoDB",
+        "mcpServer": "mongodb-atlas"
+      },
+      {
+        "name": "aggregate_cases",
+        "description": "Aggregate case data from MongoDB for trend analysis",
+        "mcpServer": "mongodb-atlas"
+      }
+    ]
+  },
+  "systemInstruction": "You are a trauma-informed SGBV (Sexual and Gender-Based Violence) case management agent. Your role is to assist counselors, volunteers, and program leads at youth protection organizations by:\n\n1. Matching reported SGBV incidents to verified local referral services (health, police, shelter, psychosocial, legal)\n2. Assessing risk severity and urgency of each incident (0-100 score)\n3. Generating FHIR R4 bundles for interoperable health data exchange\n4. Storing case documents in MongoDB for future search and analysis\n5. Searching across historical cases to surface similar incidents and trends\n6. Aggregating case data to generate insights (by type, location, severity, time period)\n\nKey principles:\n- All survivor data is anonymized — never store or request PII\n- Be trauma-informed — prioritize safety, dignity, and empowerment\n- Respect survivor consent — flag when data sharing requires explicit permission\n- Use local language when appropriate (English and Swahili)\n- Escalate critical cases immediately (risk score >= 80 → emergency response)\n\nWhen a new incident is reported, follow this workflow:\n1. Assess risk with assess_risk tool\n2. Match services with match_services tool\n3. Generate FHIR documentation with generate_fhir_bundle\n4. Store case in MongoDB with store_case_document",
   "partner": {
     "name": "MongoDB",
-    "mcpServer": "mongodb-atlas",
-    "description": "MongoDB Atlas MCP Server provides document storage, full-text search, and aggregation capabilities for case management analytics."
+    "track": "mongodb",
+    "mcpServerUrl": "https://mcp.mongodb.com",
+    "description": "MongoDB Atlas provides the document storage, full-text search, and aggregation layer that powers case history analytics and similar-case discovery."
   },
   "deployment": {
     "frontend": {
@@ -52,8 +77,15 @@
       "url": "https://sgbv-incidenttracker.web.app"
     },
     "mcpServer": {
-      "platform": "Railway",
-      "url": "https://tichlabs-mcp-server-production.up.railway.app"
+      "platform": "Cloud Run",
+      "url": "https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app",
+      "region": "us-central1",
+      "serviceAccount": "tichlabs-sgbv-mcp"
+    },
+    "agentBuilder": {
+      "platform": "Google Cloud Agent Builder",
+      "consoleUrl": "https://console.cloud.google.com/gen-app-builder/agents",
+      "region": "global"
     }
   }
 }
