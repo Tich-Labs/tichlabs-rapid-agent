@@ -193,8 +193,8 @@ function AppLayoutInner() {
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-primary" />
-            <span className="font-semibold text-sm">{t("mobile.title")}</span>
+            <img src="/tichlabs.logo.jpeg" alt="Tich Labs" className="h-6 w-auto object-contain" />
+            <span className="font-semibold text-sm">{t("app.name")}</span>
           </div>
         </header>
 

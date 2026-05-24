@@ -61,16 +61,11 @@ export default function Index() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur border-b border-border">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex flex-col items-start gap-0.5">
-            <img src="/tichlabs.logo.jpeg" alt="Tich Labs" className="h-6 w-auto object-contain" />
-            <div className="leading-tight">
-              <div className="font-bold text-xs text-foreground">
-                {t("app.name", { ns: "common" })}
-              </div>
-              <div className="text-[10px] text-muted-foreground">
-                {t("app.subtitle", { ns: "common" })}
-              </div>
-            </div>
+          <div className="flex items-center gap-2">
+            <img src="/tichlabs.logo.jpeg" alt="Tich Labs" className="h-8 w-auto object-contain" />
+            <span className="font-bold text-sm text-foreground">
+              {t("app.name", { ns: "common" })}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <LocaleSwitcher className="hidden sm:inline-flex" />
@@ -102,7 +97,7 @@ export default function Index() {
       </nav>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-[oklch(0.14_0.04_355)] text-white py-24 px-4">
+      <section className="relative overflow-hidden bg-[oklch(0.15_0.03_195)] text-white py-24 px-4">
 
         <div className="relative max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -288,7 +283,7 @@ export default function Index() {
             className="relative"
           >
             <img
-              src="https://images.unsplash.com/photo-1694286080661-f44117e019ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800"
+              src="https://images.unsplash.com/photo-1531844251246-9a1bfaae09fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800"
               alt={t("privacy.imageAlt")}
               className="rounded-2xl w-full object-cover shadow-xl h-72 lg:h-96"
             />
@@ -301,7 +296,7 @@ export default function Index() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 bg-[oklch(0.14_0.04_355)] text-white">
+      <section className="py-20 px-4 bg-[oklch(0.15_0.03_195)] text-white">
         <div className="max-w-2xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -328,17 +323,11 @@ export default function Index() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-background text-muted-foreground py-8 px-4 border-t border-border">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex flex-col items-center gap-1">
-            <img src="/tichlabs.logo.jpeg" alt="Tich Labs" className="h-6 w-auto object-contain opacity-70" />
-            <span className="text-sm">{t("app.name", { ns: "common" })}</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <LocaleSwitcher className="text-white/50 hover:text-white" />
-            <div className="text-xs">
-              {t("footer.copyright", { year: new Date().getFullYear() })}
-            </div>
+      <footer className="bg-background py-8 px-4 border-t border-border">
+        <div className="max-w-6xl mx-auto flex items-center justify-center">
+          <div className="flex items-center gap-2">
+            <img src="/tichlabs.logo.jpeg" alt="Tich Labs" className="h-7 w-auto object-contain" />
+            <span className="text-sm font-semibold text-foreground">{t("app.name", { ns: "common" })}</span>
           </div>
         </div>
       </footer>
