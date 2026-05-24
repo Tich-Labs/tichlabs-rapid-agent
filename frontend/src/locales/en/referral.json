@@ -19,8 +19,13 @@
   "categories.psychosocialDesc": "Psychosocial support and helplines",
   "categories.legal": "Legal Services",
   "categories.legalDesc": "Pro bono lawyers and justice support",
+  "categories.hotline": "Hotlines",
+  "categories.hotlineDesc": "Toll-free crisis lines and emergency contacts",
+  "categories.economicEmpowerment": "Economic Empowerment",
+  "categories.economicEmpowermentDesc": "Skills training, financial independence, livelihood support",
   "counties.kakamega": "Kakamega County",
   "counties.vihiga": "Vihiga County",
+  "counties.nairobi": "Nairobi County",
   "search.label": "Search for services",
   "search.placeholder": "Describe the kind of help needed..."
 }

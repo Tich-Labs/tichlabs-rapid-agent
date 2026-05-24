@@ -17,6 +17,8 @@ import {
   Search,
   Sparkles,
   Loader2,
+  Headphones,
+  Briefcase,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -25,8 +27,8 @@ import { useFirestoreQuery } from "@/hooks/use-firestore-query";
 import { listDocuments } from "@/lib/firestore";
 import { matchServices as mcpMatchServices, type ServiceMatch } from "@/lib/mcp-client";
 
-type CategoryFilter = "health" | "police" | "shelter" | "psychosocial" | "legal" | null;
-type CountyFilter = "kakamega" | "vihiga" | null;
+type CategoryFilter = "health" | "police" | "shelter" | "psychosocial" | "legal" | "hotline" | "economic_empowerment" | null;
+type CountyFilter = "kakamega" | "vihiga" | "nairobi" | null;
 
 interface ReferralService {
   _id: string;
@@ -59,11 +61,14 @@ export default function ReferralDirectoryPage() {
     { id: "shelter" as const, label: t("categories.shelter"), icon: Home, color: "bg-amber-100 text-amber-700 border-amber-200", description: t("categories.shelterDesc") },
     { id: "psychosocial" as const, label: t("categories.psychosocial"), icon: Brain, color: "bg-purple-100 text-purple-700 border-purple-200", description: t("categories.psychosocialDesc") },
     { id: "legal" as const, label: t("categories.legal"), icon: Scale, color: "bg-green-100 text-green-700 border-green-200", description: t("categories.legalDesc") },
+    { id: "hotline" as const, label: t("categories.hotline"), icon: Headphones, color: "bg-pink-100 text-pink-700 border-pink-200", description: t("categories.hotlineDesc") },
+    { id: "economic_empowerment" as const, label: t("categories.economicEmpowerment"), icon: Briefcase, color: "bg-teal-100 text-teal-700 border-teal-200", description: t("categories.economicEmpowermentDesc") },
   ];
 
   const COUNTIES = [
     { id: "kakamega" as const, label: t("counties.kakamega") },
     { id: "vihiga" as const, label: t("counties.vihiga") },
+    { id: "nairobi" as const, label: t("counties.nairobi") },
   ];
 
   const { data: services } = useFirestoreQuery(

@@ -19,8 +19,13 @@
   "categories.psychosocialDesc": "Msaada wa kisaikolojia na simu za msaada",
   "categories.legal": "Huduma za Kisheria",
   "categories.legalDesc": "Mawakili wa bure na msaada wa haki",
+  "categories.hotline": "Nambari za Dharura",
+  "categories.hotlineDesc": "Nambari za simu za dharura na mawasiliano ya mgogoro",
+  "categories.economicEmpowerment": "Uwezeshaji Kiuchumi",
+  "categories.economicEmpowermentDesc": "Mafunzo ya ujuzi, uhuru wa kifedha, msaada wa maisha",
   "counties.kakamega": "Kaunti ya Kakamega",
   "counties.vihiga": "Kaunti ya Vihiga",
+  "counties.nairobi": "Kaunti ya Nairobi",
   "search.label": "Tafuta huduma",
   "search.placeholder": "Eleza aina ya msaada unayohitaji..."
 }
