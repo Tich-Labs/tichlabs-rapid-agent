@@ -123,11 +123,6 @@ jobs:
             --cpu 1 \
             --concurrency 80 \
             --set-env-vars "MCP_TRANSPORT=http,GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},GEMINI_MODEL=${{ secrets.GEMINI_MODEL }},MONGODB_URI=${{ secrets.MONGODB_URI }},MONGODB_DB_NAME=tichlabs_cases,MCP_API_KEY=${{ secrets.MCP_API_KEY }}"
-          # Set FIREBASE_SERVICE_ACCOUNT_JSON separately to avoid comma-in-JSON issues
-          gcloud run services update ${{ env.MCP_SERVICE }} \
-            --project ${{ env.PROJECT_ID }} \
-            --region ${{ env.REGION }} \
-            --update-env-vars "^|^FIREBASE_SERVICE_ACCOUNT_JSON=${{ secrets.FIREBASE_SERVICE_ACCOUNT }}|"
 
       - name: Show MCP server URL
         run: |
