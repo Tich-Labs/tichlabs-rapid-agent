@@ -63,12 +63,14 @@ service cloud.firestore {
     // ──────────────────────────────────────────────────────
     // Referral services — verified service directory
     //
-    // All authenticated staff can browse.
-    // Only admins manage listings.
+    // PUBLIC read — survivors need to find help without
+    // signing in. Only admins manage listings.
     // ──────────────────────────────────────────────────────
     match /referral_services/{serviceId} {
-      allow read: if request.auth != null;
+      // Anyone can browse the referral directory
+      allow read: if true;
 
+      // Only admins can create, update, or delete services
       allow create, update, delete: if request.auth != null && isAdmin();
     }
 
