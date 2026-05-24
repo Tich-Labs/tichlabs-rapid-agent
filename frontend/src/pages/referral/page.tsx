@@ -152,7 +152,6 @@ export default function ReferralDirectoryPage() {
           </Button>
           <div className="flex-1">
             <h1 className="text-sm font-bold leading-tight">{t("header.title")}</h1>
-            <p className="text-xs text-muted-foreground">{t("header.subtitle")}</p>
           </div>
           <LocaleSwitcher className="hidden sm:inline-flex" />
           <Badge variant="secondary" className="text-xs">
