@@ -5,7 +5,7 @@ ENV VITE_MCP_SERVER_URL=$VITE_MCP_SERVER_URL \
     VITE_MCP_API_KEY=$VITE_MCP_API_KEY
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build -- --base=/
 

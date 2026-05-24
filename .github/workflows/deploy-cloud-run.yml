@@ -28,6 +28,19 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
+      - name: Create Artifact Registry repos (if missing)
+        run: |
+          gcloud artifacts repositories create ${{ env.AR_REPO_FRONTEND }} \
+            --project ${{ env.PROJECT_ID }} \
+            --location ${{ env.REGION }} \
+            --repository-format docker \
+            --quiet || true
+          gcloud artifacts repositories create ${{ env.AR_REPO_MCP }} \
+            --project ${{ env.PROJECT_ID }} \
+            --location ${{ env.REGION }} \
+            --repository-format docker \
+            --quiet || true
+
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
