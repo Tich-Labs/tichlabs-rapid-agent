@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_ID: project-7743396c-e1bc-40ff-a7e
+  PROJECT_ID: sgbv-incidenttracker
   REGION: us-central1
   AR_REPO_FRONTEND: tichlabs-frontend
   AR_REPO_MCP: tichlabs-mcp
