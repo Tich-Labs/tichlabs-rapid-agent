@@ -20,5 +20,7 @@
   "categories.legal": "Huduma za Kisheria",
   "categories.legalDesc": "Mawakili wa bure na msaada wa haki",
   "counties.kakamega": "Kaunti ya Kakamega",
-  "counties.vihiga": "Kaunti ya Vihiga"
+  "counties.vihiga": "Kaunti ya Vihiga",
+  "search.label": "Tafuta huduma",
+  "search.placeholder": "Eleza aina ya msaada unayohitaji..."
 }

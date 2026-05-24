@@ -240,7 +240,7 @@ async function main() {
       if (req.url === "/debug") {
         const raw: Record<string, string> = {};
         for (const k of Object.keys(process.env)) {
-          if (k.includes("SUPABASE") || k.includes("VITE_") || k.includes("API_KEY") || k.includes("OPENAI") || k.includes("MCP_") || k.includes("NODE_")) {
+          if (k.includes("FIREBASE") || k.includes("VITE_") || k.includes("API_KEY") || k.includes("OPENAI") || k.includes("MCP_") || k.includes("NODE_")) {
             const v = process.env[k] ?? "undefined";
             raw[k] = v.length > 0 ? `${v.slice(0, 12)}... (len=${v.length})` : `EMPTY STRING (len=0)`;
           }
@@ -250,7 +250,7 @@ async function main() {
         let error: string | null = null;
         let llmInfo: string | null = null;
         try {
-          const { getActiveServices } = await import("./lib/supabase.js");
+          const { getActiveServices } = await import("./lib/firestore-admin.js");
           const services = await getActiveServices();
           servicesCount = services.length;
           serviceNames = services.map((s) => s.name);

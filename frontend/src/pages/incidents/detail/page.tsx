@@ -36,6 +36,8 @@ import {
   UserPlus,
   StickyNote,
   ScrollText,
+  Brain,
+  AlertOctagon,
 } from "lucide-react";
 import AIRecommendations from "@/components/ai-recommendations.tsx";
 import { useSupabaseQuery, useSupabaseQueryCamel, useSupabaseMutation, supabaseQueries, supabaseMutations } from "@/hooks/use-supabase-query";
@@ -579,6 +581,105 @@ function WorkflowPanel({
   );
 }
 
+const SEVERITY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  low: { label: "Low", color: "text-green-700", bg: "bg-green-100", border: "border-green-200" },
+  medium: { label: "Medium", color: "text-amber-700", bg: "bg-amber-100", border: "border-amber-200" },
+  high: { label: "High", color: "text-orange-700", bg: "bg-orange-100", border: "border-orange-200" },
+  critical: { label: "Critical", color: "text-red-700", bg: "bg-red-100", border: "border-red-200" },
+};
+
+const URGENCY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  routine: { label: "Routine", color: "text-blue-700", bg: "bg-blue-100", border: "border-blue-200" },
+  urgent: { label: "Urgent", color: "text-amber-700", bg: "bg-amber-100", border: "border-amber-200" },
+  emergency: { label: "Emergency", color: "text-red-700", bg: "bg-red-100", border: "border-red-200" },
+};
+
+function RiskAssessmentCard({ incident }: { incident: Record<string, any> }) {
+  const riskScore = incident.risk_score as number | undefined ?? 0;
+  const severity = incident.severity as string | undefined ?? "low";
+  const urgency = incident.urgency as string | undefined ?? "routine";
+  const riskFactors = (incident.risk_factors as string[]) ?? [];
+  const recommendedActions = (incident.recommended_actions as string[]) ?? [];
+  const assessedAt = incident.ai_assessed_at as string | undefined;
+
+  const sev = SEVERITY_CONFIG[severity] ?? SEVERITY_CONFIG.low;
+  const urg = URGENCY_CONFIG[urgency] ?? URGENCY_CONFIG.routine;
+
+  const barColor =
+    riskScore >= 75 ? "bg-red-500" :
+    riskScore >= 50 ? "bg-orange-500" :
+    riskScore >= 25 ? "bg-amber-500" :
+    "bg-green-500";
+
+  return (
+    <div className="mx-4 mb-4 rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <Brain className="h-4 w-4 text-primary" />
+        <h3 className="text-sm font-semibold text-foreground">Risk Assessment</h3>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <p className="text-xs text-muted-foreground mb-1.5">Risk Score</p>
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
+              <div
+                className={cn("h-full rounded-full transition-all", barColor)}
+                style={{ width: `${Math.min(riskScore, 100)}%` }}
+              />
+            </div>
+            <span className="text-lg font-bold text-foreground tabular-nums">{riskScore}</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Severity</p>
+            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full border", sev.color, sev.bg, sev.border)}>
+              {sev.label}
+            </span>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Urgency</p>
+            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full border", urg.color, urg.bg, urg.border)}>
+              {urg.label}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {riskFactors.length > 0 && (
+        <div className="mb-3">
+          <p className="text-xs font-medium text-muted-foreground mb-1.5">Risk Factors</p>
+          <ul className="space-y-1">
+            {riskFactors.map((f, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                <AlertOctagon className="h-3.5 w-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {recommendedActions.length > 0 && (
+        <div className="mb-3">
+          <p className="text-xs font-medium text-muted-foreground mb-1.5">Recommended Actions</p>
+          <ol className="space-y-1 list-decimal list-inside">
+            {recommendedActions.map((a, i) => (
+              <li key={i} className="text-sm text-foreground">{a}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      <p className="text-[10px] text-muted-foreground mt-3">
+        Assessed by Gemini 2.5 via Tich Labs MCP
+        {assessedAt && <span> · {format(new Date(assessedAt), "MMM d, yyyy 'at' h:mm a")}</span>}
+      </p>
+    </div>
+  );
+}
+
 function IncidentDetailInner({ incidentId }: { incidentId: string }) {
   const navigate = useNavigate();
   const { data: incident } = useSupabaseQueryCamel(
@@ -707,6 +808,31 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
                 {format(new Date(incident.escalatedAt), "MMM d, yyyy 'at' h:mm a")}
               </p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Risk assessment card */}
+      {(incident as any).ai_status === "assessed" && <RiskAssessmentCard incident={incident as any} />}
+      {(incident as any).ai_status === "pending" && (
+        <div className="mx-4 mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <div className="flex items-center gap-3">
+            <Brain className="h-5 w-5 text-amber-600 animate-pulse" />
+            <div>
+              <p className="text-sm font-semibold text-amber-800">Gemini 2.5 is assessing this incident…</p>
+              <p className="text-xs text-amber-600">Risk analysis results will appear here shortly.</p>
+            </div>
+          </div>
+        </div>
+      )}
+      {(incident as any).ai_status === "failed" && (
+        <div className="mx-4 mb-4 rounded-xl border border-muted bg-muted/30 p-4">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="h-5 w-5 text-muted-foreground" />
+            <div>
+              <p className="text-sm font-semibold text-muted-foreground">Automated assessment unavailable</p>
+              <p className="text-xs text-muted-foreground">Use the AI Assistant panel to assess manually.</p>
+            </div>
           </div>
         </div>
       )}

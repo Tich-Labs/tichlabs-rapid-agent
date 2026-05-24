@@ -110,6 +110,8 @@ type IncidentItem = {
   createdAt: string;
   reporterType?: string;
   volunteerId?: string;
+  ai_status?: string;
+  severity?: string;
 };
 
 function IncidentRow({ incident }: { incident: IncidentItem }) {
@@ -137,6 +139,27 @@ function IncidentRow({ incident }: { incident: IncidentItem }) {
           )}
           {incident.isEscalated && (
             <AlertTriangle className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
+          )}
+          {incident.ai_status === "pending" && (
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-sm border bg-amber-100 text-amber-700 border-amber-200 flex-shrink-0">
+              AI assessing…
+            </span>
+          )}
+          {incident.ai_status === "assessed" && incident.severity && (
+            <span className={cn(
+              "text-[10px] font-medium px-1.5 py-0.5 rounded-sm border flex-shrink-0",
+              incident.severity === "critical" && "bg-red-100 text-red-700 border-red-200",
+              incident.severity === "high" && "bg-orange-100 text-orange-700 border-orange-200",
+              incident.severity === "medium" && "bg-amber-100 text-amber-700 border-amber-200",
+              incident.severity === "low" && "bg-green-100 text-green-700 border-green-200",
+            )}>
+              {incident.severity}
+            </span>
+          )}
+          {incident.ai_status === "failed" && (
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-sm border bg-muted text-muted-foreground border-border flex-shrink-0">
+              Unassessed
+            </span>
           )}
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

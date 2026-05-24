@@ -28,12 +28,14 @@ import {
   X,
   Search,
   AlertCircle,
+  Database,
 } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
 import {
   matchServices,
   assessRisk,
   generateFhirBundle,
+  storeCaseDocument,
   type MatchServicesResult,
   type AssessRiskResult,
   type ServiceMatch,
@@ -175,7 +177,7 @@ function AssessRiskResultCard({ result }: { result: AssessRiskResult }) {
   );
 }
 
-export default function AiAssistant() {
+export default function AiAssistant({ incidentId }: { incidentId?: string }) {
   const [activeAction, setActiveAction] = useState<ActionType>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -183,6 +185,7 @@ export default function AiAssistant() {
   const [matchResult, setMatchResult] = useState<MatchServicesResult | null>(null);
   const [riskResult, setRiskResult] = useState<AssessRiskResult | null>(null);
   const [fhirResult, setFhirResult] = useState<Record<string, unknown> | null>(null);
+  const [mongoSaved, setMongoSaved] = useState(false);
 
   const [matchForm, setMatchForm] = useState({
     incidentType: "",
@@ -207,6 +210,11 @@ export default function AiAssistant() {
     ]);
   }, []);
 
+  const showMongo = useCallback(() => {
+    setMongoSaved(true);
+    setTimeout(() => setMongoSaved(false), 2000);
+  }, []);
+
   const handleMatch = async () => {
     if (!matchForm.incidentType || !matchForm.location) return;
     setLoading(true);
@@ -223,6 +231,20 @@ export default function AiAssistant() {
       });
       setMatchResult(result);
       addLog("match_services", `Found ${result.count} services for ${matchForm.incidentType} in ${matchForm.location}`);
+
+      if (incidentId) {
+        storeCaseDocument({
+          incidentId,
+          type: "service_match",
+          incidentType: matchForm.incidentType,
+          description: matchForm.description || "",
+          location: matchForm.location || "",
+          matched_services: result.matches?.map((s: any) => s.serviceId) ?? [],
+          match_count: result.count,
+          matched_at: new Date().toISOString(),
+          source: "ai_assistant_panel",
+        }).then(() => { showMongo(); }).catch(() => {});
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to match services");
     } finally {
@@ -245,6 +267,23 @@ export default function AiAssistant() {
       });
       setRiskResult(result);
       addLog("assess_risk", `Risk score: ${result.riskScore}/100, severity: ${result.severity}`);
+
+      if (incidentId) {
+        storeCaseDocument({
+          incidentId,
+          type: "risk_assessment",
+          incidentType: riskForm.incidentType,
+          description: riskForm.description,
+          location: "",
+          riskScore: result.riskScore,
+          severity: result.severity,
+          urgency: result.urgency,
+          risk_factors: result.factors,
+          recommended_actions: result.recommendedActions,
+          assessed_at: new Date().toISOString(),
+          source: "ai_assistant_panel",
+        }).then(() => { showMongo(); }).catch(() => {});
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to assess risk");
     } finally {
@@ -565,6 +604,20 @@ export default function AiAssistant() {
                     });
                     setFhirResult(result);
                     addLog("generate_fhir_bundle", "FHIR R4 bundle generated");
+
+                    if (incidentId) {
+                      storeCaseDocument({
+                        incidentId,
+                        type: "fhir_bundle",
+                        incidentType: "physical_abuse",
+                        description: "Survivor requires shelter and medical attention",
+                        location: "Kakamega",
+                        bundle_id: (result as any)?.bundle?.id,
+                        resource_count: (result as any)?.bundle?.entry?.length,
+                        generated_at: new Date().toISOString(),
+                        source: "ai_assistant_panel",
+                      }).then(() => { showMongo(); }).catch(() => {});
+                    }
                   } catch (e) {
                     setError(e instanceof Error ? e.message : "Failed to generate FHIR bundle");
                   } finally {
@@ -605,6 +658,15 @@ export default function AiAssistant() {
                   </Button>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* MongoDB saved confirmation */}
+          {mongoSaved && (
+            <div className="flex items-center gap-1.5 text-xs text-primary animate-in fade-in">
+              <Database className="h-3 w-3" />
+              <CheckCircle2 className="h-3 w-3" />
+              Saved to MongoDB
             </div>
           )}
 

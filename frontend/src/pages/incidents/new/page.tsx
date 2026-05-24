@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils.ts";
 import { useOfflineIncidentQueue } from "@/hooks/use-offline-incident-queue.ts";
+import { runAutoRiskAssessment } from "@/hooks/use-auto-risk-assessment";
 import { useSupabaseMutation } from "@/hooks/use-supabase-query";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/components/providers/supabase";
@@ -701,8 +702,18 @@ export default function NewIncidentPage() {
         survivor_gender: form.survivorGender,
         submitter_contact: form.submitterContact || undefined,
         offline_id: offlineId,
+        ai_status: "pending",
       });
       const incidentId = (data as { id: string }).id;
+
+      // Fire-and-forget AI risk assessment — do not block navigation
+      runAutoRiskAssessment(incidentId, {
+        incidentType: form.incidentType,
+        description: form.description,
+        location: form.location,
+        survivorAgeGroup: form.survivorAgeGroup,
+        survivorGender: form.survivorGender,
+      }).catch(() => {});
 
       // Authenticated users go to dashboard; anonymous reporters go to success page
       const isAuthenticated = !authLoading && user != null;

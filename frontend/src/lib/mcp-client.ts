@@ -88,6 +88,46 @@ export async function assessRisk(params: {
   return JSON.parse(raw.content[0].text);
 }
 
+export interface AggregationBucket {
+  key: string;
+  count: number;
+  avgRiskScore: number;
+  topTypes: { type: string; count: number }[];
+}
+
+export async function aggregateCases(params: {
+  groupBy: "incidentType" | "location" | "severity" | "status" | "month";
+  limit?: number;
+}): Promise<AggregationBucket[]> {
+  const raw = await mcpCall<{ content: { text: string }[] }>("tools/call", {
+    name: "aggregate_cases",
+    arguments: params,
+  });
+  return JSON.parse(raw.content[0].text);
+}
+
+export async function storeCaseDocument(params: Record<string, unknown>): Promise<{ id: string }> {
+  const raw = await mcpCall<{ content: { text: string }[] }>("tools/call", {
+    name: "store_case_document",
+    arguments: params,
+  });
+  return JSON.parse(raw.content[0].text);
+}
+
+export async function searchCaseDocuments(params: {
+  query: string;
+  limit?: number;
+  incidentType?: string;
+  location?: string;
+  status?: string;
+}): Promise<{ document: any; score: number; highlights: string[] }[]> {
+  const raw = await mcpCall<{ content: { text: string }[] }>("tools/call", {
+    name: "search_case_documents",
+    arguments: params,
+  });
+  return JSON.parse(raw.content[0].text);
+}
+
 export async function generateFhirBundle(params: {
   incidentId?: string;
   incident?: Record<string, unknown>;

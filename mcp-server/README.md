@@ -1,20 +1,31 @@
 # Tich Labs Incident Tracker - MCP Server
 
-Model Context Protocol (MCP) server for Tich Labs SGBV incident tracking system. Exposes tools for AI-powered referral matching, FHIR R4 resource generation, and risk assessment.
+Model Context Protocol (MCP) server for Tich Labs SGBV incident tracking system. Exposes tools for AI-powered referral matching, FHIR R4 resource generation, and risk assessment. Uses Firebase Firestore for data access.
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
-| `match_services` | Match incidents to verified referral services using AI (OpenAI) or keyword-based matching |
+| `match_services` | Match incidents to verified referral services using AI or keyword-based matching |
 | `generate_fhir_bundle` | Generate FHIR R4 transaction bundles from incidents (Observation, Patient, Consent, Location, ServiceRequest) |
 | `assess_risk` | Assess risk severity of incidents (0-100 score, severity level, urgency, factors, actions) |
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `FIREBASE_SERVICE_ACCOUNT_JSON` | Yes | Full JSON content of your Firebase service account key |
+| `GEMINI_API_KEY` | No | Gemini API key for AI-powered matching (falls back to keyword) |
+| `GEMINI_MODEL` | No | Gemini model (default: `gemini-2.5-flash`) |
+| `MONGODB_URI` | No | MongoDB Atlas connection string for case storage/search |
+| `MONGODB_DB_NAME` | No | MongoDB database name (default: `tichlabs_cases`) |
+| `MCP_TRANSPORT` | No | Set to `http` for HTTP transport (default: stdio) |
+| `MCP_API_KEY` | No | API key for HTTP transport authentication |
+| `PORT` | No | Port for HTTP transport (default: `3001`) |
 
 ## Usage
 
 ### With Claude Desktop
-
-Add to `claude_desktop_config.json`:
 
 ```json
 {
@@ -23,36 +34,27 @@ Add to `claude_desktop_config.json`:
       "command": "npx",
       "args": ["tsx", "/path/to/mcp-server/src/index.ts"],
       "env": {
-        "VITE_SUPABASE_URL": "https://your-project.supabase.co",
-        "VITE_SUPABASE_ANON_KEY": "your-anon-key",
-        "OPENAI_API_KEY": "sk-your-key-here"
+        "FIREBASE_SERVICE_ACCOUNT_JSON": "{\"type\":\"service_account\",...}",
+        "GEMINI_API_KEY": "your-key-here"
       }
     }
   }
 }
 ```
 
-### With MCP Inspector
-
-```bash
-cd mcp-server
-VITE_SUPABASE_URL=... VITE_SUPABASE_ANON_KEY=... npx @modelcontextprotocol/inspector tsx src/index.ts
-```
-
 ### Direct (stdio)
 
 ```bash
 cd mcp-server
-VITE_SUPABASE_URL=... VITE_SUPABASE_ANON_KEY=... npx tsx src/index.ts
+FIREBASE_SERVICE_ACCOUNT_JSON='{...}' npx tsx src/index.ts
 ```
 
-## Environment Variables
+### HTTP (for cloud deployment)
 
-- `VITE_SUPABASE_URL` - Supabase project URL
-- `VITE_SUPABASE_ANON_KEY` - Supabase anon/public key
-- `OPENAI_API_KEY` - (Optional) OpenAI API key for AI-powered matching
-
-Without OpenAI key, all tools use keyword-based matching as fallback.
+```bash
+cd mcp-server
+MCP_TRANSPORT=http MCP_API_KEY=your-key FIREBASE_SERVICE_ACCOUNT_JSON='{...}' npx tsx src/index.ts
+```
 
 ## Examples
 

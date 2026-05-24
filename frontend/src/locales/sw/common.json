@@ -11,6 +11,7 @@
   "nav.users": "Watumiaji",
   "nav.manageServices": "Simamia Huduma",
   "nav.adminManual": "Mwongozo wa Msimamizi",
+  "nav.about": "Kuhusu",
   "nav.signOut": "Toka",
   "nav.reportIncident": "Ripoti Tukio",
   "auth.signIn": "Ingia",
@@ -33,5 +34,9 @@
   "sync.pendingSync": "Matukio {{count}} yanasubiri kusawazishwa",
   "sync.syncNow": "Sawazisha sasa",
   "sync.failedSync": "Matukio {{count}} yameshindwa kusawazishwa baada ya majaribio mengi. Tafadhali wasiliana na msaada.",
-  "mobile.title": "Mfumo wa Matukio"
+  "mobile.title": "Mfumo wa Matukio",
+  "about.title": "Kuhusu",
+  "about.subtitle": "Usimamizi wa kesi kwa mashirika yanayojibu SGBV",
+  "about.deployment": "Utekelezaji wa sasa",
+  "about.builtBy": "Imejengwa na Tich Labs"
 }

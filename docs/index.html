@@ -208,37 +208,52 @@
       </div>
     </section>
 
-    <!-- Step 7: Next Steps -->
+    <!-- Step 7: How It Works -->
     <section class="mb-16 step" id="admin-step-7">
       <div class="bg-gradient-to-r from-blue-900 to-purple-900 text-white rounded-xl shadow-lg p-8">
-        <h2 class="text-2xl font-bold mb-4">7. Next Steps for Pilot</h2>
+        <h2 class="text-2xl font-bold mb-4">7. How It Works</h2>
+        <p class="text-sm opacity-80 mb-6">The agent pipeline — Gemini 2.5 + MongoDB Atlas MCP + Agent Builder</p>
         <div class="space-y-4">
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🚨</span>
+            <div>
+              <h3 class="font-bold">Incident Reported</h3>
+              <p class="text-sm opacity-90">Survivor or volunteer submits a case through the PWA or web app — works offline</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🔍</span>
+            <div>
+              <h3 class="font-bold">Risk Assessed</h3>
+              <p class="text-sm opacity-90">Gemini 2.5 analyzes threat factors, vulnerability indicators, and urgency (0-100 score)</p>
+            </div>
+          </div>
           <div class="flex items-start gap-4">
             <span class="text-2xl">🏥</span>
             <div>
-              <h3 class="font-bold">Build Referral Database</h3>
-              <p class="text-sm opacity-90">Add 44+ verified services (health facilities, police, legal aid)</p>
+              <h3 class="font-bold">Services Matched</h3>
+              <p class="text-sm opacity-90">AI matches the incident to verified local services (health, police, shelter, psychosocial, legal)</p>
             </div>
           </div>
           <div class="flex items-start gap-4">
-            <span class="text-2xl">🤖</span>
+            <span class="text-2xl">💾</span>
             <div>
-              <h3 class="font-bold">AI Referral Matching</h3>
-              <p class="text-sm opacity-90">Integrate AI to match incidents with nearby services</p>
+              <h3 class="font-bold">Case Stored (MongoDB Atlas)</h3>
+              <p class="text-sm opacity-90">Anonymized case persisted in MongoDB for full-text search and trend analytics</p>
             </div>
           </div>
           <div class="flex items-start gap-4">
-            <span class="text-2xl">🌍</span>
+            <span class="text-2xl">📋</span>
             <div>
-              <h3 class="font-bold">FHIR Integration</h3>
-              <p class="text-sm opacity-90">Map to Kenya MoH standards for healthcare interoperability</p>
+              <h3 class="font-bold">FHIR Bundle Generated</h3>
+              <p class="text-sm opacity-90">FHIR R4 transaction bundle created for EHR interoperability (Observation, Patient, Consent, ServiceRequest)</p>
             </div>
           </div>
           <div class="flex items-start gap-4">
-            <span class="text-2xl">🏆</span>
+            <span class="text-2xl">👩🏿‍⚕️</span>
             <div>
-              <h3 class="font-bold">Agents Assemble Hackathon</h3>
-              <p class="text-sm opacity-90">Submit by May 11, 2026 - Demo AI + FHIR + Offline PWA</p>
+              <h3 class="font-bold">Caseworker Reviews</h3>
+              <p class="text-sm opacity-90">Human-in-the-loop — caseworker validates AI recommendations before action</p>
             </div>
           </div>
         </div>
@@ -248,7 +263,7 @@
 
     <footer class="text-center py-8 text-gray-500">
       <p>Tich Labs Incident Tracker - Interactive Guide</p>
-      <p class="text-sm">Built for Youth Changers Kenya - Agents Assemble Healthcare AI Challenge</p>
+      <p class="text-sm">Built by Tich Labs · Kenya use case: Youth Changers Kenya, Kakamega &amp; Vihiga counties</p>
       <p class="text-xs mt-2">Live at: <a href="https://sgbv-incidenttracker.web.app/docs/" class="text-blue-600">https://sgbv-incidenttracker.web.app/docs/</a></p>
     </footer>
   </div>

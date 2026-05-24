@@ -1,0 +1,95 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ──────────────────────────────────────────────────────
+    // Helper — read the authenticated user's role from their
+    // Firestore user document. Falls back to "volunteer".
+    // ──────────────────────────────────────────────────────
+    function userRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role ?? 'volunteer';
+    }
+
+    function isStaff() {
+      return userRole() in ['admin', 'caseworker'];
+    }
+
+    function isAdmin() {
+      return userRole() == 'admin';
+    }
+
+    // ──────────────────────────────────────────────────────
+    // Incidents — SGBV case records
+    //
+    // Survivors submit anonymously (no auth required).
+    // Only admin/caseworker staff can view or update cases.
+    // Immutable audit trail — no deletes.
+    // ──────────────────────────────────────────────────────
+    match /incidents/{incidentId} {
+      // Survivors (unauthenticated) can submit new incidents
+      allow create: if true;
+
+      // Only admin and caseworkers can read incidents
+      allow read: if request.auth != null && isStaff();
+
+      // Only admin and caseworkers can update incidents
+      allow update: if request.auth != null && isStaff();
+
+      // Immutable — nobody can delete incidents
+      allow delete: if false;
+    }
+
+    // ──────────────────────────────────────────────────────
+    // Users — staff/volunteer accounts
+    //
+    // Each user can read their own profile.
+    // Only admins can list all users or modify roles.
+    // ──────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Users can read their own document
+      allow read: if request.auth != null
+        && request.auth.uid == userId;
+
+      // Only admins can read all users
+      allow read: if request.auth != null && isAdmin();
+
+      // Only admins can create or update user documents
+      allow create, update: if request.auth != null && isAdmin();
+
+      allow delete: if false;
+    }
+
+    // ──────────────────────────────────────────────────────
+    // Referral services — verified service directory
+    //
+    // All authenticated staff can browse.
+    // Only admins manage listings.
+    // ──────────────────────────────────────────────────────
+    match /referral_services/{serviceId} {
+      allow read: if request.auth != null;
+
+      allow create, update, delete: if request.auth != null && isAdmin();
+    }
+
+    // ──────────────────────────────────────────────────────
+    // Audit log — immutable action history
+    //
+    // Writes happen server-side via Admin SDK (bypasses rules).
+    // Only admins can read the audit trail.
+    // ──────────────────────────────────────────────────────
+    match /audit_log/{logId} {
+      allow read: if request.auth != null && isAdmin();
+
+      // Deny all client-side writes — Admin SDK handles these
+      allow create, update, delete: if false;
+    }
+
+    // ──────────────────────────────────────────────────────
+    // Default — deny everything else
+    // ──────────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

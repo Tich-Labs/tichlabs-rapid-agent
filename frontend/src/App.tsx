@@ -20,6 +20,7 @@ import AdminManualPage from "./pages/admin/manual/page.tsx";
 import AuditLogPage from "./pages/audit/page.tsx";
 import ReferralDirectoryPage from "./pages/referral/page.tsx";
 import AdminServicesPage from "./pages/admin/services/page.tsx";
+import AboutPage from "./pages/about/page.tsx";
 import { useServiceWorker } from "@/hooks/use-service-worker.ts";
 import QuickExit from "@/components/quick-exit.tsx";
 import { InstallPrompt } from "@/components/install-prompt.tsx";
@@ -77,6 +78,7 @@ export default function App() {
                 <Route path="audit" element={<AuditLogPage />} />
                 <Route path="admin/manual" element={<AdminManualPage />} />
                 <Route path="admin/services" element={<AdminServicesPage />} />
+                <Route path="about" element={<AboutPage />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

@@ -31,6 +31,7 @@ import {
   Smartphone,
   ScrollText,
 } from "lucide-react";
+import { useMongodbAggregates } from "@/hooks/use-mongodb-aggregates";
 // ─── Shared config ────────────────────────────────────────────────────────────
 const ROLE_LABELS: Record<string, string> = {
   volunteer: "Volunteer",
@@ -226,8 +227,13 @@ function VolunteerDashboard({ name }: { name?: string }) {
   const navigate = useNavigate();
   const stats = useSupabaseQueryCamel<{ total: number; new: number; inProgress: number; escalated: number; resolved: number }>(supabaseQueries.getDashboardStats);
   const incidents = useSupabaseQueryCamel<any[]>(supabaseQueries.listIncidents);
+  const { data: mongoData, status: mongoStatus } = useMongodbAggregates();
 
   const s = stats.data ?? { total: 0, new: 0, inProgress: 0, escalated: 0, resolved: 0 };
+  const mongoTotal = mongoStatus === "success"
+    ? mongoData?.byType?.reduce((sum, b) => sum + b.count, 0) ?? s.total
+    : s.total;
+  const mongoActive = mongoStatus === "success";
   const recent = incidents.data ?? [];
 
   return (
@@ -249,10 +255,16 @@ function VolunteerDashboard({ name }: { name?: string }) {
 
       {/* Stats */}
       <div className="px-4 grid grid-cols-2 gap-3">
-        <StatCard label="Total" value={s.total} icon={TrendingUp} colorClass="bg-primary/10 text-primary" delay={0} />
+        <StatCard label="Total" value={mongoTotal} icon={TrendingUp} colorClass="bg-primary/10 text-primary" delay={0} />
         <StatCard label="In Progress" value={s.inProgress} icon={Clock} colorClass="bg-amber-50 text-amber-600" delay={0.05} />
         <StatCard label="Resolved" value={s.resolved} icon={CheckCircle2} colorClass="bg-green-50 text-green-600" delay={0.1} />
         <StatCard label="New" value={s.new} icon={ListFilter} colorClass="bg-blue-50 text-blue-600" delay={0.15} />
+      </div>
+      <div className="px-4 flex items-center gap-1.5 mt-1">
+        <span className={cn("w-1.5 h-1.5 rounded-full", mongoActive ? "bg-green-500" : "bg-muted-foreground/40")} />
+        <span className="text-xs text-muted-foreground">
+          {mongoActive ? "Live analytics · MongoDB Atlas" : "Analytics · Firestore"}
+        </span>
       </div>
 
       {/* Quick action */}
@@ -322,6 +334,12 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
   const stats = useSupabaseQueryCamel<{ total: number; new: number; inProgress: number; escalated: number; resolved: number }>(supabaseQueries.getDashboardStats);
   const escalated = useSupabaseQueryCamel<any[]>(supabaseQueries.getEscalatedIncidents);
   const newIncidents = useSupabaseQueryCamel<any[]>(supabaseQueries.getNewIncidents);
+  const { data: mongoData, status: mongoStatus } = useMongodbAggregates();
+
+  const mongoTotal = mongoStatus === "success"
+    ? mongoData?.byType?.reduce((sum, b) => sum + b.count, 0) ?? stats.data?.total ?? 0
+    : stats.data?.total ?? 0;
+  const mongoActive = mongoStatus === "success";
 
   const canManage = ["program_lead", "executive_director"].includes(role);
 
@@ -346,7 +364,7 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
 
       {/* Stats grid */}
       <div className="px-4 grid grid-cols-2 gap-3">
-        <StatCard label="Total" value={stats.data?.total} icon={TrendingUp} colorClass="bg-primary/10 text-primary" delay={0} />
+        <StatCard label="Total" value={mongoTotal} icon={TrendingUp} colorClass="bg-primary/10 text-primary" delay={0} />
         <StatCard label="New" value={stats.data?.new} icon={Clock} colorClass="bg-blue-50 text-blue-600" delay={0.05} />
         <StatCard label="In Progress" value={stats.data?.inProgress} icon={ListFilter} colorClass="bg-amber-50 text-amber-600" delay={0.1} />
         <StatCard
@@ -356,6 +374,12 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
           colorClass={stats.data?.escalated ? "bg-red-50 text-red-600" : "bg-muted text-muted-foreground"}
           delay={0.15}
         />
+      </div>
+      <div className="px-4 flex items-center gap-1.5 mt-1">
+        <span className={cn("w-1.5 h-1.5 rounded-full", mongoActive ? "bg-green-500" : "bg-muted-foreground/40")} />
+        <span className="text-xs text-muted-foreground">
+          {mongoActive ? "Live analytics · MongoDB Atlas" : "Analytics · Firestore"}
+        </span>
       </div>
 
       {/* Escalated alerts */}

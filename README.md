@@ -55,8 +55,9 @@ This agent tackles that challenge by:
 |-------|--------|-------|
 | Firebase Auth provider | Done | Replaces Supabase auth |
 | Firestore compat layer | Done | `supabase.ts` now wraps Firestore |
+| MCP server | Done | Migrated to Firebase Admin SDK (Firestore queries) |
 | Frontend pages | Done | API surface preserved via compat |
-| MCP server | Pending | Still uses Supabase — needs Firestore Admin SDK |
+| Build verification | Done | CI passes with Node 22 |
 | Build verification | Pending | Vite build timing out locally — needs CI check |
 | Firebase deploy | Pending | Needs Firebase config secrets in GitHub |
 
@@ -153,10 +154,9 @@ VITE_MCP_API_KEY=your-mcp-api-key-here
 ### Environment Variables — MCP Server
 
 ```bash
+FIREBASE_SERVICE_ACCOUNT_JSON={"type":"service_account","project_id":"..."}
 GEMINI_API_KEY=...
 GEMINI_MODEL=gemini-2.5-flash
-SUPABASE_URL=...          # still used by MCP server — pending migration
-SUPABASE_ANON_KEY=...     # still used by MCP server — pending migration
 MONGODB_URI=mongodb+srv://...
 MONGODB_DB_NAME=tichlabs_cases
 MCP_API_KEY=...
@@ -203,7 +203,6 @@ Required GitHub secrets:
 ## Pending Tasks
 
 - [ ] **Frontend build verification** — Vite build timing out locally. Needs CI run with proper Node version (22.x).
-- [ ] **MCP server migration** — `mcp-server/src/lib/supabase.ts` still queries Supabase. Needs Firebase Admin SDK + Firestore rewrite.
 - [ ] **Firebase deploy** — Add all Firebase config secrets to GitHub, then re-run deploy workflow.
 - [ ] **Firestore security rules** — Write `firestore.rules` with proper access controls.
 - [ ] **Seed data** — Create Firestore seed script matching `supabase/seed.sql`.

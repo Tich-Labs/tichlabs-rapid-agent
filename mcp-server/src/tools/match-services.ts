@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getLLM, hasLLM, getLLMConfig } from "../lib/llm.js";
-import { getActiveServices, type ReferralService } from "../lib/supabase.js";
+import { getActiveServices, type ReferralService } from "../lib/firestore-admin.js";
 
 export const MatchServicesInput = z.object({
   incidentType: z.string().describe("Type of incident (e.g. physical_abuse, sexual_abuse, emotional_abuse, neglect, domestic_violence)"),

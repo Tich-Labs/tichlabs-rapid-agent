@@ -9,6 +9,7 @@ import { OfflineBanner } from "@/components/offline-banner.tsx";
 import { InstallPrompt } from "@/components/install-prompt.tsx";
 import { useOfflineIncidentQueue } from "@/hooks/use-offline-incident-queue.ts";
 import AiAssistant from "@/components/ai-assistant";
+import OrgBanner from "@/components/OrgBanner";
 import { useSupabaseQueryCamel, supabaseQueries } from "@/hooks/use-supabase-query";
 import { useTranslation } from "react-i18next";
 import LocaleSwitcher from "@/components/locale-switcher.tsx";
@@ -25,6 +26,7 @@ import {
   ScrollText,
   Heart,
   Settings,
+  Info,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -46,6 +48,7 @@ const navItems: NavItem[] = [
   { path: "users", labelKey: "nav.users", icon: Users, roles: ["program_lead", "executive_director"] },
   { path: "admin/services", labelKey: "nav.manageServices", icon: Settings, roles: ["program_lead", "executive_director"] },
   { path: "admin/manual", labelKey: "nav.adminManual", icon: BookOpen, roles: ["program_lead", "executive_director"] },
+  { path: "about", labelKey: "nav.about", icon: Info, roles: ["volunteer", "counselor", "program_lead", "executive_director", "pending"] },
 ];
 
 function AppLayoutInner() {
@@ -181,6 +184,9 @@ function AppLayoutInner() {
             <span>{t("sync.failedSync", { count: deadCount })}</span>
           </div>
         )}
+
+        {/* Org banner — shows active tenant context */}
+        <OrgBanner />
 
         {/* Mobile topbar */}
         <header className="md:hidden flex items-center gap-3 px-4 py-3 border-b border-border bg-background flex-shrink-0">

@@ -23,7 +23,7 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -35,8 +35,6 @@ jobs:
         run: |
           IMAGE=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_FRONTEND }}/frontend
           docker build frontend/ \
-            --build-arg VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
-            --build-arg VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
             --build-arg VITE_MCP_SERVER_URL="${{ secrets.VITE_MCP_SERVER_URL }}" \
             --build-arg VITE_MCP_API_KEY="${{ secrets.VITE_MCP_API_KEY }}" \
             -t $IMAGE:${{ github.sha }} \
@@ -74,10 +72,18 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+
+      - name: Create Artifact Registry repo (if missing)
+        run: |
+          gcloud artifacts repositories create ${{ env.AR_REPO_MCP }} \
+            --project ${{ env.PROJECT_ID }} \
+            --location ${{ env.REGION }} \
+            --repository-format docker \
+            --quiet || true
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
@@ -103,7 +109,12 @@ jobs:
             --max-instances 2 \
             --cpu 1 \
             --concurrency 80 \
-            --set-env-vars "MCP_TRANSPORT=http,SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }},SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }},GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},GEMINI_MODEL=${{ secrets.GEMINI_MODEL }},MONGODB_URI=${{ secrets.MONGODB_URI }},MONGODB_DB_NAME=tichlabs_cases,MCP_API_KEY=${{ secrets.MCP_API_KEY }}"
+            --set-env-vars "MCP_TRANSPORT=http,GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},GEMINI_MODEL=${{ secrets.GEMINI_MODEL }},MONGODB_URI=${{ secrets.MONGODB_URI }},MONGODB_DB_NAME=tichlabs_cases,MCP_API_KEY=${{ secrets.MCP_API_KEY }}"
+          # Set FIREBASE_SERVICE_ACCOUNT_JSON separately to avoid comma-in-JSON issues
+          gcloud run services update ${{ env.MCP_SERVICE }} \
+            --project ${{ env.PROJECT_ID }} \
+            --region ${{ env.REGION }} \
+            --update-env-vars "^|^FIREBASE_SERVICE_ACCOUNT_JSON=${{ secrets.FIREBASE_SERVICE_ACCOUNT }}|"
 
       - name: Show MCP server URL
         run: |

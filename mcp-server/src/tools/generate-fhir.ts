@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getActiveServices, type Incident, type ReferralService } from "../lib/supabase.js";
+import { getActiveServices, type Incident, type ReferralService } from "../lib/firestore-admin.js";
 import { submitBundleToFHIR, type SHARPContext } from "../lib/fhir-sharp.js";
 import type {
   FHIRBundle,

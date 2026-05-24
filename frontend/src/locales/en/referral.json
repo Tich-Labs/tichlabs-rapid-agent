@@ -20,5 +20,7 @@
   "categories.legal": "Legal Services",
   "categories.legalDesc": "Pro bono lawyers and justice support",
   "counties.kakamega": "Kakamega County",
-  "counties.vihiga": "Vihiga County"
+  "counties.vihiga": "Vihiga County",
+  "search.label": "Search for services",
+  "search.placeholder": "Describe the kind of help needed..."
 }
