@@ -78,6 +78,10 @@ export default function ReferralDirectoryPage() {
 
   const isLoading = services === undefined;
 
+  useEffect(() => {
+    console.log("[referral] services loaded:", services?.length ?? "undefined", "first:", services?.[0]);
+  }, [services]);
+
   const filteredServices = ((services ?? []) as ReferralService[]).filter((s) => {
     if (s.isActive === false || s.is_active === false) return false;
     return true;
