@@ -8,7 +8,9 @@ service cloud.firestore {
     // Firestore user document. Falls back to "volunteer".
     // ──────────────────────────────────────────────────────
     function userRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role ?? 'volunteer';
+      return request.auth != null
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role ?? 'volunteer'
+        : 'volunteer';
     }
 
     function isStaff() {
