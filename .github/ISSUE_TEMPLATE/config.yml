@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions & Discussions
+    url: https://github.com/Tich-Labs/tichlabs-rapid-agent/discussions
+    about: Ask questions, share ideas, or discuss the project with the community.
+  - name: Security Vulnerability
+    url: https://github.com/Tich-Labs/tichlabs-rapid-agent/security/advisories/new
+    about: Report a security vulnerability privately. Do not open a public issue.

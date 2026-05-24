@@ -1,6 +1,6 @@
 # Tich Labs SGBV Case Management — Rapid Agent Hackathon
 
-A trauma-informed, AI-powered SGBV incident management platform. Built with **Gemini 2.5 Flash**, **Google Cloud Agent Builder**, and **MongoDB MCP** for the [Google Cloud Rapid Agent Hackathon](https://rapid-agent.devpost.com/).
+**An autonomous agent that reasons, plans, and executes multi-step SGBV case management.** Built with **Gemini 2.5**, **Google Cloud Agent Builder**, and **MongoDB Atlas MCP** for the [Google Cloud Rapid Agent Hackathon](https://rapid-agent.devpost.com/) — MongoDB partner track.
 
 [![Deploy to Firebase](https://github.com/Tich-Labs/tichlabs-rapid-agent/actions/workflows/deploy-firebase.yml/badge.svg)](https://github.com/Tich-Labs/tichlabs-rapid-agent/actions/workflows/deploy-firebase.yml)
 
@@ -8,6 +8,42 @@ A trauma-informed, AI-powered SGBV incident management platform. Built with **Ge
 **Docs / Interactive guide**: https://sgbv-incidenttracker.web.app/docs/
 **Agent card (A2A)**: https://sgbv-incidenttracker.web.app/docs/agent-card.json
 **MCP server**: https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app/
+
+---
+
+## Origins
+
+This project is the **multi-tenant SaaS evolution** of [yck-incident-tracker](https://github.com/Tich-Labs/yck-incident-tracker), the original single-tenant SGBV case management platform built for YCK in Kakamega & Vihiga counties, Kenya.
+
+| Repo | Purpose | Stack | Tenant Model |
+|------|---------|-------|-------------|
+| [yck-incident-tracker](https://github.com/Tich-Labs/yck-incident-tracker) | Original single-org POC serving YCK | Supabase, Groq, Railway | Single-tenant |
+| **tichlabs-rapid-agent** (this repo) | SaaS platform for any organization | Firebase, Gemini, Cloud Run | Multi-tenant |
+
+The YCK project validated the core workflow (7-stage SGBV case management, AI referral matching, risk assessment, FHIR export). This repo generalizes that architecture — replacing Supabase with Firebase/Firestore, switching from Groq to Gemini 2.5, adding Google Cloud Agent Builder orchestration, and introducing MongoDB Atlas for case analytics.
+
+---
+
+## Beyond the Chatbot — A Real-World Agent
+
+This agent doesn't just answer questions. It **reasons through complex SGBV incidents, plans multi-step responses, and executes tasks** under human oversight.
+
+| Capability | What the Agent Does | Tool(s) Used |
+|------------|-------------------|-------------|
+| **Reason** | Analyzes incident details, threat factors, and vulnerability indicators | `assess_risk` (Gemini 2.5) |
+| **Plan** | Maps a multi-step response: assess → match → document → persist → review | Agent Builder orchestration |
+| **Execute** | Generates FHIR bundles, stores cases, searches history, aggregates trends | `generate_fhir_bundle`, `store_case_document`, `search_case_documents`, `aggregate_cases` |
+| **Ground** | Uses indexed referral pathways, FHIR documentation, and trauma-informed protocols | Agent Builder data store |
+| **Superpower** | MongoDB Atlas MCP — persistent case storage, full-text search, analytics aggregation | MongoDB partner MCP server |
+
+### The Real-World Challenge
+
+In Kakamega & Vihiga counties, Kenya, overstretched youth protection organizations handle hundreds of SGBV cases with limited resources. Caseworkers manually match survivors to services, assess risk by instinct, and lose institutional knowledge when staff turnover occurs.
+
+This agent tackles that challenge by:
+- **Automating the triage pipeline** — risk assessment → service matching → documentation in under 60 seconds
+- **Preserving institutional memory** — every anonymized case is searchable, so new staff can learn from past patterns
+- **Surfacing trends** — real-time aggregation reveals spikes by location, type, or time period so organizations can allocate resources proactively
 
 ---
 
@@ -26,13 +62,13 @@ A trauma-informed, AI-powered SGBV incident management platform. Built with **Ge
 
 ---
 
-## Rapid Agent Hackathon — MongoDB Track
+## Rapid Agent Hackathon — MongoDB Partner Track
 
-This project is submitted to the **MongoDB partner track**. Our agent:
+This project competes in the **MongoDB partner track**. Our agent demonstrates meaningful MCP integration that gives it real superpowers:
 
-- **Moves beyond chat** — performs multi-step SGBV case management
-- **MongoDB MCP superpowers** — case storage, full-text search, analytics aggregation
-- **Built with Gemini** — AI-powered matching, risk assessment, FHIR generation
+- **Moves beyond chat** — plans and executes multi-step SGBV case management, not just Q&A
+- **MongoDB MCP superpowers** — persistent case storage, full-text search across historical cases, and aggregation analytics that surface trends no single caseworker could spot
+- **Powered by Gemini 2.5** — advanced reasoning for risk assessment, referral matching, and FHIR generation
 
 ### Partner MCP Integration: MongoDB
 
@@ -44,8 +80,8 @@ This project is submitted to the **MongoDB partner track**. Our agent:
 
 ### Built With
 
-- **Gemini 2.5 Flash** — primary LLM
-- **Google Cloud Agent Builder** — agent orchestration (`agent-builder.json`)
+- **Gemini 2.5** — primary LLM for reasoning and generation
+- **Google Cloud Agent Builder** — agent orchestration, grounding, and deployment (`agent-builder.json`)
 - **Firebase** — Auth, Firestore DB, Hosting
 - **MongoDB Atlas MCP** — document store, search, and analytics (hackathon partner)
 - **FHIR R4** — interoperable healthcare data exchange
@@ -173,6 +209,22 @@ Required GitHub secrets:
 - [ ] **Seed data** — Create Firestore seed script matching `supabase/seed.sql`.
 - [ ] **Demo video** — Record ~3 minute walkthrough.
 - [ ] **Devpost submission** — Complete submission form.
+
+---
+
+## Hackathon Submission Checklist
+
+| Requirement | Status | Notes |
+|-------------|--------|-------|
+| Hosted project URL | Done | https://sgbv-incidenttracker.web.app |
+| Public open-source repo | Done | https://github.com/Tich-Labs/tichlabs-rapid-agent |
+| Open-source license (detectable in About) | Done | Apache 2.0 — [`LICENSE`](LICENSE) |
+| ~3 minute demo video | **Pending** | Walkthrough of agent capabilities |
+| Partner track selected | Done | MongoDB |
+| Meaningful MCP integration | Done | 3 MongoDB tools: `store_case_document`, `search_case_documents`, `aggregate_cases` |
+| Built with Gemini + Agent Builder | Done | `agent-builder.json` with Gemini 2.5 Flash, grounding, and custom tools |
+| Moves beyond chat (multi-step task execution) | Done | 5-step workflow: assess → match → document → persist → review |
+| Completed Devpost submission form | **Pending** | |
 
 ## License
 
