@@ -23,8 +23,9 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LocaleSwitcher from "@/components/locale-switcher.tsx";
-import { useFirestoreQuery } from "@/hooks/use-firestore-query";
-import { listDocuments } from "@/lib/firestore";
+import { matchServices as mcpMatchServices, type ServiceMatch } from "@/lib/mcp-client";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import { matchServices as mcpMatchServices, type ServiceMatch } from "@/lib/mcp-client";
 
 type CategoryFilter = "health" | "police" | "shelter" | "psychosocial" | "legal" | "hotline" | "economic_empowerment" | null;
@@ -71,16 +72,23 @@ export default function ReferralDirectoryPage() {
     { id: "nairobi" as const, label: t("counties.nairobi") },
   ];
 
-  const { data: services } = useFirestoreQuery(
-    ["firestore", "referral-services"],
-    () => listDocuments<ReferralService>("referral_services")
-  );
-
-  const isLoading = services === undefined;
+  const [services, setServices] = useState<ReferralService[] | undefined>(undefined);
 
   useEffect(() => {
-    console.log("[referral] services loaded:", services?.length ?? "undefined", "first:", services?.[0]);
-  }, [services]);
+    console.log("[referral] fetching...");
+    getDocs(collection(db, "referral_services"))
+      .then((snap) => {
+        const docs = snap.docs.map((d) => ({ _id: d.id, ...d.data() } as ReferralService));
+        console.log("[referral] loaded:", docs.length, "first:", docs[0]);
+        setServices(docs);
+      })
+      .catch((err) => {
+        console.error("[referral] error:", err);
+        setServices([]);
+      });
+  }, []);
+
+  const isLoading = services === undefined;
 
   const filteredServices = ((services ?? []) as ReferralService[]).filter((s) => {
     if (s.isActive === false || s.is_active === false) return false;
