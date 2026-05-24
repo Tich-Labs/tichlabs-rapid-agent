@@ -31,12 +31,12 @@ function chain(obj: any) {
     limit(n: number) {
       const q = query(obj._q ?? collection(db, obj._tbl), fsLimit(n));
       return {
-        then: (resolve: Function) => runQuery(q).then(resolve),
+        then: (resolve: (value: unknown) => void) => runQuery(q).then(resolve),
       };
     },
     single() {
       return {
-        then: (resolve: Function) =>
+        then: (resolve: (value: unknown) => void) =>
           getDocs(obj._q ?? collection(db, obj._tbl)).then((snap) => {
             const docs = snap.docs.map((d: any) => fromSnap(d));
             resolve({ data: docs[0] ?? null, error: null });
@@ -55,7 +55,7 @@ function chain(obj: any) {
           return {
             single() {
               return {
-                then: (resolve: Function) =>
+                then: (resolve: (value: unknown) => void) =>
                   p.then((ref: any) => resolve({ data: { id: ref.id, ...row }, error: null })),
               };
             },
@@ -69,7 +69,7 @@ function chain(obj: any) {
     delete() {
       return this;
     },
-    then: (resolve: Function) => runQuery(obj._q ?? collection(db, obj._tbl)).then(resolve),
+    then: (resolve: (value: unknown) => void) => runQuery(obj._q ?? collection(db, obj._tbl)).then(resolve),
   };
 }
 
@@ -93,7 +93,7 @@ export const supabase = {
         return { error: e };
       }
     },
-    onAuthStateChange: (cb: Function) => {
+    onAuthStateChange: (cb: (event: string, session: unknown) => void) => {
       const unsub = auth.onAuthStateChanged((user) => cb("SIGNED_IN", { user }));
       return { data: { subscription: { unsubscribe: unsub } } };
     },
