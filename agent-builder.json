@@ -21,7 +21,7 @@
       {
         "name": "tichlabs-mcp",
         "description": "Tich Labs SGBV MCP Server — provides incident matching, risk assessment, and FHIR generation tools",
-        "url": "https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app/mcp",
+        "url": "https://tichlabs-sgbv-mcp-740048302235.us-central1.run.app/mcp",
         "transport": "streamable-http",
         "auth": {
           "type": "api_key",
@@ -78,7 +78,7 @@
     },
     "mcpServer": {
       "platform": "Cloud Run",
-      "url": "https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app",
+      "url": "https://tichlabs-sgbv-mcp-740048302235.us-central1.run.app",
       "region": "us-central1",
       "serviceAccount": "tichlabs-sgbv-mcp"
     },
