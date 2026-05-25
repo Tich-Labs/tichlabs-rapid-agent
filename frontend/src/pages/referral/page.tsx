@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Badge } from "@/components/ui/badge.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { cn } from "@/lib/utils.ts";
@@ -7,18 +6,20 @@ import {
   Heart,
   Shield,
   Home,
-  Brain,
+  Stethoscope,
   Scale,
-  Phone,
-  MapPin,
+  PhoneCall,
   ArrowLeft,
-  Info,
   AlertTriangle,
   Search,
-  Sparkles,
   Loader2,
-  Headphones,
   Briefcase,
+  SearchX,
+  X,
+  MapPin,
+  Filter,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -26,6 +27,8 @@ import LocaleSwitcher from "@/components/locale-switcher.tsx";
 import { matchServices as mcpMatchServices, type ServiceMatch } from "@/lib/mcp-client";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { ServiceCard, categoryColor, CATEGORY_LABEL, type CategoryConfig, type ServiceCardData } from "@/components/referral/ServiceCard.tsx";
+import { QuickPickCard } from "@/components/referral/QuickPickCard.tsx";
 
 type CategoryFilter = "health" | "police" | "shelter" | "psychosocial" | "legal" | "hotline" | "economic_empowerment" | null;
 type CountyFilter = "kakamega" | "vihiga" | "nairobi" | null;
@@ -43,11 +46,38 @@ interface ReferralService {
   is_active?: boolean;
 }
 
+const CATEGORIES: (CategoryConfig & { id: CategoryFilter extends infer T ? T : never; subtitle: string })[] = [
+  { id: "health" as const, label: "Medical care", subtitle: "Hospitals, clinics, treatment", icon: Stethoscope, color: categoryColor("health") },
+  { id: "shelter" as const, label: "Safe shelter", subtitle: "Emergency housing, rescue centres", icon: Home, color: categoryColor("shelter") },
+  { id: "psychosocial" as const, label: "Counselling", subtitle: "Emotional support, trauma care", icon: Heart, color: categoryColor("psychosocial") },
+  { id: "hotline" as const, label: "Hotlines", subtitle: "Free crisis lines, 24/7 support", icon: PhoneCall, color: categoryColor("hotline") },
+  { id: "police" as const, label: "Police", subtitle: "Report incident, get protection", icon: Shield, color: categoryColor("police") },
+  { id: "legal" as const, label: "Legal help", subtitle: "Free legal aid, justice support", icon: Scale, color: categoryColor("legal") },
+  { id: "economic_empowerment" as const, label: "Livelihood support", subtitle: "Skills training, financial independence", icon: Briefcase, color: categoryColor("economic_empowerment") },
+];
+
+const QUICK_PICK_IDS = ["health", "shelter", "psychosocial", "hotline"];
+
+const COUNTIES = ["kakamega", "vihiga", "nairobi"] as const;
+
+const SEARCH_SUGGESTIONS = [
+  "I need a safe place to stay",
+  "I need medical attention",
+  "Someone to talk to",
+  "I want to report an incident",
+];
+
+function normalizePhoneForFreeCall(phone: string): boolean {
+  const cleaned = phone.replace(/\s/g, "");
+  return /^(0800|116|1195|1199|999|112|1508|1519|1190|1198|21661)/.test(cleaned) || /^\d{1,5}$/.test(cleaned);
+}
+
 export default function ReferralDirectoryPage() {
   const navigate = useNavigate();
   const { lng } = useParams<{ lng: string }>();
   const { t } = useTranslation("referral");
   const { t: tc } = useTranslation("common");
+
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>(null);
   const [selectedCounty, setSelectedCounty] = useState<CountyFilter>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,36 +85,21 @@ export default function ReferralDirectoryPage() {
   const [aiLoading, setAiLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
-  const CATEGORIES = [
-    { id: "health" as const, label: t("categories.health"), icon: Heart, color: "bg-red-100 text-red-700 border-red-200", description: t("categories.healthDesc") },
-    { id: "police" as const, label: t("categories.police"), icon: Shield, color: "bg-blue-100 text-blue-700 border-blue-200", description: t("categories.policeDesc") },
-    { id: "shelter" as const, label: t("categories.shelter"), icon: Home, color: "bg-amber-100 text-amber-700 border-amber-200", description: t("categories.shelterDesc") },
-    { id: "psychosocial" as const, label: t("categories.psychosocial"), icon: Brain, color: "bg-purple-100 text-purple-700 border-purple-200", description: t("categories.psychosocialDesc") },
-    { id: "legal" as const, label: t("categories.legal"), icon: Scale, color: "bg-green-100 text-green-700 border-green-200", description: t("categories.legalDesc") },
-    { id: "hotline" as const, label: t("categories.hotline"), icon: Headphones, color: "bg-pink-100 text-pink-700 border-pink-200", description: t("categories.hotlineDesc") },
-    { id: "economic_empowerment" as const, label: t("categories.economicEmpowerment"), icon: Briefcase, color: "bg-teal-100 text-teal-700 border-teal-200", description: t("categories.economicEmpowermentDesc") },
-  ];
-
-  const COUNTIES = [
-    { id: "kakamega" as const, label: t("counties.kakamega") },
-    { id: "vihiga" as const, label: t("counties.vihiga") },
-    { id: "nairobi" as const, label: t("counties.nairobi") },
-  ];
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [emergencyExpanded, setEmergencyExpanded] = useState(false);
+  const [showMorePicks, setShowMorePicks] = useState(false);
 
   const [services, setServices] = useState<ReferralService[] | undefined>(undefined);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     setLoadError(null);
-    console.log("[referral] fetching...");
     getDocs(collection(db, "referral_services"))
       .then((snap) => {
         const docs = snap.docs.map((d) => ({ _id: d.id, ...d.data() } as ReferralService));
-        console.log("[referral] loaded:", docs.length, "first:", docs[0]);
         setServices(docs);
       })
       .catch((err) => {
-        console.error("[referral] error:", err);
         setLoadError(err instanceof Error ? err.message : String(err));
         setServices([]);
       });
@@ -101,16 +116,15 @@ export default function ReferralDirectoryPage() {
     ? filteredServices.filter((s) => s.county?.toLowerCase() === selectedCounty)
     : filteredServices;
 
+  const categoryFiltered = selectedCategory
+    ? countyFiltered.filter((s) => s.category === selectedCategory)
+    : countyFiltered;
+
   const handleSearch = useCallback(
     (query: string) => {
       setSearchQuery(query);
       if (debounceRef.current) clearTimeout(debounceRef.current);
-
-      if (query.length < 3) {
-        setAiMatches(null);
-        return;
-      }
-
+      if (query.length < 3) { setAiMatches(null); return; }
       debounceRef.current = setTimeout(async () => {
         try {
           setAiLoading(true);
@@ -121,11 +135,8 @@ export default function ReferralDirectoryPage() {
             limit: 10,
           });
           setAiMatches(result.matches ?? []);
-        } catch {
-          setAiMatches(null);
-        } finally {
-          setAiLoading(false);
-        }
+        } catch { setAiMatches(null); }
+        finally { setAiLoading(false); }
       }, 600);
     },
     [selectedCategory, selectedCounty]
@@ -136,366 +147,314 @@ export default function ReferralDirectoryPage() {
   }, []);
 
   const displayServices = aiMatches && aiMatches.length > 0
-    ? aiMatches.map((m): ReferralService & { _aiMatch?: ServiceMatch } => ({
+    ? aiMatches.map((m): ServiceCardData => ({
         _id: m.serviceId,
-        id: m.serviceId,
         name: m.name,
         category: m.category,
         county: m.county,
         description: m.description,
         phone: m.phone,
-        address: m.address,
         _aiMatch: m,
       }))
-    : countyFiltered;
+    : categoryFiltered.map((s): ServiceCardData => ({
+        _id: s._id,
+        name: s.name,
+        category: s.category,
+        county: s.county,
+        description: s.description,
+        phone: s.phone,
+      }));
 
   const aiActive = aiMatches !== null && aiMatches.length > 0;
-  const knownCategoryServices = (displayServices as ReferralService[]).filter((s) =>
-    CATEGORIES.some((c) => c.id === s.category)
-  );
-  const otherServices = (displayServices as ReferralService[]).filter(
-    (s) => !CATEGORIES.some((c) => c.id === s.category)
-  );
+  const hasActiveFilters = selectedCategory !== null || selectedCounty !== null;
+  const filterCount = (selectedCategory ? 1 : 0) + (selectedCounty ? 1 : 0);
+
+  const freeCallCount = displayServices.filter((s) => s.phone && normalizePhoneForFreeCall(s.phone)).length;
+
+  const visiblePicks = showMorePicks ? CATEGORIES : CATEGORIES.filter((c) => QUICK_PICK_IDS.includes(c.id));
+
+  function handleCategoryPick(catId: string) {
+    setSelectedCategory(selectedCategory === catId ? null : catId);
+    setAiMatches(null);
+  }
+
+  function clearAll() {
+    setSelectedCategory(null);
+    setSelectedCounty(null);
+    setSearchQuery("");
+    setAiMatches(null);
+  }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 cursor-pointer"
-            onClick={() => navigate(`/${lng}`)}
-          >
+        <div className="max-w-5xl mx-auto px-3 py-2.5 flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => navigate(`/${lng}`)}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <div className="flex-1">
-            <h1 className="text-sm font-bold leading-tight">{t("header.title")}</h1>
-          </div>
+          <h1 className="flex-1 text-base font-bold leading-tight truncate">Find Help</h1>
+          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-sm font-medium bg-muted border border-border">
+            {displayServices.length}
+          </span>
           <LocaleSwitcher className="hidden sm:inline-flex" />
-          <Badge variant="secondary" className="text-sm">
-            {aiActive ? `${aiMatches!.length}` : countyFiltered.length} {tc("common.services")}
-          </Badge>
         </div>
       </header>
 
-      {/* Emergency banner */}
-      <div className="bg-destructive/10 border-b border-destructive/20 px-4 py-3">
-        <div className="max-w-5xl mx-auto flex items-start gap-2.5">
-          <AlertTriangle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-destructive leading-relaxed">
-            <strong>{t("emergency.title")}</strong>{" "}
-            <span dangerouslySetInnerHTML={{ __html: t("emergency.body") }} />
-          </div>
+      {/* Emergency — collapsed row, tap to expand */}
+      <button
+        onClick={() => setEmergencyExpanded(!emergencyExpanded)}
+        className="w-full flex items-center gap-2 px-4 py-2.5 bg-destructive/10 border-b border-destructive/20 text-sm text-destructive cursor-pointer"
+        aria-expanded={emergencyExpanded}
+      >
+        <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+        <span className="flex-1 text-left font-medium">
+          Emergency? Police <a href="tel:999" className="underline">999</a> · GBV Helpline <a href="tel:1195" className="underline">1195</a>
+        </span>
+        {emergencyExpanded ? <ChevronUp className="h-4 w-4 flex-shrink-0" /> : <ChevronDown className="h-4 w-4 flex-shrink-0" />}
+      </button>
+      {emergencyExpanded && (
+        <div className="px-4 py-3 bg-destructive/5 border-b border-destructive/20 text-sm text-destructive">
+          <p className="font-semibold mb-1">In immediate danger?</p>
+          <p>Call <a href="tel:999" className="underline font-medium">999</a> (police) or <a href="tel:1195" className="underline font-medium">1195</a> (GBV helpline).</p>
+          <p className="mt-1 text-destructive/70">Free · 24/7 · Confidential · No questions asked</p>
+          <p className="mt-2 text-destructive/70 text-sm">
+            If you cannot speak: text a trusted person, or visit the nearest police station or hospital.
+          </p>
         </div>
+      )}
+
+      {/* Reassurance line */}
+      <div className="text-center px-4 py-2.5 text-sm text-muted-foreground bg-muted/20 border-b border-border">
+        You are not alone. These services are here to help. No sign-in required. Everything is anonymous.
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-6">
-        {/* Pathway info box */}
-        <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl border border-primary/20 bg-primary/5 text-primary text-sm mb-6">
-          <Info className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <div className="leading-relaxed text-sm">
-            <strong>{t("pathway.title")}</strong> {t("pathway.body")}
+      <div className="max-w-5xl mx-auto px-3 py-5">
+        {/* ─── SEARCH ─── */}
+        <div className="mb-5">
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="What kind of help do you need?"
+              inputMode="text"
+              autoComplete="off"
+              enterKeyHint="search"
+              className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-border bg-card text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            {aiLoading && (
+              <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary animate-spin" />
+            )}
           </div>
+
+          {/* Search suggestion chips */}
+          {searchQuery.length === 0 && !aiActive && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              <span className="text-sm text-muted-foreground self-center">Try:</span>
+              {SEARCH_SUGGESTIONS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => handleSearch(s)}
+                  className="px-3 py-1.5 rounded-full text-sm border border-border bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer transition-colors"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Filters */}
-        <div className="space-y-4 mb-6">
-          {/* County filter */}
-          <div>
-            <p className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("filter.county")}</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedCounty(null)}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
-                  selectedCounty === null
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
-                )}
-              >
-                {tc("common.allCounties")}
-              </button>
-              {COUNTIES.map((county) => (
-                <button
-                  key={county.id}
-                  onClick={() => setSelectedCounty(selectedCounty === county.id ? null : county.id)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
-                    selectedCounty === county.id
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
-                  )}
-                >
-                  {county.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Category filter */}
-          <div>
-            <p className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("filter.serviceType")}</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
-                  selectedCategory === null
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
-                )}
-              >
-                {tc("common.allTypes")}
-              </button>
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(selectedCategory === cat.id ? null : cat.id)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
-                    selectedCategory === cat.id
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
-                  )}
-                >
-                  <cat.icon className="h-3 w-3 inline mr-1" />
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Search input */}
-          <div>
-            <p className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("search.label")}</p>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder={t("search.placeholder")}
-                className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        {/* ─── QUICK PICKS ─── */}
+        <div className="mb-4">
+          <div className="grid grid-cols-2 gap-3">
+            {visiblePicks.map((cat) => (
+              <QuickPickCard
+                key={cat.id}
+                icon={cat.icon}
+                label={cat.label}
+                subtitle={cat.subtitle}
+                colorBar={cat.color.bar}
+                selected={selectedCategory === cat.id}
+                onClick={() => handleCategoryPick(cat.id)}
               />
-              {aiLoading && (
-                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* AI label */}
-        {aiActive && (
-          <div className="flex items-center gap-1.5 mb-3 text-sm text-primary">
-            <Sparkles className="h-3.5 w-3.5" />
-            Matched by Gemini 2.5
-          </div>
-        )}
-
-        {loadError && (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive mb-4">
-            Unable to load referral services: {loadError}
-          </div>
-        )}
-
-        {/* Results */}
-        {isLoading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-20 w-full rounded-xl" />
             ))}
           </div>
-        ) : displayServices.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
-              <Search className="h-5 w-5 text-muted-foreground" />
+          <button
+            onClick={() => setShowMorePicks(!showMorePicks)}
+            className="mt-3 text-sm text-primary hover:underline cursor-pointer"
+          >
+            {showMorePicks ? "− Show fewer" : "+ Also show: Police, Legal help, Livelihood support"}
+          </button>
+        </div>
+
+        {/* ─── COUNTY ─── */}
+        <div className="flex items-center gap-2 mb-4">
+          <MapPin className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+          {COUNTIES.map((c) => (
+            <button
+              key={c}
+              onClick={() => { setSelectedCounty(selectedCounty === c ? null : c); setAiMatches(null); }}
+              className={cn(
+                "px-3 py-1 rounded-full text-sm transition-colors cursor-pointer capitalize",
+                selectedCounty === c
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              )}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+
+        {/* Mobile filter button — only when filters are active */}
+        {filterCount > 0 && (
+          <div className="md:hidden mb-3">
+            <button
+              onClick={() => setMobileFilterOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card text-sm font-medium cursor-pointer hover:bg-muted/50 transition-colors"
+            >
+              <Filter className="h-4 w-4" />
+              Filters · {filterCount}
+            </button>
+          </div>
+        )}
+
+        {/* ─── RESULTS HEADER ─── */}
+        <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
+          {aiActive ? (
+            <span>{displayServices.length} results for your search</span>
+          ) : hasActiveFilters ? (
+            <>
+              <span>
+                {displayServices.length} {CATEGORY_LABEL[selectedCategory!] ?? "service"}{displayServices.length !== 1 ? "s" : ""}
+                {selectedCounty && ` in ${selectedCounty.charAt(0).toUpperCase() + selectedCounty.slice(1)}`}
+              </span>
+              <button onClick={clearAll} className="text-primary hover:underline cursor-pointer text-sm">Clear</button>
+            </>
+          ) : (
+            <span>{displayServices.length} services near you · {freeCallCount} free helplines</span>
+          )}
+        </div>
+
+        {/* ─── ERROR ─── */}
+        {loadError && (
+          <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive mb-4">
+            Unable to load services. Please try again, or call <a href="tel:1195" className="underline font-medium">1195</a> for immediate help.
+          </div>
+        )}
+
+        {/* ─── LOADING ─── */}
+        {isLoading && (
+          <div>
+            <p className="text-sm text-muted-foreground text-center mb-4">Finding services that match your needs...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-xl border border-border p-4 space-y-3">
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-12 w-full rounded-xl" />
+                </div>
+              ))}
             </div>
-            <p className="text-sm font-medium">{t("empty.title")}</p>
-            <p className="text-sm text-muted-foreground mt-1">{t("empty.subtitle")}</p>
           </div>
-        ) : aiActive ? (
-          <div className="grid gap-2">
-            {(displayServices as (ReferralService & { _aiMatch?: ServiceMatch })[]).map((service) => {
-              const m = service._aiMatch;
-              const catCfg = CATEGORIES.find((c) => c.id === service.category);
-              const Icon = catCfg?.icon ?? Info;
-              const colorClasses = catCfg?.color ?? "bg-muted text-muted-foreground border-border";
-              return (
-                <div
-                  key={service._id}
-                  className="flex items-start gap-3 p-3 rounded-xl border border-border bg-card hover:border-primary/20 transition-colors"
-                >
-                  <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5", colorClasses.split(" ")[0])}>
-                    <Icon className={cn("h-4 w-4", colorClasses.split(" ")[1])} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium truncate">{service.name}</p>
-                      <Badge variant="secondary" className="text-sm capitalize flex-shrink-0">
-                        {service.county}
-                      </Badge>
-                      {m && (
-                        <span className="text-sm text-primary font-medium flex-shrink-0">
-                          {m.relevanceScore}/100
-                        </span>
-                      )}
-                    </div>
-                    {service.description && (
-                      <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{service.description}</p>
-                    )}
-                    {m?.reasoning && (
-                      <p className="text-sm text-primary/70 mt-0.5 italic">{m.reasoning}</p>
-                    )}
-                    <div className="flex items-center gap-3 mt-1.5">
-                      {service.phone && (
-                        <a
-                          href={`tel:${service.phone.replace(/\s/g, "")}`}
-                          className="flex items-center gap-1 text-sm text-primary font-medium hover:underline cursor-pointer"
-                        >
-                          <Phone className="h-3 w-3" />
-                          {service.phone}
-                        </a>
-                      )}
-                      {service.address && (
-                        <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          {service.address}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+        )}
+
+        {/* ─── EMPTY ─── */}
+        {!isLoading && displayServices.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4">
+              <SearchX className="h-10 w-10 text-muted-foreground/50" />
+            </div>
+            <p className="text-base font-semibold">Nothing matched your search</p>
+            <p className="text-sm text-muted-foreground mt-1 mb-4">
+              Try describing your situation differently, or browse all 176 services below
+            </p>
+            <Button variant="outline" onClick={clearAll} className="cursor-pointer">
+              Browse all services
+            </Button>
           </div>
-        ) : (
-          <div className="space-y-3">
-            {CATEGORIES.filter((cat) => !selectedCategory || selectedCategory === cat.id).map((cat) => {
-              const catServices = knownCategoryServices.filter((s) => s.category === cat.id);
-              if (catServices.length === 0) return null;
-              const CatIcon = cat.icon;
+        )}
 
-              return (
-                <div key={cat.id} className="mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", cat.color.split(" ")[0])}>
-                      <CatIcon className={cn("h-3.5 w-3.5", cat.color.split(" ")[1])} />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-semibold">{cat.label}</h3>
-                      <p className="text-sm text-muted-foreground">{cat.description}</p>
-                    </div>
-                    <Badge variant="secondary" className="ml-auto text-sm">
-                      {catServices.length}
-                    </Badge>
-                  </div>
+        {/* ─── CARD GRID ─── */}
+        {!isLoading && displayServices.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {displayServices.map((service) => (
+              <ServiceCard
+                key={service._id}
+                service={service}
+                categoryCfg={CATEGORIES.find((c) => c.id === service.category)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
-                  <div className="grid gap-2">
-                    {catServices.map((service) => (
-                      <div
-                        key={service._id}
-                        className="flex items-start gap-3 p-3 rounded-xl border border-border bg-card hover:border-primary/20 transition-colors"
-                      >
-                        <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5", cat.color.split(" ")[0])}>
-                          <CatIcon className={cn("h-4 w-4", cat.color.split(" ")[1])} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-sm font-medium truncate">{service.name}</p>
-                            <Badge variant="secondary" className="text-sm capitalize flex-shrink-0">
-                              {service.county}
-                            </Badge>
-                          </div>
-                          {service.description && (
-                            <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{service.description}</p>
-                          )}
-                          <div className="flex items-center gap-3 mt-1.5">
-                            {service.phone && (
-                              <a
-                                href={`tel:${service.phone.replace(/\s/g, "")}`}
-                                className="flex items-center gap-1 text-sm text-primary font-medium hover:underline cursor-pointer"
-                              >
-                                <Phone className="h-3 w-3" />
-                                {service.phone}
-                              </a>
-                            )}
-                            {service.address && (
-                              <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                                <MapPin className="h-3 w-3" />
-                                {service.address}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-
-            {otherServices.length > 0 && (
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-muted text-muted-foreground">
-                    <Info className="h-3.5 w-3.5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold">Other Services</h3>
-                    <p className="text-sm text-muted-foreground">Services with a category that is not currently mapped to the directory filters.</p>
-                  </div>
-                  <Badge variant="secondary" className="ml-auto text-sm">
-                    {otherServices.length}
-                  </Badge>
-                </div>
-
-                <div className="grid gap-2">
-                  {otherServices.map((service) => (
-                    <div
-                      key={service._id}
-                      className="flex items-start gap-3 p-3 rounded-xl border border-border bg-card hover:border-primary/20 transition-colors"
+      {/* ─── MOBILE BOTTOM SHEET ─── */}
+      {mobileFilterOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileFilterOpen(false)} />
+          <div className="absolute bottom-0 left-0 right-0 bg-background rounded-t-2xl max-h-[70vh] overflow-y-auto shadow-xl">
+            <div className="sticky top-0 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
+              <h2 className="font-semibold">Filters</h2>
+              <button onClick={() => setMobileFilterOpen(false)} className="p-1 cursor-pointer">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-4 space-y-5">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-2">County</p>
+                <div className="flex flex-wrap gap-2">
+                  {COUNTIES.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => setSelectedCounty(selectedCounty === c ? null : c)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer capitalize",
+                        selectedCounty === c
+                          ? "bg-primary/10 text-primary border-primary/30"
+                          : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
+                      )}
                     >
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 bg-muted text-muted-foreground">
-                        <Info className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium truncate">{service.name}</p>
-                          <Badge variant="secondary" className="text-sm capitalize flex-shrink-0">
-                            {service.county}
-                          </Badge>
-                        </div>
-                        {service.description && (
-                          <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{service.description}</p>
-                        )}
-                        <div className="flex items-center gap-3 mt-1.5">
-                          {service.phone && (
-                            <a
-                              href={`tel:${service.phone.replace(/\s/g, "")}`}
-                              className="flex items-center gap-1 text-sm text-primary font-medium hover:underline cursor-pointer"
-                            >
-                              <Phone className="h-3 w-3" />
-                              {service.phone}
-                            </a>
-                          )}
-                          {service.address && (
-                            <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                              <MapPin className="h-3 w-3" />
-                              {service.address}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                      {c}
+                    </button>
                   ))}
                 </div>
               </div>
-            )}
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-2">Service type</p>
+                <div className="flex flex-wrap gap-2">
+                  {CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => handleCategoryPick(cat.id)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
+                        selectedCategory === cat.id
+                          ? "bg-primary/10 text-primary border-primary/30"
+                          : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
+                      )}
+                    >
+                      <cat.icon className="h-3 w-3 inline mr-1" />
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="sticky bottom-0 bg-background border-t border-border px-4 py-3 flex items-center gap-3">
+              <button onClick={clearAll} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
+                Clear all
+              </button>
+              <Button onClick={() => setMobileFilterOpen(false)} className="flex-1 cursor-pointer">
+                Show results
+              </Button>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
