@@ -50,11 +50,28 @@ const STATUS_LABELS: Record<string, string> = {
 
 function AuditLogList() {
   const navigate = useNavigate();
-  const { results, status, loadMore } = usePaginatedQuery(
-    null,
-    {},
-    { initialNumItems: 30 }
-  );
+  const { data: results, loading, error, fetchNextPage, hasMore, isFetchingNextPage } = usePaginatedQuery({
+    collectionName: "audit_logs",
+    pageSize: 30,
+    orderByField: "createdAt",
+    orderDirection: "desc",
+  });
+
+  const status = loading ? "LoadingFirstPage" : hasMore ? "CanLoadMore" : "Exhausted";
+
+  if (error) {
+    return (
+      <div className="px-4">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon"><ScrollText /></EmptyMedia>
+            <EmptyTitle>Failed to load audit log</EmptyTitle>
+            <EmptyDescription>{error.message}</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </div>
+    );
+  }
 
   if (status === "LoadingFirstPage") {
     return (
@@ -98,8 +115,8 @@ function AuditLogList() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                    <Badge variant="secondary" className="text-xs">{config.label}</Badge>
-                    <span className="text-xs text-muted-foreground font-mono">#{refId}</span>
+                    <Badge variant="secondary" className="text-sm">{config.label}</Badge>
+                    <span className="text-sm text-muted-foreground font-mono">#{refId}</span>
                   </div>
                   <p className="text-sm text-foreground truncate">
                     <span className="font-medium">{entry.performedByName}</span>
@@ -127,7 +144,7 @@ function AuditLogList() {
                       <span className="text-muted-foreground"> closed this incident</span>
                     )}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-sm text-muted-foreground mt-0.5">
                     {format(new Date(entry.timestamp), "MMM d, yyyy 'at' h:mm a")}
                   </p>
                 </div>
@@ -139,8 +156,8 @@ function AuditLogList() {
 
       {status === "CanLoadMore" && (
         <div className="flex justify-center mt-4">
-          <Button variant="secondary" size="sm" onClick={() => loadMore(30)}>
-            Load more
+          <Button variant="secondary" size="sm" onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+            {isFetchingNextPage ? "Loading..." : "Load more"}
           </Button>
         </div>
       )}
@@ -162,7 +179,7 @@ export default function AuditLogPage() {
           <ScrollText className="h-5 w-5 text-primary" />
           <div>
             <h1 className="text-base font-bold leading-tight">Audit Log</h1>
-            <p className="text-xs text-muted-foreground">All system activity</p>
+            <p className="text-sm text-muted-foreground">All system activity</p>
           </div>
         </div>
       </div>

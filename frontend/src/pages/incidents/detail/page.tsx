@@ -88,7 +88,7 @@ function DetailRow({ icon: Icon, label, value }: { icon: React.ElementType; labe
         <Icon className="h-4 w-4 text-muted-foreground" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-sm text-muted-foreground">{label}</p>
         <p className="text-sm font-medium text-foreground break-words">{value}</p>
       </div>
     </div>
@@ -98,7 +98,7 @@ function DetailRow({ icon: Icon, label, value }: { icon: React.ElementType; labe
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="px-4 pt-6 mb-5">
-      <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+      <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
         {title}
       </h2>
       <div className="rounded-xl border border-border bg-card overflow-hidden">
@@ -154,7 +154,7 @@ function WorkflowProgress({ status, isEscalated }: { status: string; isEscalated
         {isEscalated && (
           <div className="flex items-center gap-1.5 mb-3 px-2 py-1.5 rounded-lg bg-red-50 border border-red-200">
             <AlertTriangle className="h-3.5 w-3.5 text-red-600 flex-shrink-0" />
-            <span className="text-xs font-semibold text-red-700">Escalated — Senior review required</span>
+            <span className="text-sm font-semibold text-red-700">Escalated — Senior review required</span>
           </div>
         )}
         <div className="flex items-center gap-0">
@@ -166,7 +166,7 @@ function WorkflowProgress({ status, isEscalated }: { status: string; isEscalated
                 <div className="flex flex-col items-center gap-1">
                   <div
                     className={cn(
-                      "w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold transition-colors",
+                      "w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition-colors",
                       done
                         ? "bg-primary text-primary-foreground"
                         : active
@@ -180,7 +180,7 @@ function WorkflowProgress({ status, isEscalated }: { status: string; isEscalated
                   </div>
                   <span
                     className={cn(
-                      "text-[10px] font-medium whitespace-nowrap",
+                      "text-sm font-medium whitespace-nowrap",
                       active ? "text-foreground" : done ? "text-primary" : "text-muted-foreground/50"
                     )}
                   >
@@ -254,7 +254,7 @@ function AuditTimeline({ incidentId, userRole }: { incidentId: string; userRole:
     <div className="px-4 mb-5">
       <div className="flex items-center gap-2 mb-3">
         <ScrollText className="h-4 w-4 text-muted-foreground" />
-        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
           Activity Timeline
         </h2>
       </div>
@@ -283,7 +283,7 @@ function AuditTimeline({ incidentId, userRole }: { incidentId: string; userRole:
                     {entry.action === "resolved" && <span className="text-green-700"> resolved</span>}
                     {entry.action === "closed" && <span className="text-muted-foreground"> closed</span>}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-sm text-muted-foreground mt-0.5">
                     {format(new Date(entry.timestamp), "MMM d, yyyy 'at' h:mm a")}
                   </p>
                 </div>
@@ -434,7 +434,7 @@ function WorkflowPanel({
 
   return (
     <div className="w-full px-4 pt-6 mb-5">
-      <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+      <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
         Workflow Actions
       </h2>
 
@@ -449,7 +449,7 @@ function WorkflowPanel({
             <ArrowRightCircle className="h-5 w-5 text-primary flex-shrink-0" />
             <div>
               <p className="text-sm font-semibold">Start PFA</p>
-              <p className="text-xs text-muted-foreground">Begin Psychosocial First Aid and safety planning</p>
+              <p className="text-sm text-muted-foreground">Begin Psychosocial First Aid and safety planning</p>
             </div>
           </button>
         )}
@@ -463,7 +463,7 @@ function WorkflowPanel({
             <ArrowRightCircle className="h-5 w-5 text-amber-600 flex-shrink-0" />
             <div>
               <p className="text-sm font-semibold">Submit for Review</p>
-              <p className="text-xs text-muted-foreground">Request senior staff review</p>
+              <p className="text-sm text-muted-foreground">Request senior staff review</p>
             </div>
           </button>
         )}
@@ -515,7 +515,7 @@ function WorkflowPanel({
                 <ShieldAlert className="h-5 w-5 text-red-600 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-red-800">Escalate Incident</p>
-                  <p className="text-xs text-red-600">Mark as urgent — notifies senior staff</p>
+                  <p className="text-sm text-red-600">Mark as urgent — notifies senior staff</p>
                 </div>
               </button>
             )}
@@ -530,7 +530,7 @@ function WorkflowPanel({
                 <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-green-800">Mark as Resolved</p>
-                  <p className="text-xs text-green-600">Case has been addressed</p>
+                  <p className="text-sm text-green-600">Case has been addressed</p>
                 </div>
               </button>
             )}
@@ -545,7 +545,7 @@ function WorkflowPanel({
                 <XCircle className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold">Close Case</p>
-                  <p className="text-xs text-muted-foreground">Archive this incident</p>
+                  <p className="text-sm text-muted-foreground">Archive this incident</p>
                 </div>
               </button>
             )}
@@ -620,7 +620,7 @@ function RiskAssessmentCard({ incident }: { incident: Record<string, any> }) {
 
       <div className="grid sm:grid-cols-2 gap-4 mb-4">
         <div>
-          <p className="text-xs text-muted-foreground mb-1.5">Risk Score</p>
+          <p className="text-sm text-muted-foreground mb-1.5">Risk Score</p>
           <div className="flex items-center gap-3">
             <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
               <div
@@ -633,14 +633,14 @@ function RiskAssessmentCard({ incident }: { incident: Record<string, any> }) {
         </div>
         <div className="flex items-center gap-3">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Severity</p>
-            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full border", sev.color, sev.bg, sev.border)}>
+            <p className="text-sm text-muted-foreground mb-1">Severity</p>
+            <span className={cn("text-sm font-medium px-2 py-0.5 rounded-full border", sev.color, sev.bg, sev.border)}>
               {sev.label}
             </span>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Urgency</p>
-            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full border", urg.color, urg.bg, urg.border)}>
+            <p className="text-sm text-muted-foreground mb-1">Urgency</p>
+            <span className={cn("text-sm font-medium px-2 py-0.5 rounded-full border", urg.color, urg.bg, urg.border)}>
               {urg.label}
             </span>
           </div>
@@ -649,7 +649,7 @@ function RiskAssessmentCard({ incident }: { incident: Record<string, any> }) {
 
       {riskFactors.length > 0 && (
         <div className="mb-3">
-          <p className="text-xs font-medium text-muted-foreground mb-1.5">Risk Factors</p>
+          <p className="text-sm font-medium text-muted-foreground mb-1.5">Risk Factors</p>
           <ul className="space-y-1">
             {riskFactors.map((f, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-foreground">
@@ -663,7 +663,7 @@ function RiskAssessmentCard({ incident }: { incident: Record<string, any> }) {
 
       {recommendedActions.length > 0 && (
         <div className="mb-3">
-          <p className="text-xs font-medium text-muted-foreground mb-1.5">Recommended Actions</p>
+          <p className="text-sm font-medium text-muted-foreground mb-1.5">Recommended Actions</p>
           <ol className="space-y-1 list-decimal list-inside">
             {recommendedActions.map((a, i) => (
               <li key={i} className="text-sm text-foreground">{a}</li>
@@ -672,7 +672,7 @@ function RiskAssessmentCard({ incident }: { incident: Record<string, any> }) {
         </div>
       )}
 
-      <p className="text-[10px] text-muted-foreground mt-3">
+      <p className="text-sm text-muted-foreground mt-3">
         Assessed by Gemini 2.5 via Tich Labs MCP
         {assessedAt && <span> · {format(new Date(assessedAt), "MMM d, yyyy 'at' h:mm a")}</span>}
       </p>
@@ -737,11 +737,11 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
         </Button>
         <div className="flex-1 min-w-0">
           <h1 className="text-sm font-bold truncate">{typeLabel}</h1>
-          <p className="text-xs text-muted-foreground">Ref #{refId}</p>
+          <p className="text-sm text-muted-foreground">Ref #{refId}</p>
         </div>
         <span
           className={cn(
-            "text-xs font-medium px-2 py-0.5 rounded-full border flex-shrink-0",
+            "text-sm font-medium px-2 py-0.5 rounded-full border flex-shrink-0",
             statusConfig.className
           )}
         >
@@ -758,29 +758,29 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
       <div className="mt-4 rounded-xl border border-border bg-card p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Case summary</p>
+            <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Case summary</p>
             <p className="mt-2 text-sm font-medium text-foreground">Key incident details and next step guidance.</p>
           </div>
-          <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full border", statusConfig.className)}>
+          <span className={cn("text-sm font-medium px-2 py-0.5 rounded-full border", statusConfig.className)}>
             {statusConfig.label}
           </span>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-border bg-background p-3">
-            <p className="text-xs text-muted-foreground">Assigned</p>
+            <p className="text-sm text-muted-foreground">Assigned</p>
             <p className="text-sm font-medium text-foreground">{incident.assigneeName ?? "Unassigned"}</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3">
-            <p className="text-xs text-muted-foreground">Logged</p>
+            <p className="text-sm text-muted-foreground">Logged</p>
             <p className="text-sm font-medium text-foreground">{format(new Date(incident.createdAt), "MMM d, yyyy")}</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3">
-            <p className="text-xs text-muted-foreground">Location</p>
+            <p className="text-sm text-muted-foreground">Location</p>
             <p className="text-sm font-medium text-foreground">{incident.location}</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3">
             <div className="flex items-center gap-2">
-              <p className="text-xs text-muted-foreground">Next step</p>
+              <p className="text-sm text-muted-foreground">Next step</p>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button className="inline-flex items-center justify-center rounded-full bg-muted/80 p-1 text-muted-foreground hover:bg-muted">
@@ -804,7 +804,7 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
           <div>
             <p className="text-sm font-semibold text-red-800">Escalated</p>
             {incident.escalatedAt && (
-              <p className="text-xs text-red-600">
+              <p className="text-sm text-red-600">
                 {format(new Date(incident.escalatedAt), "MMM d, yyyy 'at' h:mm a")}
               </p>
             )}
@@ -820,7 +820,7 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
             <Brain className="h-5 w-5 text-amber-600 animate-pulse" />
             <div>
               <p className="text-sm font-semibold text-amber-800">Gemini 2.5 is assessing this incident…</p>
-              <p className="text-xs text-amber-600">Risk analysis results will appear here shortly.</p>
+              <p className="text-sm text-amber-600">Risk analysis results will appear here shortly.</p>
             </div>
           </div>
         </div>
@@ -831,7 +831,7 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
             <AlertTriangle className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm font-semibold text-muted-foreground">Automated assessment unavailable</p>
-              <p className="text-xs text-muted-foreground">Use the AI Assistant panel to assess manually.</p>
+              <p className="text-sm text-muted-foreground">Use the AI Assistant panel to assess manually.</p>
             </div>
           </div>
         </div>
@@ -872,7 +872,7 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
 
           {/* Description */}
           <div className="px-4 mb-5">
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Description
             </h2>
             <div className="rounded-xl border border-border bg-card p-4">
@@ -885,7 +885,7 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
           {/* Notes */}
           {incident.notes && (
             <div className="px-4 mb-5">
-              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                 Case Notes
               </h2>
               <div className="rounded-xl border border-border bg-card p-4">
@@ -901,7 +901,7 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
             <div className="px-4 mb-5">
               <div className="flex items-center gap-2 p-3 rounded-xl bg-green-50 border border-green-200">
                 <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
-                <p className="text-xs text-green-700 font-medium">
+                <p className="text-sm text-green-700 font-medium">
                   Resolved on {format(new Date(incident.resolvedAt), "MMM d, yyyy 'at' h:mm a")}
                 </p>
               </div>
@@ -910,7 +910,7 @@ function IncidentDetailInner({ incidentId }: { incidentId: string }) {
 
           {/* Timestamps */}
           <div className="px-4 pb-4">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Logged {format(new Date(incident.createdAt), "MMM d, yyyy 'at' h:mm a")}
             </p>
           </div>

@@ -86,7 +86,7 @@ function AppLayoutInner() {
               <div className="text-sm font-bold text-sidebar-foreground leading-tight">
                 {t("app.name")}
               </div>
-              <div className="text-xs text-sidebar-foreground/70">{t("app.subtitle")}</div>
+              <div className="text-sm text-sidebar-foreground/70">{t("app.subtitle")}</div>
             </div>
           </div>
         </div>
@@ -171,7 +171,7 @@ function AppLayoutInner() {
         {queueCount > 0 && (
           <button
             onClick={() => void syncQueue()}
-            className="flex items-center justify-between gap-2 px-4 py-2 bg-amber-50 border-b border-amber-200 text-xs text-amber-800 hover:bg-amber-100 transition-colors cursor-pointer"
+            className="flex items-center justify-between gap-2 px-4 py-2 bg-amber-50 border-b border-amber-200 text-sm text-amber-800 hover:bg-amber-100 transition-colors cursor-pointer"
           >
             <span>{t("sync.pendingSync", { count: queueCount })}</span>
             <span className="font-semibold underline">{t("sync.syncNow")}</span>
@@ -180,7 +180,7 @@ function AppLayoutInner() {
 
         {/* Dead-letter queue warning */}
         {deadCount > 0 && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-destructive/10 border-b border-destructive/20 text-xs text-destructive">
+          <div className="flex items-center gap-2 px-4 py-2 bg-destructive/10 border-b border-destructive/20 text-sm text-destructive">
             <span>{t("sync.failedSync", { count: deadCount })}</span>
           </div>
         )}

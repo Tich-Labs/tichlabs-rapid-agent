@@ -100,7 +100,7 @@ export default function SafetyGatePage() {
           </Button>
         </div>
 
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           {t("safety.footer")}
         </p>
       </motion.div>

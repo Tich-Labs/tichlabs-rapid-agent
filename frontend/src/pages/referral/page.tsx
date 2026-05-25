@@ -26,7 +26,6 @@ import LocaleSwitcher from "@/components/locale-switcher.tsx";
 import { matchServices as mcpMatchServices, type ServiceMatch } from "@/lib/mcp-client";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { matchServices as mcpMatchServices, type ServiceMatch } from "@/lib/mcp-client";
 
 type CategoryFilter = "health" | "police" | "shelter" | "psychosocial" | "legal" | "hotline" | "economic_empowerment" | null;
 type CountyFilter = "kakamega" | "vihiga" | "nairobi" | null;
@@ -73,8 +72,10 @@ export default function ReferralDirectoryPage() {
   ];
 
   const [services, setServices] = useState<ReferralService[] | undefined>(undefined);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
+    setLoadError(null);
     console.log("[referral] fetching...");
     getDocs(collection(db, "referral_services"))
       .then((snap) => {
@@ -84,6 +85,7 @@ export default function ReferralDirectoryPage() {
       })
       .catch((err) => {
         console.error("[referral] error:", err);
+        setLoadError(err instanceof Error ? err.message : String(err));
         setServices([]);
       });
   }, []);
@@ -148,6 +150,12 @@ export default function ReferralDirectoryPage() {
     : countyFiltered;
 
   const aiActive = aiMatches !== null && aiMatches.length > 0;
+  const knownCategoryServices = (displayServices as ReferralService[]).filter((s) =>
+    CATEGORIES.some((c) => c.id === s.category)
+  );
+  const otherServices = (displayServices as ReferralService[]).filter(
+    (s) => !CATEGORIES.some((c) => c.id === s.category)
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -166,7 +174,7 @@ export default function ReferralDirectoryPage() {
             <h1 className="text-sm font-bold leading-tight">{t("header.title")}</h1>
           </div>
           <LocaleSwitcher className="hidden sm:inline-flex" />
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="text-sm">
             {aiActive ? `${aiMatches!.length}` : countyFiltered.length} {tc("common.services")}
           </Badge>
         </div>
@@ -176,7 +184,7 @@ export default function ReferralDirectoryPage() {
       <div className="bg-destructive/10 border-b border-destructive/20 px-4 py-3">
         <div className="max-w-5xl mx-auto flex items-start gap-2.5">
           <AlertTriangle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
-          <div className="text-xs text-destructive leading-relaxed">
+          <div className="text-sm text-destructive leading-relaxed">
             <strong>{t("emergency.title")}</strong>{" "}
             <span dangerouslySetInnerHTML={{ __html: t("emergency.body") }} />
           </div>
@@ -187,7 +195,7 @@ export default function ReferralDirectoryPage() {
         {/* Pathway info box */}
         <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl border border-primary/20 bg-primary/5 text-primary text-sm mb-6">
           <Info className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <div className="leading-relaxed text-xs">
+          <div className="leading-relaxed text-sm">
             <strong>{t("pathway.title")}</strong> {t("pathway.body")}
           </div>
         </div>
@@ -196,12 +204,12 @@ export default function ReferralDirectoryPage() {
         <div className="space-y-4 mb-6">
           {/* County filter */}
           <div>
-            <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("filter.county")}</p>
+            <p className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("filter.county")}</p>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedCounty(null)}
                 className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                  "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
                   selectedCounty === null
                     ? "bg-primary text-primary-foreground border-primary"
                     : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
@@ -214,7 +222,7 @@ export default function ReferralDirectoryPage() {
                   key={county.id}
                   onClick={() => setSelectedCounty(selectedCounty === county.id ? null : county.id)}
                   className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                    "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
                     selectedCounty === county.id
                       ? "bg-primary text-primary-foreground border-primary"
                       : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
@@ -228,12 +236,12 @@ export default function ReferralDirectoryPage() {
 
           {/* Category filter */}
           <div>
-            <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("filter.serviceType")}</p>
+            <p className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("filter.serviceType")}</p>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedCategory(null)}
                 className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                  "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
                   selectedCategory === null
                     ? "bg-primary text-primary-foreground border-primary"
                     : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
@@ -246,7 +254,7 @@ export default function ReferralDirectoryPage() {
                   key={cat.id}
                   onClick={() => setSelectedCategory(selectedCategory === cat.id ? null : cat.id)}
                   className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer",
+                    "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors cursor-pointer",
                     selectedCategory === cat.id
                       ? "bg-primary text-primary-foreground border-primary"
                       : "bg-muted/50 text-muted-foreground border-border hover:bg-muted"
@@ -261,7 +269,7 @@ export default function ReferralDirectoryPage() {
 
           {/* Search input */}
           <div>
-            <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("search.label")}</p>
+            <p className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">{t("search.label")}</p>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
@@ -280,9 +288,15 @@ export default function ReferralDirectoryPage() {
 
         {/* AI label */}
         {aiActive && (
-          <div className="flex items-center gap-1.5 mb-3 text-xs text-primary">
+          <div className="flex items-center gap-1.5 mb-3 text-sm text-primary">
             <Sparkles className="h-3.5 w-3.5" />
             Matched by Gemini 2.5
+          </div>
+        )}
+
+        {loadError && (
+          <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive mb-4">
+            Unable to load referral services: {loadError}
           </div>
         )}
 
@@ -299,7 +313,7 @@ export default function ReferralDirectoryPage() {
               <Search className="h-5 w-5 text-muted-foreground" />
             </div>
             <p className="text-sm font-medium">{t("empty.title")}</p>
-            <p className="text-xs text-muted-foreground mt-1">{t("empty.subtitle")}</p>
+            <p className="text-sm text-muted-foreground mt-1">{t("empty.subtitle")}</p>
           </div>
         ) : aiActive ? (
           <div className="grid gap-2">
@@ -319,33 +333,33 @@ export default function ReferralDirectoryPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium truncate">{service.name}</p>
-                      <Badge variant="secondary" className="text-[10px] capitalize flex-shrink-0">
+                      <Badge variant="secondary" className="text-sm capitalize flex-shrink-0">
                         {service.county}
                       </Badge>
                       {m && (
-                        <span className="text-[10px] text-primary font-medium flex-shrink-0">
+                        <span className="text-sm text-primary font-medium flex-shrink-0">
                           {m.relevanceScore}/100
                         </span>
                       )}
                     </div>
                     {service.description && (
-                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{service.description}</p>
+                      <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{service.description}</p>
                     )}
                     {m?.reasoning && (
-                      <p className="text-xs text-primary/70 mt-0.5 italic">{m.reasoning}</p>
+                      <p className="text-sm text-primary/70 mt-0.5 italic">{m.reasoning}</p>
                     )}
                     <div className="flex items-center gap-3 mt-1.5">
                       {service.phone && (
                         <a
                           href={`tel:${service.phone.replace(/\s/g, "")}`}
-                          className="flex items-center gap-1 text-xs text-primary font-medium hover:underline cursor-pointer"
+                          className="flex items-center gap-1 text-sm text-primary font-medium hover:underline cursor-pointer"
                         >
                           <Phone className="h-3 w-3" />
                           {service.phone}
                         </a>
                       )}
                       {service.address && (
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1 text-sm text-muted-foreground">
                           <MapPin className="h-3 w-3" />
                           {service.address}
                         </span>
@@ -359,7 +373,7 @@ export default function ReferralDirectoryPage() {
         ) : (
           <div className="space-y-3">
             {CATEGORIES.filter((cat) => !selectedCategory || selectedCategory === cat.id).map((cat) => {
-              const catServices = (displayServices as ReferralService[]).filter((s) => s.category === cat.id);
+              const catServices = knownCategoryServices.filter((s) => s.category === cat.id);
               if (catServices.length === 0) return null;
               const CatIcon = cat.icon;
 
@@ -371,9 +385,9 @@ export default function ReferralDirectoryPage() {
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold">{cat.label}</h3>
-                      <p className="text-xs text-muted-foreground">{cat.description}</p>
+                      <p className="text-sm text-muted-foreground">{cat.description}</p>
                     </div>
-                    <Badge variant="secondary" className="ml-auto text-xs">
+                    <Badge variant="secondary" className="ml-auto text-sm">
                       {catServices.length}
                     </Badge>
                   </div>
@@ -390,25 +404,25 @@ export default function ReferralDirectoryPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="text-sm font-medium truncate">{service.name}</p>
-                            <Badge variant="secondary" className="text-[10px] capitalize flex-shrink-0">
+                            <Badge variant="secondary" className="text-sm capitalize flex-shrink-0">
                               {service.county}
                             </Badge>
                           </div>
                           {service.description && (
-                            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{service.description}</p>
+                            <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{service.description}</p>
                           )}
                           <div className="flex items-center gap-3 mt-1.5">
                             {service.phone && (
                               <a
                                 href={`tel:${service.phone.replace(/\s/g, "")}`}
-                                className="flex items-center gap-1 text-xs text-primary font-medium hover:underline cursor-pointer"
+                                className="flex items-center gap-1 text-sm text-primary font-medium hover:underline cursor-pointer"
                               >
                                 <Phone className="h-3 w-3" />
                                 {service.phone}
                               </a>
                             )}
                             {service.address && (
-                              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1 text-sm text-muted-foreground">
                                 <MapPin className="h-3 w-3" />
                                 {service.address}
                               </span>
@@ -421,6 +435,64 @@ export default function ReferralDirectoryPage() {
                 </div>
               );
             })}
+
+            {otherServices.length > 0 && (
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-muted text-muted-foreground">
+                    <Info className="h-3.5 w-3.5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold">Other Services</h3>
+                    <p className="text-sm text-muted-foreground">Services with a category that is not currently mapped to the directory filters.</p>
+                  </div>
+                  <Badge variant="secondary" className="ml-auto text-sm">
+                    {otherServices.length}
+                  </Badge>
+                </div>
+
+                <div className="grid gap-2">
+                  {otherServices.map((service) => (
+                    <div
+                      key={service._id}
+                      className="flex items-start gap-3 p-3 rounded-xl border border-border bg-card hover:border-primary/20 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 bg-muted text-muted-foreground">
+                        <Info className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium truncate">{service.name}</p>
+                          <Badge variant="secondary" className="text-sm capitalize flex-shrink-0">
+                            {service.county}
+                          </Badge>
+                        </div>
+                        {service.description && (
+                          <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{service.description}</p>
+                        )}
+                        <div className="flex items-center gap-3 mt-1.5">
+                          {service.phone && (
+                            <a
+                              href={`tel:${service.phone.replace(/\s/g, "")}`}
+                              className="flex items-center gap-1 text-sm text-primary font-medium hover:underline cursor-pointer"
+                            >
+                              <Phone className="h-3 w-3" />
+                              {service.phone}
+                            </a>
+                          )}
+                          {service.address && (
+                            <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                              <MapPin className="h-3 w-3" />
+                              {service.address}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

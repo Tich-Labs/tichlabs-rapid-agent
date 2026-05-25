@@ -1,0 +1,12 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "referral_services",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isActive", "order": "ASCENDING" },
+        { "fieldPath": "name", "order": "ASCENDING" }
+      ]
+    }
+  ]
+}

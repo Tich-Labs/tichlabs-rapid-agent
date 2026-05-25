@@ -129,7 +129,7 @@ export default function AboutPage() {
       {/* ─── Current deployment ─── */}
       <Card>
         <CardContent className="p-5">
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">
             {t("about.deployment", "Current deployment")}
           </h3>
           <div className="flex items-center gap-2 text-sm text-foreground mb-2">
@@ -141,7 +141,7 @@ export default function AboutPage() {
             <span className="text-muted-foreground">·</span>
             <span className="text-muted-foreground">Pilot phase</span>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t("about.builtBy", "Built by Tich Labs")}{" "}
             <a
               href="https://tichlabs.com"

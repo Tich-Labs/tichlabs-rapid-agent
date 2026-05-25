@@ -129,7 +129,7 @@ function StepIndicator({ current, stepTitles }: { current: number; stepTitles: s
         <div key={i} className="flex items-center">
           <div
             className={cn(
-              "w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all",
+              "w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold transition-all",
               current > i + 1
                 ? "bg-primary text-primary-foreground"
                 : current === i + 1
@@ -188,7 +188,7 @@ function StepReporter({ data, onChange, t }: { data: FormData; onChange: (f: Par
                 />
                 <span className="text-sm font-semibold">{t(`reporter.${typeValue}`)}</span>
               </div>
-              <span className="text-xs text-muted-foreground ml-8">{t(descKey)}</span>
+              <span className="text-sm text-muted-foreground ml-8">{t(descKey)}</span>
             </button>
           );
         })}
@@ -206,7 +206,7 @@ function StepReporter({ data, onChange, t }: { data: FormData; onChange: (f: Par
             onChange={(e) => onChange({ volunteerId: e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, "") })}
             className="h-11 font-mono tracking-wider"
           />
-          <p className="text-xs text-muted-foreground">{t("reporter.volunteerIdHint")}</p>
+          <p className="text-sm text-muted-foreground">{t("reporter.volunteerIdHint")}</p>
         </div>
       )}
     </div>
@@ -244,7 +244,7 @@ function StepIncidentType({ data, onChange, t }: { data: FormData; onChange: (f:
                   isSelected ? "text-primary" : "text-muted-foreground"
                 )}
               />
-              <span className="text-xs font-semibold leading-tight">{t(`types.${typeValue}`)}</span>
+              <span className="text-sm font-semibold leading-tight">{t(`types.${typeValue}`)}</span>
             </button>
           );
         })}
@@ -252,7 +252,7 @@ function StepIncidentType({ data, onChange, t }: { data: FormData; onChange: (f:
 
       {/* Tech-Enabled Abuse description */}
       {data.incidentType === "tech_enabled_abuse" && (
-        <div className="flex items-start gap-2 p-3 rounded-lg bg-accent border border-border text-xs text-accent-foreground">
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-accent border border-border text-sm text-accent-foreground">
           <Smartphone className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
           <span>{t("step1.techAbuseInfo")}</span>
         </div>
@@ -309,7 +309,7 @@ function StepLocationDesc({ data, onChange, t }: { data: FormData; onChange: (f:
           onChange={(e) => onChange({ location: e.target.value })}
           className="h-11"
         />
-        <p className="text-xs text-muted-foreground">{t("step2.locationHint")}</p>
+        <p className="text-sm text-muted-foreground">{t("step2.locationHint")}</p>
       </div>
 
       <div className="space-y-2">
@@ -324,7 +324,7 @@ function StepLocationDesc({ data, onChange, t }: { data: FormData; onChange: (f:
           rows={6}
           className="resize-none leading-relaxed"
         />
-        <div className="flex justify-between text-xs text-muted-foreground">
+        <div className="flex justify-between text-sm text-muted-foreground">
           <span>{t("step2.descriptionHint")}</span>
           <span>{t("step2.charCount", { count: data.description.length })}</span>
         </div>
@@ -340,7 +340,7 @@ function StepSurvivorInfo({ data, onChange, t }: { data: FormData; onChange: (f:
       <div>
         <h2 className="text-lg font-bold mb-1">{t("step3.question")}</h2>
         <p className="text-sm text-muted-foreground">{t("step3.instruction")}</p>
-        <div className="mt-3 flex items-center gap-2 p-3 rounded-lg bg-accent text-accent-foreground text-xs border border-border">
+        <div className="mt-3 flex items-center gap-2 p-3 rounded-lg bg-accent text-accent-foreground text-sm border border-border">
           <AlertTriangle className="h-4 w-4 text-primary flex-shrink-0" />
           {t("step3.warning")}
         </div>
@@ -432,7 +432,7 @@ function StepReviewSubmit({ data, onChange, t }: { data: FormData; onChange: (f:
           <span className="text-sm font-mono font-bold text-primary tracking-widest">
             {data.volunteerId}
           </span>
-          <span className="text-xs text-muted-foreground ml-auto">{t("reporter.volunteerIdLabel")}</span>
+          <span className="text-sm text-muted-foreground ml-auto">{t("reporter.volunteerIdLabel")}</span>
         </div>
       )}
 
@@ -444,13 +444,13 @@ function StepReviewSubmit({ data, onChange, t }: { data: FormData; onChange: (f:
               {t("step4.refLabel")}{" "}
               <span className="text-muted-foreground font-normal">{t("step4.refOptional")}</span>
             </Label>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {t("step4.refHint")}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             <div className="space-y-1.5">
-              <Label htmlFor="refInitials" className="text-xs text-muted-foreground">
+              <Label htmlFor="refInitials" className="text-sm text-muted-foreground">
                 {t("step4.initialsLabel")}
               </Label>
               <Input
@@ -465,7 +465,7 @@ function StepReviewSubmit({ data, onChange, t }: { data: FormData; onChange: (f:
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="refMonth" className="text-xs text-muted-foreground">
+              <Label htmlFor="refMonth" className="text-sm text-muted-foreground">
                 {t("step4.monthLabel")}
               </Label>
               <Input
@@ -480,7 +480,7 @@ function StepReviewSubmit({ data, onChange, t }: { data: FormData; onChange: (f:
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="refYear" className="text-xs text-muted-foreground">
+              <Label htmlFor="refYear" className="text-sm text-muted-foreground">
                 {t("step4.yearLabel")}
               </Label>
               <Input
@@ -501,7 +501,7 @@ function StepReviewSubmit({ data, onChange, t }: { data: FormData; onChange: (f:
               <span className="text-sm font-mono font-bold text-primary tracking-widest">
                 #{previewRef}
               </span>
-              <span className="text-xs text-muted-foreground ml-auto">{t("step4.yourReference")}</span>
+              <span className="text-sm text-muted-foreground ml-auto">{t("step4.yourReference")}</span>
             </div>
           )}
         </div>
@@ -520,7 +520,7 @@ function StepReviewSubmit({ data, onChange, t }: { data: FormData; onChange: (f:
           onChange={(e) => onChange({ submitterContact: e.target.value })}
           className="h-11"
         />
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           {t("step4.emailHint")}
         </p>
       </div>
@@ -544,8 +544,8 @@ function StepReviewSubmit({ data, onChange, t }: { data: FormData; onChange: (f:
             { label: t("review.gender"), value: data.survivorGender ? t(`gender.${data.survivorGender}`) : "—" },
           ].map((row) => (
             <div key={row.label} className="flex items-start px-4 py-2.5 gap-3">
-              <span className="text-xs text-muted-foreground w-20 flex-shrink-0 pt-0.5">{row.label}</span>
-              <span className="text-xs font-medium text-foreground break-words flex-1">{row.value}</span>
+              <span className="text-sm text-muted-foreground w-20 flex-shrink-0 pt-0.5">{row.label}</span>
+              <span className="text-sm font-medium text-foreground break-words flex-1">{row.value}</span>
             </div>
           ))}
         </div>
@@ -749,18 +749,18 @@ export default function NewIncidentPage() {
           <ShieldCheck className="h-5 w-5 text-primary flex-shrink-0" />
           <div>
             <h1 className="text-base font-bold leading-tight">{t("form.title")}</h1>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {t("form.step", { current: step, total: stepTitles.length, title: stepTitles[step - 1] })}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-1.5">
           <LocaleSwitcher className="hidden sm:inline-flex" />
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="text-sm">
             {step}/{stepTitles.length}
           </Badge>
           {!isOnline && (
-            <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 border-amber-200">
+            <Badge variant="secondary" className="text-sm bg-amber-100 text-amber-800 border-amber-200">
               {t("common.offline", { ns: "common" })}
             </Badge>
           )}
@@ -770,7 +770,7 @@ export default function NewIncidentPage() {
       {/* Anonymous notice */}
       <div className="px-4 py-2.5 bg-primary/5 border-b border-primary/10 flex items-center gap-2">
         <ShieldCheck className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-        <p className="text-xs text-primary/80 font-medium">
+        <p className="text-sm text-primary/80 font-medium">
           {t("form.anonymous")}
         </p>
       </div>

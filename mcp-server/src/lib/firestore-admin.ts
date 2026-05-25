@@ -31,7 +31,7 @@ let _db: FirebaseFirestore.Firestore | null = null;
 
 export function getDb(): FirebaseFirestore.Firestore {
   if (!_db) {
-    _db = getFirestore(getFirebaseApp());
+    _db = getFirestore(getFirebaseApp(), "sgbv-tracker");
   }
   return _db;
 }
@@ -120,7 +120,7 @@ export async function getActiveServices(): Promise<ReferralService[]> {
   try {
     const snapshot = await getDb()
       .collection("referral_services")
-      .where("is_active", "==", true)
+      .where("isActive", "==", true)
       .orderBy("name")
       .get();
 

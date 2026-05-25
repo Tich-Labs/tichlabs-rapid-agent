@@ -41,10 +41,21 @@ export const firestoreQueries = {
   getCurrentUser: async () => {
     const user = auth.currentUser;
     if (!user) {
-      return { id: "demo-user", name: "Demo Admin", email: "demo@tichlabs.com", role: "executive_director", isActive: true };
+      throw new Error("Not authenticated");
     }
     const profile = await getDocument<any>("users", user.uid);
-    return profile ?? { id: user.uid, name: user.displayName ?? "User", email: user.email, role: "counselor", isActive: true };
+    if (profile) return profile;
+
+    const newUser = {
+      id: user.uid,
+      name: user.displayName ?? user.email?.split("@")[0] ?? "User",
+      email: user.email ?? "",
+      role: "program_lead" as const,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    };
+    await addDocument("users", newUser);
+    return newUser;
   },
 
   listUsers: async () => {

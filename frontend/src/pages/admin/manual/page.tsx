@@ -132,7 +132,7 @@ function Step({ number, title, children }: { number: number; title: string; chil
 
 function CodeChip({ children }: { children: React.ReactNode }) {
   return (
-    <code className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-xs border border-border">
+    <code className="px-1.5 py-0.5 rounded bg-muted text-foreground font-mono text-sm border border-border">
       {children}
     </code>
   );
@@ -141,8 +141,8 @@ function CodeChip({ children }: { children: React.ReactNode }) {
 function PermRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border last:border-0">
-      <span className="text-xs text-muted-foreground w-32 flex-shrink-0">{label}</span>
-      <div className="flex-1 text-xs leading-relaxed">{children}</div>
+      <span className="text-sm text-muted-foreground w-32 flex-shrink-0">{label}</span>
+      <div className="flex-1 text-sm leading-relaxed">{children}</div>
     </div>
   );
 }
@@ -180,7 +180,7 @@ function SectionOverview() {
         </div>
         <div>
           <p className="text-sm font-semibold text-primary">Start Here</p>
-          <p className="text-xs text-muted-foreground">New to the platform? Walk through every screen below, then explore detailed sections in the sidebar.</p>
+          <p className="text-sm text-muted-foreground">New to the platform? Walk through every screen below, then explore detailed sections in the sidebar.</p>
         </div>
       </div>
 
@@ -199,7 +199,7 @@ function SectionOverview() {
       {/* Mobile note */}
       <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl border border-border bg-muted/30 mb-6 mt-4">
         <Smartphone className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           <strong>Mobile-responsive:</strong> All pages adapt to phone and tablet screens.
           The landing page stacks vertically, the incident form uses a 2-column icon grid,
           and the dashboard uses a hamburger menu with bottom navigation.
@@ -210,7 +210,7 @@ function SectionOverview() {
       <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
         <Globe className="h-4 w-4 text-primary" />
         Public-Facing Pages
-        <span className="text-xs text-muted-foreground font-normal">(no sign-in required)</span>
+        <span className="text-sm text-muted-foreground font-normal">(no sign-in required)</span>
       </h3>
 
       <div className="space-y-4 mb-8">
@@ -224,23 +224,23 @@ function SectionOverview() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold">{screen.title}</p>
-                  <p className="text-[10px] text-muted-foreground font-mono">{screen.path}</p>
+                  <p className="text-sm text-muted-foreground font-mono">{screen.path}</p>
                 </div>
                 <a
                   href={screen.path}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors cursor-pointer"
                 >
                   Open Page
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
               <div className="px-4 py-3">
-                <p className="text-xs text-muted-foreground leading-relaxed mb-2.5">{screen.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-2.5">{screen.description}</p>
                 <ul className="space-y-1">
                   {screen.features.map((f, fi) => (
-                    <li key={fi} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <li key={fi} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </li>
@@ -256,7 +256,7 @@ function SectionOverview() {
       <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
         <Lock className="h-4 w-4 text-primary" />
         Admin / Staff Pages
-        <span className="text-xs text-muted-foreground font-normal">(requires sign-in)</span>
+        <span className="text-sm text-muted-foreground font-normal">(requires sign-in)</span>
       </h3>
 
       <div className="space-y-4 mb-8">
@@ -270,23 +270,23 @@ function SectionOverview() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold">{screen.title}</p>
-                  <p className="text-[10px] text-muted-foreground font-mono">{screen.path}</p>
+                  <p className="text-sm text-muted-foreground font-mono">{screen.path}</p>
                 </div>
                 <a
                   href={screen.path}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-orange-600 text-white text-xs font-medium hover:bg-orange-700 transition-colors cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition-colors cursor-pointer"
                 >
                   Open Page
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
               <div className="px-4 py-3">
-                <p className="text-xs text-muted-foreground leading-relaxed mb-2.5">{screen.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-2.5">{screen.description}</p>
                 <ul className="space-y-1">
                   {screen.features.map((f, fi) => (
-                    <li key={fi} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <li key={fi} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </li>
@@ -302,7 +302,7 @@ function SectionOverview() {
       <div className="rounded-xl border border-border bg-muted/30 p-4 mb-8">
         <div className="flex items-center gap-2 mb-3">
           <Monitor className="h-4 w-4 text-muted-foreground" />
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Summary</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Summary</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
@@ -313,7 +313,7 @@ function SectionOverview() {
           ].map(({ label, value }) => (
             <div key={label} className="text-center">
               <p className="text-lg font-bold text-foreground">{value}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
+              <p className="text-sm text-muted-foreground uppercase tracking-wide">{label}</p>
             </div>
           ))}
         </div>
@@ -350,12 +350,12 @@ function SectionSuperAdminSetup() {
           { icon: Mail, label: "Email OTP", desc: "Enter any email address — receive a one-time code to sign in" },
         ].map(({ icon, label, desc }, i) => (
           <div key={i} className="flex items-start gap-3 px-4 py-3 border-b border-border last:border-0">
-            <div className="w-7 h-7 rounded-full bg-muted border border-border flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">
+            <div className="w-7 h-7 rounded-full bg-muted border border-border flex items-center justify-center flex-shrink-0 text-sm font-bold mt-0.5">
               {typeof icon === "string" ? icon : <Mail className="h-3 w-3" />}
             </div>
             <div>
               <p className="text-sm font-medium">{label}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{desc}</p>
             </div>
           </div>
         ))}
@@ -397,7 +397,7 @@ function SectionSuperAdminSetup() {
       <div className="rounded-xl border border-border bg-muted/30 p-4 mt-2">
         <div className="flex items-center gap-2 mb-3">
           <Lock className="h-4 w-4 text-muted-foreground" />
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Security note</p>
+          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Security note</p>
         </div>
         <ul className="space-y-2">
           {[
@@ -406,7 +406,7 @@ function SectionSuperAdminSetup() {
             "Only grant Executive Director role to trusted, senior staff.",
             "Review active users regularly and deactivate leavers promptly.",
           ].map((note, i) => (
-            <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+            <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0 mt-0.5" />
               {note}
             </li>
@@ -521,14 +521,14 @@ function SectionRoles() {
           return (
             <Collapsible key={role.value} title={role.label}>
               <div className="flex items-center gap-2 mb-3">
-                <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full border", role.badgeClass)}>
+                <span className={cn("text-sm font-medium px-2 py-0.5 rounded-full border", role.badgeClass)}>
                   {role.label}
                 </span>
               </div>
               <p className="mb-3">{role.desc}</p>
               <ul className="space-y-1.5">
                 {role.permissions.map((perm, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs">
+                  <li key={i} className="flex items-start gap-2 text-sm">
                     {perm.startsWith("Cannot") ? (
                       <span className="text-destructive/60 font-bold flex-shrink-0 mt-0.5">✗</span>
                     ) : (
@@ -565,7 +565,7 @@ function SectionUsers() {
       </p>
 
       <div className="rounded-xl border border-border overflow-hidden mb-5">
-        <div className="px-4 py-2.5 bg-muted/40 border-b border-border text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+        <div className="px-4 py-2.5 bg-muted/40 border-b border-border text-sm font-semibold text-muted-foreground uppercase tracking-wide">
           How to approve a pending user
         </div>
         {[
@@ -575,7 +575,7 @@ function SectionUsers() {
           { step: "4", action: "For other roles, find the user below and use the role dropdown" },
         ].map(({ step, action }) => (
           <div key={step} className="flex items-center gap-3 px-4 py-2.5 border-b border-border last:border-0 text-sm">
-            <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">
+            <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
               {step}
             </span>
             {action}
@@ -625,10 +625,10 @@ function SectionIncidents() {
       <div className="rounded-xl border border-border overflow-hidden mb-6">
         {statuses.map(({ label, color, desc }) => (
           <div key={label} className="flex items-start gap-3 px-4 py-3 border-b border-border last:border-0">
-            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full border flex-shrink-0 mt-0.5", color)}>
+            <span className={cn("text-sm font-medium px-2 py-0.5 rounded-full border flex-shrink-0 mt-0.5", color)}>
               {label}
             </span>
-            <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
           </div>
         ))}
       </div>
@@ -651,7 +651,7 @@ function SectionIncidents() {
           "Sends an email alert to all Program Leads and Executive Directors",
           "Marks the incident with a red alert indicator across all views",
         ].map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
             <ArrowRight className="h-3.5 w-3.5 text-destructive flex-shrink-0 mt-0.5" />
             {item}
           </li>
@@ -716,7 +716,7 @@ function SectionReports() {
           "Can be opened in Microsoft Excel, Google Sheets, or LibreOffice Calc",
           "Is suitable for donor reports and internal reviews",
         ].map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
             <FileDown className="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5" />
             {item}
           </li>
@@ -755,7 +755,7 @@ function SectionPrivacy() {
           "Redirects the browser to a safe external site (Google)",
           "Cannot be undone — the user must sign in again",
         ].map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
             <ArrowRight className="h-3.5 w-3.5 text-destructive flex-shrink-0 mt-0.5" />
             {item}
           </li>
@@ -780,7 +780,7 @@ function SectionPrivacy() {
           "That using a private/incognito window is recommended in shared environments",
           "That the Quick Exit button exists for emergencies",
         ].map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
             <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0 mt-0.5" />
             {item}
           </li>
@@ -921,7 +921,7 @@ function SectionEmails() {
           "Emails contain a direct link to the incident within the secure app",
           "All emails are sent from the Hercules platform email system",
         ].map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
             <CheckCircle2 className="h-3.5 w-3.5 text-green-500 flex-shrink-0 mt-0.5" />
             {item}
           </li>
@@ -976,10 +976,10 @@ function SectionArchitecture() {
           "All connected clients update in real-time via reactive subscriptions",
         ].map((step, i) => (
           <div key={i} className="flex items-start gap-2 py-2 border-b border-border last:border-0">
-            <span className="w-5 h-5 rounded-full bg-muted border border-border flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
+            <span className="w-5 h-5 rounded-full bg-muted border border-border flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
               {i + 1}
             </span>
-            <span className="text-muted-foreground text-xs leading-relaxed">{step}</span>
+            <span className="text-muted-foreground text-sm leading-relaxed">{step}</span>
           </div>
         ))}
       </div>
@@ -1007,7 +1007,7 @@ function SectionArchitecture() {
           "Session tokens expire automatically after inactivity",
           "Quick Exit clears session data from the browser",
         ].map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
             <Lock className="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5" />
             {item}
           </li>
@@ -1079,7 +1079,7 @@ function SectionOffline() {
           "iPhone (Safari): Tap the Share icon → 'Add to Home Screen'",
           "Desktop (Chrome): Click the install icon in the address bar",
         ].map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
             <ArrowUpCircle className="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5" />
             {item}
           </li>
@@ -1162,7 +1162,7 @@ function PriorityBadge({ priority }: { priority: string }) {
     Low: "bg-muted text-muted-foreground border-border",
   };
   return (
-    <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded border whitespace-nowrap", styles[priority] ?? styles.Low)}>
+    <span className={cn("text-sm font-medium px-1.5 py-0.5 rounded border whitespace-nowrap", styles[priority] ?? styles.Low)}>
       {priority}
     </span>
   );
@@ -1175,7 +1175,7 @@ function ComplexityBadge({ complexity }: { complexity: string }) {
     High: "bg-red-50 text-red-700 border-red-200",
   };
   return (
-    <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded border whitespace-nowrap", styles[complexity] ?? styles.Medium)}>
+    <span className={cn("text-sm font-medium px-1.5 py-0.5 rounded border whitespace-nowrap", styles[complexity] ?? styles.Medium)}>
       {complexity}
     </span>
   );
@@ -1198,15 +1198,15 @@ function SectionRoadmap() {
         return (
           <div key={phase.phase} className="mb-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">
+              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
                 {phase.phase}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold">Phase {phase.phase} — {phase.title}</p>
-                <p className="text-xs text-muted-foreground">{phase.timeline} · {doneCount}/{totalCount} complete</p>
+                <p className="text-sm text-muted-foreground">{phase.timeline} · {doneCount}/{totalCount} complete</p>
               </div>
               {doneCount === totalCount && (
-                <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 text-[10px]">
+                <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 text-sm">
                   Complete
                 </Badge>
               )}
@@ -1214,7 +1214,7 @@ function SectionRoadmap() {
 
             <div className="rounded-xl border border-border overflow-hidden">
               {/* Header */}
-              <div className="grid grid-cols-[1fr_60px_90px_56px_1fr] gap-2 px-3 py-2 bg-muted/40 border-b border-border text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <div className="grid grid-cols-[1fr_60px_90px_56px_1fr] gap-2 px-3 py-2 bg-muted/40 border-b border-border text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 <span>Feature</span>
                 <span>Priority</span>
                 <span>Dependencies</span>
@@ -1226,7 +1226,7 @@ function SectionRoadmap() {
                 <div
                   key={i}
                   className={cn(
-                    "grid grid-cols-[1fr_60px_90px_56px_1fr] gap-2 px-3 py-2.5 border-b border-border last:border-0 items-center text-xs",
+                    "grid grid-cols-[1fr_60px_90px_56px_1fr] gap-2 px-3 py-2.5 border-b border-border last:border-0 items-center text-sm",
                     item.status === "done" && "bg-green-50/50"
                   )}
                 >
@@ -1241,9 +1241,9 @@ function SectionRoadmap() {
                     </span>
                   </span>
                   <span><PriorityBadge priority={item.priority} /></span>
-                  <span className="text-[10px] text-muted-foreground truncate">{item.dependencies}</span>
+                  <span className="text-sm text-muted-foreground truncate">{item.dependencies}</span>
                   <span><ComplexityBadge complexity={item.complexity} /></span>
-                  <span className="text-[10px] text-muted-foreground truncate">{item.safetyNotes}</span>
+                  <span className="text-sm text-muted-foreground truncate">{item.safetyNotes}</span>
                 </div>
               ))}
             </div>
@@ -1506,7 +1506,7 @@ function SectionDemoWalkthrough() {
       {/* Mobile note */}
       <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl border border-border bg-muted/30 mb-6 mt-4">
         <Smartphone className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           <strong>Mobile-responsive:</strong> All pages adapt to phone and tablet screens.
           The landing page stacks vertically, the incident form uses a 2-column icon grid,
           and the dashboard uses a hamburger menu with bottom navigation.
@@ -1517,7 +1517,7 @@ function SectionDemoWalkthrough() {
       <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
         <Globe className="h-4 w-4 text-primary" />
         Public-Facing Pages
-        <span className="text-xs text-muted-foreground font-normal">(no sign-in required)</span>
+        <span className="text-sm text-muted-foreground font-normal">(no sign-in required)</span>
       </h3>
 
       <div className="space-y-4 mb-8">
@@ -1531,23 +1531,23 @@ function SectionDemoWalkthrough() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold">{screen.title}</p>
-                  <p className="text-[10px] text-muted-foreground font-mono">{screen.path}</p>
+                  <p className="text-sm text-muted-foreground font-mono">{screen.path}</p>
                 </div>
                 <a
                   href={screen.path}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors cursor-pointer"
                 >
                   Open Page
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
               <div className="px-4 py-3">
-                <p className="text-xs text-muted-foreground leading-relaxed mb-2.5">{screen.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-2.5">{screen.description}</p>
                 <ul className="space-y-1">
                   {screen.features.map((f, fi) => (
-                    <li key={fi} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <li key={fi} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </li>
@@ -1563,7 +1563,7 @@ function SectionDemoWalkthrough() {
       <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
         <Lock className="h-4 w-4 text-primary" />
         Admin / Staff Pages
-        <span className="text-xs text-muted-foreground font-normal">(requires sign-in)</span>
+        <span className="text-sm text-muted-foreground font-normal">(requires sign-in)</span>
       </h3>
 
       <div className="space-y-4">
@@ -1577,23 +1577,23 @@ function SectionDemoWalkthrough() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold">{screen.title}</p>
-                  <p className="text-[10px] text-muted-foreground font-mono">{screen.path}</p>
+                  <p className="text-sm text-muted-foreground font-mono">{screen.path}</p>
                 </div>
                 <a
                   href={screen.path}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-orange-600 text-white text-xs font-medium hover:bg-orange-700 transition-colors cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition-colors cursor-pointer"
                 >
                   Open Page
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
               <div className="px-4 py-3">
-                <p className="text-xs text-muted-foreground leading-relaxed mb-2.5">{screen.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-2.5">{screen.description}</p>
                 <ul className="space-y-1">
                   {screen.features.map((f, fi) => (
-                    <li key={fi} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <li key={fi} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="h-3 w-3 text-green-500 flex-shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </li>
@@ -1609,7 +1609,7 @@ function SectionDemoWalkthrough() {
       <div className="mt-6 rounded-xl border border-border bg-muted/30 p-4">
         <div className="flex items-center gap-2 mb-3">
           <Monitor className="h-4 w-4 text-muted-foreground" />
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Summary</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Summary</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
@@ -1620,7 +1620,7 @@ function SectionDemoWalkthrough() {
           ].map(({ label, value }) => (
             <div key={label} className="text-center">
               <p className="text-lg font-bold text-foreground">{value}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
+              <p className="text-sm text-muted-foreground uppercase tracking-wide">{label}</p>
             </div>
           ))}
         </div>
@@ -1671,7 +1671,7 @@ function SectionSupport() {
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex items-center gap-2 mb-3">
           <Database className="h-4 w-4 text-muted-foreground" />
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Technical Administrator</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Technical Administrator</p>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
           For issues that cannot be resolved within the app — including database changes,
@@ -1808,11 +1808,11 @@ function ManualInner() {
           </div>
           <div>
             <h1 className="text-lg font-bold leading-tight">Admin Manual</h1>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Youth Changers Kenya — Incident Tracker
             </p>
           </div>
-          <Badge variant="secondary" className="ml-auto text-xs">
+          <Badge variant="secondary" className="ml-auto text-sm">
             v2.2
           </Badge>
         </div>

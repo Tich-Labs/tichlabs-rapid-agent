@@ -12,7 +12,8 @@
     "start": "node --env-file=.env --import tsx/esm src/index.ts",
     "start:http": "MCP_TRANSPORT=http node --import tsx/esm src/index.ts",
     "build": "tsc",
-    "inspect": "npx @modelcontextprotocol/inspector node --env-file=.env --import tsx/esm src/index.ts"
+    "inspect": "npx @modelcontextprotocol/inspector node --env-file=.env --import tsx/esm src/index.ts",
+    "seed:nairobi": "npx tsx scripts/seed-nairobi-services.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.0",

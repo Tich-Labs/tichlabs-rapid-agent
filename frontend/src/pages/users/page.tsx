@@ -111,7 +111,7 @@ function RoleBadge({ role }: { role: UserRole }) {
   return (
     <span
       className={cn(
-        "text-xs font-medium px-2 py-0.5 rounded-full border",
+        "text-sm font-medium px-2 py-0.5 rounded-full border",
         cfg.badgeClass
       )}
     >
@@ -132,7 +132,7 @@ function RolePermissionsGuide() {
       >
         <div className="flex items-center gap-2">
           <Info className="h-3.5 w-3.5" />
-          <span className="font-medium text-foreground text-xs">Role Permissions Guide</span>
+          <span className="font-medium text-foreground text-sm">Role Permissions Guide</span>
         </div>
         {open ? (
           <ChevronUp className="h-3.5 w-3.5" />
@@ -167,8 +167,8 @@ function RolePermissionsGuide() {
                   <Icon className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold">{cfg.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{cfg.desc}</p>
+                  <p className="text-sm font-semibold">{cfg.label}</p>
+                  <p className="text-sm text-muted-foreground mt-0.5">{cfg.desc}</p>
                 </div>
               </div>
             );
@@ -205,22 +205,22 @@ function PendingUserCard({
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold truncate">{user.name ?? "Unnamed User"}</p>
           {user.email && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground truncate">
+            <div className="flex items-center gap-1 text-sm text-muted-foreground truncate">
               <Mail className="h-3 w-3 flex-shrink-0" />
               {user.email}
             </div>
           )}
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-sm text-muted-foreground mt-0.5">
             Joined {user.created_at ? formatDistanceToNow(new Date(user.created_at), { addSuffix: true }) : "recently"}
           </p>
         </div>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs text-muted-foreground hidden sm:block">Approve as:</span>
+        <span className="text-sm text-muted-foreground hidden sm:block">Approve as:</span>
         <Button
           size="sm"
           variant="secondary"
-          className="h-7 text-xs px-2.5"
+          className="h-7 text-sm px-2.5"
           disabled={busy}
           onClick={() => void handleQuickApprove("volunteer")}
         >
@@ -229,7 +229,7 @@ function PendingUserCard({
         <Button
           size="sm"
           variant="secondary"
-          className="h-7 text-xs px-2.5"
+          className="h-7 text-sm px-2.5"
           disabled={busy}
           onClick={() => void handleQuickApprove("counselor")}
         >
@@ -370,18 +370,18 @@ function UserRow({
             <span className="text-sm font-semibold truncate">
               {user.name ?? "Unnamed User"}
             </span>
-            {isSelf && <span className="text-xs text-muted-foreground">(you)</span>}
+            {isSelf && <span className="text-sm text-muted-foreground">(you)</span>}
             {!user.isActive && (
-              <span className="text-xs text-destructive font-medium">Inactive</span>
+              <span className="text-sm text-destructive font-medium">Inactive</span>
             )}
           </div>
           {user.email && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground truncate mt-0.5">
+            <div className="flex items-center gap-1 text-sm text-muted-foreground truncate mt-0.5">
               <Mail className="h-3 w-3 flex-shrink-0" />
               {user.email}
             </div>
           )}
-          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+          <div className="flex items-center gap-1 text-sm text-muted-foreground mt-0.5">
             <Clock className="h-3 w-3 flex-shrink-0" />
             Joined {user.created_at ? formatDistanceToNow(new Date(user.created_at), { addSuffix: true }) : "recently"}
           </div>
@@ -395,12 +395,12 @@ function UserRow({
           onValueChange={(v) => void handleRoleChange(v)}
           disabled={busy || isSelf || !user.isActive}
         >
-          <SelectTrigger className="h-8 text-xs w-40">
+          <SelectTrigger className="h-8 text-sm w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {ASSIGNABLE_ROLES.map((r) => (
-              <SelectItem key={r} value={r} className="text-xs">
+              <SelectItem key={r} value={r} className="text-sm">
                 {ROLE_CONFIG[r].label}
               </SelectItem>
             ))}
@@ -514,7 +514,7 @@ function UsersInner() {
               Manage roles and access for all staff &amp; volunteers
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted text-xs font-medium flex-shrink-0">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted text-sm font-medium flex-shrink-0">
             <Users className="h-3.5 w-3.5 text-muted-foreground" />
             <span>{users?.length ?? 0} users</span>
           </div>
@@ -534,12 +534,12 @@ function UsersInner() {
 
       {/* Summary chips */}
       <div className="px-4 py-3 flex items-center gap-2 flex-wrap border-b border-border">
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-xs text-green-700">
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-sm text-green-700">
           <ShieldCheck className="h-3 w-3" />
           {activeCount} active
         </div>
         {pendingUsers.length > 0 && (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 border border-yellow-200 text-xs text-yellow-700">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 border border-yellow-200 text-sm text-yellow-700">
             <Clock className="h-3 w-3" />
             {pendingUsers.length} pending approval
           </div>
@@ -556,14 +556,14 @@ function UsersInner() {
             <div className="px-4 py-3 bg-yellow-50 border-b border-yellow-100 flex items-center gap-2">
               <Clock className="h-4 w-4 text-yellow-600 flex-shrink-0" />
               <div className="flex-1">
-                <p className="text-xs font-semibold text-yellow-800">
+                <p className="text-sm font-semibold text-yellow-800">
                   {pendingUsers.length} user{pendingUsers.length > 1 ? "s" : ""} awaiting role assignment
                 </p>
-                <p className="text-xs text-yellow-700">
+                <p className="text-sm text-yellow-700">
                   Assign a role to grant system access
                 </p>
               </div>
-              <Badge className="bg-yellow-200 text-yellow-800 border-0 text-xs">
+              <Badge className="bg-yellow-200 text-yellow-800 border-0 text-sm">
                 {pendingUsers.length}
               </Badge>
             </div>
@@ -588,7 +588,7 @@ function UsersInner() {
               key={tab.value}
               onClick={() => setFilter(tab.value)}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors",
+                "px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors",
                 filter === tab.value
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -624,7 +624,7 @@ function UsersInner() {
               <Users className="h-7 w-7 text-muted-foreground/40" />
             </div>
             <p className="text-sm font-medium text-muted-foreground">No users found</p>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {search
                 ? `No results for "${search}"`
                 : filter !== "all"
@@ -634,7 +634,7 @@ function UsersInner() {
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="mt-2 text-xs text-primary underline"
+                className="mt-2 text-sm text-primary underline"
               >
                 Clear search
               </button>

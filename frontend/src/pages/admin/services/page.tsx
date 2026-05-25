@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
-import { useSupabaseQuery, useSupabaseMutation } from "@/hooks/use-supabase-query";
+import { useSupabaseQuery, useSupabaseMutation, supabaseQueries, supabaseMutations, ConvexError } from "@/hooks/use-supabase-query";
 import { Authenticated, Unauthenticated, AuthLoading } from "@/components/auth-components";
-import type { Id } from "@/types/supabase";
+
 import {
   Dialog,
   DialogContent,
@@ -81,16 +81,16 @@ const EMPTY_FORM: FormData = {
 // ─── Inner page ──────────────────────────────────────────────────────────────
 
 function AdminServicesInner() {
-  const user = useSupabaseQuery();
-  const services = useSupabaseQuery();
-  const createService = useSupabaseMutation();
-  const updateService = useSupabaseMutation();
-  const removeService = useSupabaseMutation();
+  const { data: user } = useSupabaseQuery(supabaseQueries.getCurrentUser);
+  const { data: services } = useSupabaseQuery(supabaseQueries.listServices);
+  const createService = useSupabaseMutation(supabaseMutations.createService);
+  const updateService = useSupabaseMutation(supabaseMutations.updateService);
+  const removeService = useSupabaseMutation(supabaseMutations.deleteService);
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingId, setEditingId] = useState<Id<"referralServices"> | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormData>(EMPTY_FORM);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<Id<"referralServices"> | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<Category | "all">("all");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -167,7 +167,7 @@ function AdminServicesInner() {
     setIsSubmitting(true);
     try {
       if (editingId) {
-        await updateService({
+        await updateService.mutateAsync({
           id: editingId,
           name: form.name.trim(),
           category: form.category,
@@ -178,7 +178,7 @@ function AdminServicesInner() {
         });
         toast.success("Service updated");
       } else {
-        await createService({
+        await createService.mutateAsync({
           name: form.name.trim(),
           category: form.category,
           county: form.county,
@@ -190,29 +190,19 @@ function AdminServicesInner() {
       }
       setDialogOpen(false);
     } catch (error) {
-      if (error instanceof ConvexError) {
-        const { message } = error.data as { code: string; message: string };
-        toast.error(message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   // Toggle active/inactive
-  const handleToggleActive = async (id: Id<"referralServices">, currentlyActive: boolean) => {
+  const handleToggleActive = async (id: string, currentlyActive: boolean) => {
     try {
-      await updateService({ id, isActive: !currentlyActive });
+      await updateService.mutateAsync({ id, isActive: !currentlyActive });
       toast.success(currentlyActive ? "Service deactivated" : "Service activated");
     } catch (error) {
-      if (error instanceof ConvexError) {
-        const { message } = error.data as { code: string; message: string };
-        toast.error(message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     }
   };
 
@@ -220,16 +210,11 @@ function AdminServicesInner() {
   const handleDelete = async () => {
     if (!deleteConfirmId) return;
     try {
-      await removeService({ id: deleteConfirmId });
+      await removeService.mutateAsync(deleteConfirmId);
       toast.success("Service deleted");
       setDeleteConfirmId(null);
     } catch (error) {
-      if (error instanceof ConvexError) {
-        const { message } = error.data as { code: string; message: string };
-        toast.error(message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     }
   };
 
@@ -282,7 +267,7 @@ function AdminServicesInner() {
       </div>
 
       {/* Stats */}
-      <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
+      <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
         <span>{services.length} total</span>
         <span>{services.filter((s) => s.isActive).length} active</span>
         <span>{services.filter((s) => !s.isActive).length} inactive</span>
@@ -294,7 +279,7 @@ function AdminServicesInner() {
       {/* Services table/list */}
       <div className="border border-border rounded-xl overflow-hidden">
         {/* Table header */}
-        <div className="hidden sm:grid grid-cols-[1fr_120px_100px_100px_90px] gap-3 px-4 py-2.5 bg-muted/40 border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wide">
+        <div className="hidden sm:grid grid-cols-[1fr_120px_100px_100px_90px] gap-3 px-4 py-2.5 bg-muted/40 border-b border-border text-sm font-medium text-muted-foreground uppercase tracking-wide">
           <span>Service</span>
           <span>Category</span>
           <span>County</span>
@@ -325,13 +310,13 @@ function AdminServicesInner() {
                   <p className="text-sm font-medium truncate">{service.name}</p>
                   <div className="flex items-center gap-3 mt-0.5">
                     {service.phone && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Phone className="h-3 w-3" />
                         {service.phone}
                       </span>
                     )}
                     {service.address && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1 text-sm text-muted-foreground">
                         <MapPin className="h-3 w-3" />
                         {service.address}
                       </span>
@@ -341,7 +326,7 @@ function AdminServicesInner() {
 
                 {/* Category badge */}
                 <div>
-                  <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium", catConfig.color)}>
+                  <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-sm font-medium", catConfig.color)}>
                     <CatIcon className="h-3 w-3" />
                     {catConfig.label}
                   </span>
@@ -349,7 +334,7 @@ function AdminServicesInner() {
 
                 {/* County */}
                 <div>
-                  <Badge variant="secondary" className="text-[10px] capitalize">
+                  <Badge variant="secondary" className="text-sm capitalize">
                     {service.county}
                   </Badge>
                 </div>
@@ -358,7 +343,7 @@ function AdminServicesInner() {
                 <div>
                   <button
                     onClick={() => handleToggleActive(service._id, service.isActive)}
-                    className="cursor-pointer flex items-center gap-1 text-xs"
+                    className="cursor-pointer flex items-center gap-1 text-sm"
                     title={service.isActive ? "Deactivate" : "Activate"}
                   >
                     {service.isActive ? (
@@ -416,7 +401,7 @@ function AdminServicesInner() {
 
           <div className="space-y-4 py-2">
             <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+              <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
                 Service Name *
               </label>
               <Input
@@ -428,7 +413,7 @@ function AdminServicesInner() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
                   Category *
                 </label>
                 <Select
@@ -448,7 +433,7 @@ function AdminServicesInner() {
                 </Select>
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
                   County *
                 </label>
                 <Select
@@ -470,7 +455,7 @@ function AdminServicesInner() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+              <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
                 Description
               </label>
               <Textarea
@@ -483,7 +468,7 @@ function AdminServicesInner() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
                   Phone
                 </label>
                 <Input
@@ -493,7 +478,7 @@ function AdminServicesInner() {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
                   Address
                 </label>
                 <Input

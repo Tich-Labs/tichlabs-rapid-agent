@@ -27,7 +27,7 @@ export default function QuickExit() {
     <button
       onClick={handleQuickExit}
       aria-label={t("quickExit.label")}
-      className="fixed bottom-5 right-5 z-[9999] flex items-center gap-1.5 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-2 rounded-full shadow-lg hover:bg-destructive/90 active:scale-95 transition-all cursor-pointer select-none"
+      className="fixed bottom-5 right-5 z-[9999] flex items-center gap-1.5 bg-destructive text-destructive-foreground text-sm font-bold px-3 py-2 rounded-full shadow-lg hover:bg-destructive/90 active:scale-95 transition-all cursor-pointer select-none"
     >
       <LogOut className="h-3.5 w-3.5" />
       <span className="hidden sm:inline">{t("quickExit.label")}</span>

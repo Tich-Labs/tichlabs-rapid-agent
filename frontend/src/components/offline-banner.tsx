@@ -31,7 +31,7 @@ export function OfflineBanner() {
   return (
     <div
       className={cn(
-        "flex items-center gap-2 px-4 py-2 text-xs font-medium transition-all",
+        "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all",
         isOnline
           ? "bg-green-50 text-green-700 border-b border-green-200"
           : "bg-amber-50 text-amber-800 border-b border-amber-200"

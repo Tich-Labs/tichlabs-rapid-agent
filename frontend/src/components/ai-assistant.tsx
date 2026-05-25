@@ -40,6 +40,7 @@ import {
   type AssessRiskResult,
   type ServiceMatch,
 } from "@/lib/mcp-client";
+import { getDocument } from "@/lib/firestore";
 
 type ActionType = "match" | "assess" | "fhir" | null;
 
@@ -94,28 +95,28 @@ function ServiceCard({ match }: { match: ServiceMatch }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold truncate">{match.name}</p>
-            <Badge variant="secondary" className="text-[10px] capitalize flex-shrink-0">{match.county}</Badge>
+            <Badge variant="secondary" className="text-sm capitalize flex-shrink-0">{match.county}</Badge>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">{match.description}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{match.description}</p>
           <div className="flex items-center gap-3 mt-1">
             {match.phone && (
-              <span className="flex items-center gap-1 text-xs text-primary">
+              <span className="flex items-center gap-1 text-sm text-primary">
                 <Phone className="h-3 w-3" />
                 {match.phone}
               </span>
             )}
             {match.address && (
-              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1 text-sm text-muted-foreground">
                 <MapPin className="h-3 w-3" />
                 {match.address}
               </span>
             )}
           </div>
           <div className="flex items-center gap-2 mt-1.5">
-            <span className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded", getScoreBg(match.relevanceScore), getScoreColor(match.relevanceScore))}>
+            <span className={cn("text-sm font-bold px-1.5 py-0.5 rounded", getScoreBg(match.relevanceScore), getScoreColor(match.relevanceScore))}>
               {match.relevanceScore}% match
             </span>
-            <span className="text-[10px] text-muted-foreground">{match.reasoning}</span>
+            <span className="text-sm text-muted-foreground">{match.reasoning}</span>
           </div>
         </div>
       </div>
@@ -141,18 +142,18 @@ function AssessRiskResultCard({ result }: { result: AssessRiskResult }) {
     <div className="space-y-3">
       <div className="flex items-center gap-3">
         <div className="flex-1">
-          <p className="text-xs text-muted-foreground">Risk Score</p>
+          <p className="text-sm text-muted-foreground">Risk Score</p>
           <p className="text-2xl font-bold">{result.riskScore}/100</p>
         </div>
-        <Badge className={cn("text-xs capitalize", severityColor)}>{result.severity}</Badge>
-        <Badge className={cn("text-xs capitalize", urgencyColor)}>{result.urgency}</Badge>
+        <Badge className={cn("text-sm capitalize", severityColor)}>{result.severity}</Badge>
+        <Badge className={cn("text-sm capitalize", urgencyColor)}>{result.urgency}</Badge>
       </div>
       {result.factors.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-muted-foreground mb-1">Risk Factors</p>
+          <p className="text-sm font-semibold text-muted-foreground mb-1">Risk Factors</p>
           <ul className="space-y-0.5">
             {result.factors.map((f, i) => (
-              <li key={i} className="flex items-start gap-1.5 text-xs">
+              <li key={i} className="flex items-start gap-1.5 text-sm">
                 <AlertTriangle className="h-3 w-3 text-amber-500 mt-0.5 flex-shrink-0" />
                 <span>{f}</span>
               </li>
@@ -162,10 +163,10 @@ function AssessRiskResultCard({ result }: { result: AssessRiskResult }) {
       )}
       {result.recommendedActions.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-muted-foreground mb-1">Recommended Actions</p>
+          <p className="text-sm font-semibold text-muted-foreground mb-1">Recommended Actions</p>
           <ul className="space-y-0.5">
             {result.recommendedActions.map((a, i) => (
-              <li key={i} className="flex items-start gap-1.5 text-xs">
+              <li key={i} className="flex items-start gap-1.5 text-sm">
                 <CheckCircle2 className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
                 <span>{a}</span>
               </li>
@@ -338,9 +339,9 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
             <SheetTitle className="text-sm">AI Assistant</SheetTitle>
-            <Badge variant="secondary" className="text-[10px] ml-auto">MCP Connected</Badge>
+            <Badge variant="secondary" className="text-sm ml-auto">MCP Connected</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Call MCP tools to find services, assess risk, or generate FHIR bundles
           </p>
         </SheetHeader>
@@ -349,7 +350,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
           {!activeAction && !error && (
             <>
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Quick Actions</p>
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Quick Actions</p>
                 <div className="grid gap-2">
                   {actionCards.map((card) => (
                     <button
@@ -363,7 +364,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
                       <card.icon className="h-5 w-5 mt-0.5 flex-shrink-0" />
                       <div>
                         <p className="text-sm font-semibold">{card.label}</p>
-                        <p className="text-xs opacity-70">{card.desc}</p>
+                        <p className="text-sm opacity-70">{card.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -372,14 +373,14 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
 
               {logs.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">History</p>
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">History</p>
                   <div className="space-y-1">
                     {logs.map((log) => (
                       <div key={log.id} className="flex items-start gap-2 p-2 rounded-lg bg-muted/50">
                         <CheckCircle2 className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="text-xs font-medium">{log.action}</p>
-                          <p className="text-[10px] text-muted-foreground">{log.result}</p>
+                          <p className="text-sm font-medium">{log.action}</p>
+                          <p className="text-sm text-muted-foreground">{log.result}</p>
                         </div>
                       </div>
                     ))}
@@ -394,11 +395,11 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold">Find Services</p>
-                <button onClick={() => setActiveAction(null)} className="text-xs text-primary hover:underline cursor-pointer">Back</button>
+                <button onClick={() => setActiveAction(null)} className="text-sm text-primary hover:underline cursor-pointer">Back</button>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs">Incident Type</Label>
+                <Label className="text-sm">Incident Type</Label>
                 <select
                   className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
                   value={matchForm.incidentType}
@@ -412,7 +413,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs">Location (County)</Label>
+                <Label className="text-sm">Location (County)</Label>
                 <Input
                   placeholder="e.g. Kakamega, Vihiga"
                   value={matchForm.location}
@@ -422,7 +423,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs">Description (optional)</Label>
+                <Label className="text-sm">Description (optional)</Label>
                 <Textarea
                   placeholder="Describe the incident..."
                   value={matchForm.description}
@@ -433,7 +434,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-2">
-                  <Label className="text-xs">Age Group</Label>
+                  <Label className="text-sm">Age Group</Label>
                   <select
                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
                     value={matchForm.survivorAgeGroup}
@@ -447,7 +448,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs">Gender</Label>
+                  <Label className="text-sm">Gender</Label>
                   <select
                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
                     value={matchForm.survivorGender}
@@ -472,7 +473,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
 
               {matchResult && (
                 <div className="space-y-2">
-                  <p className="text-xs font-semibold text-muted-foreground">
+                  <p className="text-sm font-semibold text-muted-foreground">
                     Found {matchResult.count} service{matchResult.count !== 1 ? "s" : ""}
                   </p>
                   <div className="space-y-2">
@@ -480,7 +481,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
                       <ServiceCard key={m.serviceId} match={m} />
                     ))}
                     {matchResult.count === 0 && (
-                      <p className="text-xs text-muted-foreground text-center py-4">
+                      <p className="text-sm text-muted-foreground text-center py-4">
                         No matching services found. The referral database may not be seeded yet.
                       </p>
                     )}
@@ -495,11 +496,11 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold">Assess Risk</p>
-                <button onClick={() => setActiveAction(null)} className="text-xs text-primary hover:underline cursor-pointer">Back</button>
+                <button onClick={() => setActiveAction(null)} className="text-sm text-primary hover:underline cursor-pointer">Back</button>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs">Incident Type</Label>
+                <Label className="text-sm">Incident Type</Label>
                 <select
                   className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
                   value={riskForm.incidentType}
@@ -513,7 +514,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs">Description</Label>
+                <Label className="text-sm">Description</Label>
                 <Textarea
                   placeholder="Describe the incident in detail..."
                   value={riskForm.description}
@@ -524,7 +525,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-2">
-                  <Label className="text-xs">Age Group</Label>
+                  <Label className="text-sm">Age Group</Label>
                   <select
                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
                     value={riskForm.survivorAgeGroup}
@@ -538,7 +539,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs">Gender</Label>
+                  <Label className="text-sm">Gender</Label>
                   <select
                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
                     value={riskForm.survivorGender}
@@ -559,7 +560,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
                   onChange={(e) => setRiskForm({ ...riskForm, isEscalated: e.target.checked })}
                   className="rounded border-input"
                 />
-                <span className="text-xs text-muted-foreground">Already escalated</span>
+                <span className="text-sm text-muted-foreground">Already escalated</span>
               </label>
 
               <Button
@@ -580,10 +581,10 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold">Generate FHIR Bundle</p>
-                <button onClick={() => setActiveAction(null)} className="text-xs text-primary hover:underline cursor-pointer">Back</button>
+                <button onClick={() => setActiveAction(null)} className="text-sm text-primary hover:underline cursor-pointer">Back</button>
               </div>
 
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Generates a FHIR R4 transaction bundle. Call from the incident detail page to include real incident data, or use the quick generate below.
               </p>
 
@@ -593,13 +594,41 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
                   setError(null);
                   setFhirResult(null);
                   try {
-                    const result = await generateFhirBundle({
-                      incident: {
+                    let incidentPayload: Record<string, unknown>;
+
+                    if (incidentId) {
+                      const doc = await getDocument<any>("incidents", incidentId);
+                      if (doc) {
+                        incidentPayload = {
+                          incidentType: doc.incident_type ?? doc.incidentType,
+                          incidentDate: doc.incident_date ?? doc.incidentDate,
+                          location: doc.location,
+                          description: doc.description ?? "",
+                          survivorAgeGroup: doc.survivor_age_group ?? doc.survivorAgeGroup,
+                          survivorGender: doc.survivor_gender ?? doc.survivorGender,
+                          riskScore: doc.risk_score ?? doc.riskScore,
+                          severity: doc.severity,
+                        };
+                      } else {
+                        incidentPayload = {
+                          incidentType: "physical_abuse",
+                          incidentDate: new Date().toISOString().split("T")[0],
+                          location: "Kakamega",
+                          description: "Survivor requires shelter and medical attention",
+                        };
+                      }
+                    } else {
+                      incidentPayload = {
                         incidentType: "physical_abuse",
                         incidentDate: new Date().toISOString().split("T")[0],
                         location: "Kakamega",
                         description: "Survivor requires shelter and medical attention",
-                      },
+                      };
+                    }
+
+                    const result = await generateFhirBundle({
+                      incidentId: incidentId || undefined,
+                      incident: incidentPayload,
                       includeReferrals: true,
                     });
                     setFhirResult(result);
@@ -609,9 +638,9 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
                       storeCaseDocument({
                         incidentId,
                         type: "fhir_bundle",
-                        incidentType: "physical_abuse",
-                        description: "Survivor requires shelter and medical attention",
-                        location: "Kakamega",
+                        incidentType: (incidentPayload.incidentType as string) || "unknown",
+                        description: (incidentPayload.description as string) || "",
+                        location: (incidentPayload.location as string) || "",
                         bundle_id: (result as any)?.bundle?.id,
                         resource_count: (result as any)?.bundle?.entry?.length,
                         generated_at: new Date().toISOString(),
@@ -628,21 +657,21 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
                 className="w-full cursor-pointer"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileJson className="h-4 w-4" />}
-                {loading ? "Generating..." : "Generate Sample FHIR Bundle"}
+                {loading ? "Generating..." : incidentId ? "Generate FHIR Bundle" : "Generate Sample FHIR Bundle"}
               </Button>
 
               {fhirResult && (
                 <div className="space-y-2">
-                  <p className="text-xs font-semibold text-muted-foreground">FHIR R4 Bundle</p>
+                  <p className="text-sm font-semibold text-muted-foreground">FHIR R4 Bundle</p>
                   <div className="bg-muted rounded-lg p-3 max-h-60 overflow-auto">
-                    <pre className="text-[10px] leading-relaxed text-muted-foreground whitespace-pre-wrap break-all">
+                    <pre className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap break-all">
                       {JSON.stringify(fhirResult, null, 2)}
                     </pre>
                   </div>
                   <Button
                     size="sm"
                     variant="secondary"
-                    className="text-xs w-full cursor-pointer"
+                    className="text-sm w-full cursor-pointer"
                     onClick={() => {
                       const blob = new Blob([JSON.stringify(fhirResult, null, 2)], { type: "application/json" });
                       const url = URL.createObjectURL(blob);
@@ -663,7 +692,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
 
           {/* MongoDB saved confirmation */}
           {mongoSaved && (
-            <div className="flex items-center gap-1.5 text-xs text-primary animate-in fade-in">
+            <div className="flex items-center gap-1.5 text-sm text-primary animate-in fade-in">
               <Database className="h-3 w-3" />
               <CheckCircle2 className="h-3 w-3" />
               Saved to MongoDB
@@ -675,8 +704,8 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
             <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
               <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-destructive">Error</p>
-                <p className="text-xs text-muted-foreground">{error}</p>
+                <p className="text-sm font-medium text-destructive">Error</p>
+                <p className="text-sm text-muted-foreground">{error}</p>
               </div>
               <button onClick={() => setError(null)} className="cursor-pointer">
                 <X className="h-3 w-3 text-muted-foreground" />
@@ -686,7 +715,7 @@ export default function AiAssistant({ incidentId }: { incidentId?: string }) {
         </div>
 
         <div className="px-4 py-3 border-t border-border bg-muted/30 flex-shrink-0">
-          <p className="text-[10px] text-muted-foreground text-center">
+          <p className="text-sm text-muted-foreground text-center">
             Connected to Tich Labs MCP Server
           </p>
         </div>

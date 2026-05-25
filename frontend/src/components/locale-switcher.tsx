@@ -49,7 +49,7 @@ export default function LocaleSwitcher({ className }: { className?: string }) {
               <Check className={cn("mr-2 h-4 w-4", isActive ? "opacity-100" : "opacity-0")} />
               <span className="mr-2">{meta.emoji}</span>
               <span className="flex-1">{meta.nativeName}</span>
-              <span className="text-muted-foreground ml-2 text-xs">{meta.name}</span>
+              <span className="text-muted-foreground ml-2 text-sm">{meta.name}</span>
             </DropdownMenuItem>
           );
         })}

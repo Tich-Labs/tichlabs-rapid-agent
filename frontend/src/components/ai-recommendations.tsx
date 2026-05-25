@@ -177,10 +177,10 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
     <div className="w-full px-4 mb-5">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="h-4 w-4 text-primary" />
-        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
           AI Referral Recommendations
         </h2>
-        <Badge variant="secondary" className="text-[10px] ml-auto">
+        <Badge variant="secondary" className="text-sm ml-auto">
           {matches.length} matches
         </Badge>
       </div>
@@ -214,12 +214,12 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-semibold truncate">{match.name}</p>
-                      <Badge variant="secondary" className="text-[10px] capitalize flex-shrink-0">
+                      <Badge variant="secondary" className="text-sm capitalize flex-shrink-0">
                         {match.county}
                       </Badge>
                     </div>
 
-                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                    <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">
                       {match.description}
                     </p>
 
@@ -227,14 +227,14 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
                       {match.phone && (
                         <a
                           href={`tel:${match.phone.replace(/\s/g, "")}`}
-                          className="flex items-center gap-1 text-xs text-primary font-medium hover:underline"
+                          className="flex items-center gap-1 text-sm text-primary font-medium hover:underline"
                         >
                           <Phone className="h-3 w-3" />
                           {match.phone}
                         </a>
                       )}
                       {match.address && (
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1 text-sm text-muted-foreground">
                           <MapPin className="h-3 w-3" />
                           {match.address}
                         </span>
@@ -243,10 +243,10 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
 
                     {/* Match score */}
                     <div className="flex items-center gap-2 mt-2">
-                      <div className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded", getScoreBg(match.relevanceScore), getScoreColor(match.relevanceScore))}>
+                      <div className={cn("text-sm font-bold px-1.5 py-0.5 rounded", getScoreBg(match.relevanceScore), getScoreColor(match.relevanceScore))}>
                         {match.relevanceScore}% match
                       </div>
-                      <p className="text-[10px] text-muted-foreground">{match.reasoning}</p>
+                      <p className="text-sm text-muted-foreground">{match.reasoning}</p>
                     </div>
 
                     {/* Approval actions */}
@@ -256,14 +256,14 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="h-7 text-xs gap-1 text-green-600 hover:text-green-700 hover:bg-green-50 cursor-pointer"
+                            className="h-7 text-sm gap-1 text-green-600 hover:text-green-700 hover:bg-green-50 cursor-pointer"
                             onClick={() => handleApprove(match.serviceId)}
                           >
                             <CheckCircle2 className="h-3 w-3" />
                             Approve Referral
                           </Button>
                         ) : (
-                          <Badge variant="secondary" className="text-[10px] bg-green-100 text-green-700">
+                          <Badge variant="secondary" className="text-sm bg-green-100 text-green-700">
                             <CheckCircle2 className="h-3 w-3 mr-1" />
                             Approved
                           </Badge>
@@ -272,7 +272,7 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="h-7 text-xs gap-1 text-destructive hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+                            className="h-7 text-sm gap-1 text-destructive hover:text-destructive hover:bg-destructive/10 cursor-pointer"
                             onClick={() => handleReject(match.serviceId)}
                           >
                             <XCircle className="h-3 w-3" />
@@ -293,7 +293,7 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
           <div className="px-4 py-2 border-t border-border">
             <button
               onClick={() => setShowAll(!showAll)}
-              className="text-xs text-primary font-medium hover:underline cursor-pointer"
+              className="text-sm text-primary font-medium hover:underline cursor-pointer"
             >
               {showAll ? "Show fewer" : `Show ${matches.length - 3} more matches`}
             </button>
@@ -305,7 +305,7 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
           <div className="border-t border-border p-4 bg-muted/30">
             <button
               onClick={() => setShowFHIR(!showFHIR)}
-              className="flex items-center gap-2 text-xs font-medium text-primary mb-2 cursor-pointer"
+              className="flex items-center gap-2 text-sm font-medium text-primary mb-2 cursor-pointer"
             >
               <FileJson className="h-3.5 w-3.5" />
               {showFHIR ? "Hide" : "View"} FHIR R4 Bundle ({approvedServices.length} approved referrals)
@@ -314,14 +314,14 @@ export default function AIRecommendations({ incident, services, userRole }: AIRe
             {showFHIR && (
               <div className="space-y-2">
                 <div className="bg-background rounded-lg border border-border p-3 max-h-60 overflow-auto">
-                  <pre className="text-[10px] leading-relaxed text-muted-foreground whitespace-pre-wrap break-all">
+                  <pre className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap break-all">
                     {fhirJson}
                   </pre>
                 </div>
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="text-xs cursor-pointer"
+                  className="text-sm cursor-pointer"
                   onClick={() => {
                     const blob = new Blob([fhirJson], { type: "application/json" });
                     const url = URL.createObjectURL(blob);

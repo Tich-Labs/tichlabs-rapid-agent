@@ -454,7 +454,7 @@ function ReportsPageInner() {
           {preset === "custom" ? (
             <div className="flex flex-col sm:flex-row gap-3 mt-2">
               <div className="flex-1">
-                <label className="text-xs text-muted-foreground block mb-1">From</label>
+                <label className="text-sm text-muted-foreground block mb-1">From</label>
                 <input
                   type="date"
                   value={customFrom}
@@ -464,7 +464,7 @@ function ReportsPageInner() {
                 />
               </div>
               <div className="flex-1">
-                <label className="text-xs text-muted-foreground block mb-1">To</label>
+                <label className="text-sm text-muted-foreground block mb-1">To</label>
                 <input
                   type="date"
                   value={customTo}
@@ -475,7 +475,7 @@ function ReportsPageInner() {
               </div>
             </div>
           ) : (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Showing data from <strong>{dateRange.from}</strong> to{" "}
               <strong>{dateRange.to}</strong>
             </p>
@@ -497,7 +497,7 @@ function ReportsPageInner() {
             <CardContent className="pt-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">{label}</p>
+                  <p className="text-sm text-muted-foreground">{label}</p>
                   <p className={cn("text-3xl font-bold mt-1", color)}>{value}</p>
                 </div>
                 <Icon className={cn("w-5 h-5 mt-1", color)} />
@@ -522,7 +522,7 @@ function ReportsPageInner() {
           {/* MongoDB badge */}
           {mongoActive && (
             <div className="flex justify-end">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary px-3 py-1 text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary px-3 py-1 text-sm">
                 <Database className="h-3 w-3" />
                 Powered by MongoDB Atlas
               </span>

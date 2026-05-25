@@ -133,7 +133,7 @@ function IncidentRow({ incident }: { incident: IncidentItem }) {
             {INCIDENT_TYPE_LABELS[incident.incidentType] ?? incident.incidentType}
           </span>
           {incident.reporterType && incident.reporterType in REPORTER_TYPE_CONFIG && (
-            <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-sm border", REPORTER_TYPE_CONFIG[incident.reporterType].className)}>
+            <span className={cn("text-sm font-medium px-1.5 py-0.5 rounded-sm border", REPORTER_TYPE_CONFIG[incident.reporterType].className)}>
               {REPORTER_TYPE_CONFIG[incident.reporterType].label}
             </span>
           )}
@@ -141,13 +141,13 @@ function IncidentRow({ incident }: { incident: IncidentItem }) {
             <AlertTriangle className="h-3.5 w-3.5 text-destructive flex-shrink-0" />
           )}
           {incident.ai_status === "pending" && (
-            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-sm border bg-amber-100 text-amber-700 border-amber-200 flex-shrink-0">
+            <span className="text-sm font-medium px-1.5 py-0.5 rounded-sm border bg-amber-100 text-amber-700 border-amber-200 flex-shrink-0">
               AI assessing…
             </span>
           )}
           {incident.ai_status === "assessed" && incident.severity && (
             <span className={cn(
-              "text-[10px] font-medium px-1.5 py-0.5 rounded-sm border flex-shrink-0",
+              "text-sm font-medium px-1.5 py-0.5 rounded-sm border flex-shrink-0",
               incident.severity === "critical" && "bg-red-100 text-red-700 border-red-200",
               incident.severity === "high" && "bg-orange-100 text-orange-700 border-orange-200",
               incident.severity === "medium" && "bg-amber-100 text-amber-700 border-amber-200",
@@ -157,12 +157,12 @@ function IncidentRow({ incident }: { incident: IncidentItem }) {
             </span>
           )}
           {incident.ai_status === "failed" && (
-            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-sm border bg-muted text-muted-foreground border-border flex-shrink-0">
+            <span className="text-sm font-medium px-1.5 py-0.5 rounded-sm border bg-muted text-muted-foreground border-border flex-shrink-0">
               Unassessed
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <span className="truncate">{incident.location}</span>
           <span>·</span>
           <span className="whitespace-nowrap">{incident.incidentDate}</span>
@@ -175,7 +175,7 @@ function IncidentRow({ incident }: { incident: IncidentItem }) {
       <div className="flex items-center gap-2 flex-shrink-0">
         <span
           className={cn(
-            "text-xs font-medium px-2 py-0.5 rounded-full border",
+            "text-sm font-medium px-2 py-0.5 rounded-full border",
             config.className
           )}
         >
@@ -222,7 +222,7 @@ function IncidentListInner() {
             </p>
           </div>
           {user?.role && user.role !== "pending" && results && (
-            <Badge variant="secondary" className="text-xs capitalize">
+            <Badge variant="secondary" className="text-sm capitalize">
               {filtered.length} shown
             </Badge>
           )}
@@ -237,7 +237,7 @@ function IncidentListInner() {
               key={tab.value}
               onClick={() => setStatusFilter(tab.value)}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors",
+                "px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors",
                 statusFilter === tab.value
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -259,7 +259,7 @@ function IncidentListInner() {
                 key={tab.value}
                 onClick={() => setReporterFilter(tab.value)}
                 className={cn(
-                  "px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1",
+                  "px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-1",
                   reporterFilter === tab.value
                     ? "bg-secondary text-secondary-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -294,7 +294,7 @@ function IncidentListInner() {
               <ShieldCheck className="h-7 w-7 text-muted-foreground/50" />
             </div>
             <p className="text-sm font-medium text-muted-foreground">No incidents found</p>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {statusFilter !== "all" ? "Try a different status filter" : "No incidents have been logged yet"}
             </p>
           </div>

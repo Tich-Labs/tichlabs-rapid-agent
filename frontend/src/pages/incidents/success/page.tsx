@@ -48,11 +48,11 @@ export default function IncidentSuccessPage() {
           transition={{ delay: 0.35 }}
           className="w-full rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 px-6 py-5 mb-8"
         >
-          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5 font-medium">
+          <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1.5 font-medium">
             {t("success.refLabel")}
           </p>
           <p className="text-3xl font-bold text-primary tracking-widest">#{refId}</p>
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             {t("success.refHint")}
           </p>
         </motion.div>
@@ -64,7 +64,7 @@ export default function IncidentSuccessPage() {
           transition={{ delay: 0.45 }}
           className="w-full bg-muted/40 rounded-xl p-4 mb-8 text-left space-y-3"
         >
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
             {t("success.nextTitle")}
           </p>
           {[
@@ -74,7 +74,7 @@ export default function IncidentSuccessPage() {
             t("success.step4"),
           ].map((step, i) => (
             <div key={i} className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-5 h-5 rounded-full bg-primary/20 text-primary text-sm font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                 {i + 1}
               </div>
               <p className="text-sm text-foreground/80">{step}</p>
@@ -101,7 +101,7 @@ export default function IncidentSuccessPage() {
           </Button>
         </motion.div>
 
-        <p className="text-xs text-muted-foreground mt-8 leading-relaxed">
+        <p className="text-sm text-muted-foreground mt-8 leading-relaxed">
           {t("success.footer")}
         </p>
       </div>

@@ -49,17 +49,19 @@ This agent tackles that challenge by:
 
 ## Status
 
-⚠️ **Active migration**: Supabase → Firebase/Firestore. Build verification in progress.
+✅ **Migration complete**: Firebase/Firestore is the active backend. CI/CD deploys on push to `main`.
 
 | Layer | Status | Notes |
 |-------|--------|-------|
-| Firebase Auth provider | Done | Replaces Supabase auth |
-| Firestore compat layer | Done | `supabase.ts` now wraps Firestore |
-| MCP server | Done | Migrated to Firebase Admin SDK (Firestore queries) |
-| Frontend pages | Done | API surface preserved via compat |
-| Build verification | Done | CI passes with Node 22 |
-| Build verification | Pending | Vite build timing out locally — needs CI check |
-| Firebase deploy | Pending | Needs Firebase config secrets in GitHub |
+| Firebase Auth provider | ✅ Done | Google Sign-In via `signInWithPopup` |
+| Firestore database | ✅ Done | Named DB `sgbv-tracker`. Collections: users, incidents, referral_services (176 services: Nairobi 139, Kakamega 25, Vihiga 12), audit_log |
+| MCP server | ✅ Done | Firebase Admin SDK for Firestore queries |
+| Frontend pages | ✅ Done | 13 pages across public + staff interfaces |
+| Build verification | ✅ Done | CI passes with Node 22 |
+| Firebase deploy | ✅ Done | Auto-deploys via GitHub Actions on push to `main` |
+| Cloud Run deploy | ✅ Done | MCP server deploys to Cloud Run |
+| Font system | ✅ Done | Geist (sans), JetBrains Mono (mono), Noto Serif (serif) |
+| Minimum text size | ✅ Done | `text-sm` (14px) minimum — no `text-xs` anywhere |
 
 ---
 
@@ -101,9 +103,10 @@ This project competes in the **MongoDB partner track**. Our agent demonstrates m
 │   │   └── locales/       # i18n (English, Swahili)
 │   └── public/            # Static assets, service worker
 ├── mcp-server/            # MCP server (Node.js + TypeScript)
+│   ├── scripts/           # Seed scripts (seed-services.ts, seed-nairobi-services.ts)
 │   └── src/
 │       ├── tools/         # match-services, assess-risk, generate-fhir, mongodb-tools
-│       └── lib/           # LLM providers (Gemini, OpenAI, Groq), Supabase, MongoDB clients
+│       └── lib/           # LLM providers (Gemini, OpenAI, Groq), Firebase Admin, MongoDB clients
 ├── docs/                  # Static documentation + agent card (A2A)
 ├── supabase/              # Schema, migrations, seed data (legacy — migrating to Firestore)
 ├── agent-builder.json     # Google Cloud Agent Builder configuration
@@ -141,7 +144,7 @@ This project competes in the **MongoDB partner track**. Our agent demonstrates m
 # Firebase
 VITE_FIREBASE_API_KEY=...
 VITE_FIREBASE_AUTH_DOMAIN=...
-VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_PROJECT_ID=...           # sgbv-incidenttracker
 VITE_FIREBASE_STORAGE_BUCKET=...
 VITE_FIREBASE_MESSAGING_SENDER_ID=...
 VITE_FIREBASE_APP_ID=...
@@ -154,7 +157,7 @@ VITE_MCP_API_KEY=your-mcp-api-key-here
 ### Environment Variables — MCP Server
 
 ```bash
-FIREBASE_SERVICE_ACCOUNT_JSON={"type":"service_account","project_id":"..."}
+FIREBASE_SERVICE_ACCOUNT_JSON={"type":"service_account","project_id":"sgbv-incidenttracker"}
 GEMINI_API_KEY=...
 GEMINI_MODEL=gemini-2.5-flash
 MONGODB_URI=mongodb+srv://...
@@ -164,6 +167,8 @@ MCP_TRANSPORT=http
 PORT=3001
 ```
 
+**Note**: Firestore uses a named database `sgbv-tracker` (not default). Both frontend and MCP server connect to this database.
+
 ### Run Locally
 
 ```bash
@@ -172,6 +177,10 @@ cd frontend && npm install && npm run dev
 
 # MCP Server
 cd mcp-server && npm install && npm run dev:http
+
+# Seed referral services (requires FIREBASE_SERVICE_ACCOUNT_JSON)
+npm run seed:nairobi    # Seed Nairobi services (139 entries)
+npx tsx scripts/seed-services.ts   # Seed Kakamega & Vihiga (37 entries)
 ```
 
 ---
@@ -202,12 +211,15 @@ Required GitHub secrets:
 
 ## Pending Tasks
 
-- [ ] **Frontend build verification** — Vite build timing out locally. Needs CI run with proper Node version (22.x).
-- [ ] **Firebase deploy** — Add all Firebase config secrets to GitHub, then re-run deploy workflow.
-- [ ] **Firestore security rules** — Write `firestore.rules` with proper access controls.
-- [ ] **Seed data** — Create Firestore seed script matching `supabase/seed.sql`.
-- [ ] **Demo video** — Record ~3 minute walkthrough.
-- [ ] **Devpost submission** — Complete submission form.
+- [ ] **Demo video** — Record ~3 minute walkthrough (survivor flow → AI → FHIR → admin).
+- [ ] **Devpost submission** — Complete submission form for both hackathons.
+- [ ] **Fix audit log** — Replace `usePaginatedQuery` no-op stub; fix Firestore rules for audit log writes.
+- [ ] **Wire up FHIR context** — Make "Generate FHIR" in AI Assistant use actual incident data.
+- [ ] **Anonymous status lookup** — Let survivors check case status with their reference code.
+- [ ] **Complete i18n** — Translate hardcoded English strings in About, Dashboard, AppLayout.
+- [ ] **Multi-tenant support** — `orgs` table, org-aware auth and data isolation (TRACK3 Phase 1).
+- [ ] **PDF export** — Implement jspdf-based report generation.
+- [ ] **Clean dead code** — Remove unused Supabase SQL schema and Convex stubs.
 
 ---
 
@@ -215,15 +227,15 @@ Required GitHub secrets:
 
 | Requirement | Status | Notes |
 |-------------|--------|-------|
-| Hosted project URL | Done | https://sgbv-incidenttracker.web.app |
-| Public open-source repo | Done | https://github.com/Tich-Labs/tichlabs-rapid-agent |
-| Open-source license (detectable in About) | Done | Apache 2.0 — [`LICENSE`](LICENSE) |
-| ~3 minute demo video | **Pending** | Walkthrough of agent capabilities |
-| Partner track selected | Done | MongoDB |
-| Meaningful MCP integration | Done | 3 MongoDB tools: `store_case_document`, `search_case_documents`, `aggregate_cases` |
-| Built with Gemini + Agent Builder | Done | `agent-builder.json` with Gemini 2.5 Flash, grounding, and custom tools |
-| Moves beyond chat (multi-step task execution) | Done | 5-step workflow: assess → match → document → persist → review |
-| Completed Devpost submission form | **Pending** | |
+| Hosted project URL | ✅ Done | https://sgbv-incidenttracker.web.app |
+| Public open-source repo | ✅ Done | https://github.com/Tich-Labs/tichlabs-rapid-agent |
+| Open-source license | ✅ Done | Apache 2.0 — [`LICENSE`](LICENSE) |
+| ~3 minute demo video | ❌ Pending | Walkthrough of agent capabilities |
+| Partner track selected | ✅ Done | MongoDB (Rapid Agent) / Healthcare (Agents Assemble) |
+| Meaningful MCP integration | ✅ Done | 3 MongoDB tools + FHIR R4 bundle generation |
+| Built with Gemini + Agent Builder | ✅ Done | `agent-builder.json` with Gemini 2.5 Flash, grounding, custom tools |
+| Multi-step task execution | ✅ Done | 5-step workflow: assess → match → document → persist → review |
+| Devpost submission form | ❌ Pending | Both hackathons |
 
 ## License
 

@@ -162,7 +162,7 @@ export default function Index() {
               >
                 <item.icon className="h-8 w-8 text-primary mb-3" />
                 <div className="font-semibold text-white text-sm">{item.label}</div>
-                <div className="text-xs text-white/50 mt-0.5">{item.sub}</div>
+                <div className="text-sm text-white/50 mt-0.5">{item.sub}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -243,7 +243,7 @@ export default function Index() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-sm text-foreground">{step.role}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{step.action}</div>
+                  <div className="text-sm text-muted-foreground mt-0.5">{step.action}</div>
                 </div>
                 {i < workflow.length - 1 && (
                   <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />

@@ -65,12 +65,12 @@ export function InstallPrompt() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold">Install Tich Labs Tracker</div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-sm text-muted-foreground">
               Add to home screen for offline access
             </div>
           </div>
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            <Button size="sm" onClick={handleInstall} className="h-8 px-3 text-xs">
+            <Button size="sm" onClick={handleInstall} className="h-8 px-3 text-sm">
               <Download className="h-3.5 w-3.5 mr-1" /> Install
             </Button>
             <button
@@ -95,7 +95,7 @@ export function InstallPrompt() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold">Install Tich Labs Tracker</div>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               Tap <span className="font-bold">Share</span> {" "}
               then <span className="font-bold">"Add to Home Screen"</span> for offline access.
             </p>

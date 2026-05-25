@@ -1,12 +1,12 @@
 # Tich Labs Incident Tracker - MCP Server
 
-Model Context Protocol (MCP) server for Tich Labs SGBV incident tracking system. Exposes tools for AI-powered referral matching, FHIR R4 resource generation, and risk assessment. Uses Firebase Firestore for data access.
+Model Context Protocol (MCP) server for Tich Labs SGBV incident tracking system. Exposes tools for AI-powered referral matching, FHIR R4 resource generation, and risk assessment. Uses Firebase Firestore (named database `sgbv-tracker`) for data access.
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
-| `match_services` | Match incidents to verified referral services using AI or keyword-based matching |
+| `match_services` | Match incidents to verified referral services using AI or keyword-based matching across 176 services (Nairobi, Kakamega, Vihiga) |
 | `generate_fhir_bundle` | Generate FHIR R4 transaction bundles from incidents (Observation, Patient, Consent, Location, ServiceRequest) |
 | `assess_risk` | Assess risk severity of incidents (0-100 score, severity level, urgency, factors, actions) |
 

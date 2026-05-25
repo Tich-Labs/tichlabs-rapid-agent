@@ -113,7 +113,7 @@ function StatCard({
       <Card>
         <CardContent className="pt-4 pb-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
               {label}
             </span>
             <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", colorClass)}>
@@ -151,12 +151,12 @@ function IncidentRow({ incident, onClick }: { incident: RecentIncident; onClick:
             <AlertTriangle className="h-3 w-3 text-destructive flex-shrink-0" />
           )}
         </div>
-        <div className="text-xs text-muted-foreground truncate">
+        <div className="text-sm text-muted-foreground truncate">
           {incident.location}{incident.createdAt ? ` · ${formatDistanceToNow(new Date(incident.createdAt), { addSuffix: true })}` : ''}
         </div>
       </div>
       <div className="flex items-center gap-1.5 flex-shrink-0">
-        <span className={cn("text-xs px-2 py-0.5 rounded-full border font-medium", status.className)}>
+        <span className={cn("text-sm px-2 py-0.5 rounded-full border font-medium", status.className)}>
           {status.label}
         </span>
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -198,7 +198,7 @@ function PendingDashboard({ name }: { name?: string }) {
         className="w-full max-w-sm space-y-2"
       >
         <div className="rounded-xl border border-border bg-card p-4 text-left space-y-3">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             What happens next
           </p>
           {[
@@ -214,7 +214,7 @@ function PendingDashboard({ name }: { name?: string }) {
             </div>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground text-center pt-1">
+        <p className="text-sm text-muted-foreground text-center pt-1">
           Contact your Program Lead if you have been waiting more than 24 hours.
         </p>
       </motion.div>
@@ -244,7 +244,7 @@ function VolunteerDashboard({ name }: { name?: string }) {
           <div>
             <p className="text-sm text-muted-foreground">Welcome back,</p>
             <h1 className="text-2xl font-bold">{name?.split(" ")[0] ?? "Volunteer"}</h1>
-            <Badge variant="secondary" className="mt-1.5 text-xs">Volunteer</Badge>
+            <Badge variant="secondary" className="mt-1.5 text-sm">Volunteer</Badge>
           </div>
           <Button size="sm" onClick={() => navigate("/incidents/new")} className="flex-shrink-0 mt-1">
             <ClipboardPlus className="h-4 w-4 mr-1.5" />
@@ -262,7 +262,7 @@ function VolunteerDashboard({ name }: { name?: string }) {
       </div>
       <div className="px-4 flex items-center gap-1.5 mt-1">
         <span className={cn("w-1.5 h-1.5 rounded-full", mongoActive ? "bg-green-500" : "bg-muted-foreground/40")} />
-        <span className="text-xs text-muted-foreground">
+        <span className="text-sm text-muted-foreground">
           {mongoActive ? "Live analytics · MongoDB Atlas" : "Analytics · Firestore"}
         </span>
       </div>
@@ -278,7 +278,7 @@ function VolunteerDashboard({ name }: { name?: string }) {
           </div>
           <div className="text-left">
             <div className="font-semibold text-sm">Log New Incident</div>
-            <div className="text-xs text-primary-foreground/70">Report an incident securely</div>
+            <div className="text-sm text-primary-foreground/70">Report an incident securely</div>
           </div>
           <ChevronRight className="h-4 w-4 ml-auto opacity-70" />
         </button>
@@ -288,7 +288,7 @@ function VolunteerDashboard({ name }: { name?: string }) {
       <div className="px-4 mt-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">All Incidents</h2>
-          <button onClick={() => navigate("/incidents")} className="text-xs text-primary font-medium">
+          <button onClick={() => navigate("/incidents")} className="text-sm text-primary font-medium">
             View all
           </button>
         </div>
@@ -351,7 +351,7 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
           <div>
             <p className="text-sm text-muted-foreground">Good day,</p>
             <h1 className="text-2xl font-bold">{name?.split(" ")[0] ?? "Staff"}</h1>
-            <Badge variant="secondary" className="mt-1.5 text-xs capitalize">
+            <Badge variant="secondary" className="mt-1.5 text-sm capitalize">
               {ROLE_LABELS[role] ?? role}
             </Badge>
           </div>
@@ -377,7 +377,7 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
       </div>
       <div className="px-4 flex items-center gap-1.5 mt-1">
         <span className={cn("w-1.5 h-1.5 rounded-full", mongoActive ? "bg-green-500" : "bg-muted-foreground/40")} />
-        <span className="text-xs text-muted-foreground">
+        <span className="text-sm text-muted-foreground">
           {mongoActive ? "Live analytics · MongoDB Atlas" : "Analytics · Firestore"}
         </span>
       </div>
@@ -414,7 +414,7 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             New — Awaiting Assignment
           </h2>
-          <button onClick={() => navigate("/incidents?status=new")} className="text-xs text-primary font-medium">
+          <button onClick={() => navigate("/incidents?status=new")} className="text-sm text-primary font-medium">
             View all
           </button>
         </div>
@@ -464,7 +464,7 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
               </div>
               <div className="text-left">
                 <div className="font-semibold text-sm">Review All Incidents</div>
-                <div className="text-xs text-primary-foreground/70">Assign, escalate, or resolve</div>
+                <div className="text-sm text-primary-foreground/70">Assign, escalate, or resolve</div>
               </div>
               <ChevronRight className="h-4 w-4 ml-auto opacity-70" />
             </button>
@@ -477,7 +477,7 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
               </div>
               <div className="text-left">
                 <div className="font-semibold text-sm">Manage Users</div>
-                <div className="text-xs text-muted-foreground">Approve & assign roles</div>
+                <div className="text-sm text-muted-foreground">Approve & assign roles</div>
               </div>
               <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
             </button>
@@ -490,7 +490,7 @@ function StaffDashboard({ name, role }: { name?: string; role: string }) {
               </div>
               <div className="text-left">
                 <div className="font-semibold text-sm">Audit Log</div>
-                <div className="text-xs text-muted-foreground">View all system activity</div>
+                <div className="text-sm text-muted-foreground">View all system activity</div>
               </div>
               <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
             </button>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tich Labs Incident Tracker - Interactive Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hotspot { position: relative; cursor: pointer; }
+    .tooltip { display: none; position: absolute; background: white; border: 2px solid #6b1010; border-radius: 8px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 50; min-width: 250px; }
+    .hotspot:hover .tooltip, .hotspot.active .tooltip { display: block; }
+    .step-highlight { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(107, 16, 16, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(107, 16, 16, 0.1); } }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto p-6">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Tich Labs Incident Tracker</h1>
+      <p class="text-xl text-gray-600">Interactive Admin Guide — Google Cloud Rapid Agent Hackathon (MongoDB Track)</p>
+      <div class="mt-4 flex justify-center gap-2">
+        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Step 1 of 9</span>
+      </div>
+    </header>
+
+    <!-- Platform Overview -->
+    <section class="mb-16 hotspot" id="overview">
+      <div class="bg-white rounded-xl shadow-lg p-8 step-highlight">
+        <h2 class="text-2xl font-bold mb-4">1. Platform Overview</h2>
+        <p class="text-gray-600 mb-6">Tich Labs is an AI-powered SGBV support platform for youth protection organizations. Built with Gemini 2.5 Flash, MongoDB Atlas, and FHIR R4 interoperability.</p>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="p-4 bg-blue-50 rounded-lg">
+            <h3 class="font-bold text-blue-900">Mission</h3>
+            <p class="text-sm text-blue-700">Protect survivors, empower responders through trauma-informed AI technology</p>
+          </div>
+          <div class="p-4 bg-green-50 rounded-lg">
+            <h3 class="font-bold text-green-900">Coverage</h3>
+            <p class="text-sm text-green-700">Nairobi, Kakamega & Vihiga Counties, Kenya — 176 verified referral services</p>
+          </div>
+          <div class="p-4 bg-purple-50 rounded-lg">
+            <h3 class="font-bold text-purple-900">Status</h3>
+            <p class="text-sm text-purple-700">Operational PWA — pilot-ready with offline support & Swahili localization</p>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">Key Point</h4>
+          <p class="text-sm">This guide walks you through all admin features. Click each section to learn more.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Agent Workflow -->
+    <section class="mb-16 hotspot" id="ai-workflow">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">2. AI Agent — 5-Step Autonomous Workflow</h2>
+        <p class="text-gray-600 mb-6">Powered by Gemini 2.5 Flash. The agent reasons through SGBV incidents, plans multi-step responses, and executes tools under human oversight.</p>
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+          <span class="px-4 py-2 bg-red-100 text-red-800 rounded-full font-bold">1. Assess</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full font-bold">2. Match</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-purple-100 text-purple-800 rounded-full font-bold">3. Document</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full font-bold">4. Persist</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-amber-100 text-amber-800 rounded-full font-bold">5. Review</span>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">Risk Assessment</h4>
+            <p class="text-sm text-gray-600">Analyzes incident type, description, survivor age/gender → risk score (0-100), severity, urgency, safety actions</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">Service Matching</h4>
+            <p class="text-sm text-gray-600">Matches against 176 verified services (health, police, shelter, psychosocial, legal, economic empowerment) by location, incident type, needs</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">FHIR R4 Bundles</h4>
+            <p class="text-sm text-gray-600">Generates interoperable healthcare records (Patient, Observation, ServiceRequest) for Kenya MoH systems</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">Case Analytics</h4>
+            <p class="text-sm text-gray-600">MongoDB Atlas full-text search + aggregation — surface trends by location, type, severity, or time period</p>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">Human-in-the-Loop</h4>
+          <p class="text-sm">All AI recommendations require human approval. Risk assessments include confidence indicators. Anonymous by design.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Role Hierarchy -->
+    <section class="mb-16 hotspot" id="roles">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">3. Role Hierarchy & Permissions</h2>
+        <div class="space-y-4">
+          <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-12 h-12 bg-red-100 text-red-800 rounded-full flex items-center justify-center font-bold">ED</div>
+            <div>
+              <h3 class="font-bold">Executive Director</h3>
+              <p class="text-sm text-gray-600">Full system access, user management, audit logs, service directory CRUD</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-12 h-12 bg-orange-100 text-orange-800 rounded-full flex items-center justify-center font-bold">PL</div>
+            <div>
+              <h3 class="font-bold">Program Lead</h3>
+              <p class="text-sm text-gray-600">Manage incidents, assign counselors, view reports, manage referral services</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-12 h-12 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center font-bold">C</div>
+            <div>
+              <h3 class="font-bold">Counselor</h3>
+              <p class="text-sm text-gray-600">View assigned cases, update status, add notes, receive AI recommendations</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-12 h-12 bg-green-100 text-green-800 rounded-full flex items-center justify-center font-bold">V</div>
+            <div>
+              <h3 class="font-bold">Volunteer</h3>
+              <p class="text-sm text-gray-600">Submit incidents, view own submissions, access referral directory</p>
+            </div>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">Permissions</h4>
+          <p class="text-sm">Each role has specific permissions. Executive Directors and Program Leads can manage all users and services.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Incident Workflow -->
+    <section class="mb-16 hotspot" id="workflow">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">4. Incident Workflow</h2>
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+          <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full">New</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-purple-100 text-purple-800 rounded-full">Assigned</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-amber-100 text-amber-800 rounded-full">PFA In Progress</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-orange-100 text-orange-800 rounded-full">Under Review</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-red-100 text-red-800 rounded-full">Escalated</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">Resolved</span>
+          <span class="text-gray-400">→</span>
+          <span class="px-4 py-2 bg-gray-100 text-gray-800 rounded-full">Closed</span>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">Auto Risk Assessment</h4>
+            <p class="text-sm text-gray-600">Gemini 2.5 Flash evaluates every new incident — risk score, severity, recommended actions</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">AI Referral Recommendations</h4>
+            <p class="text-sm text-gray-600">Agent matches survivor to nearest verified services. Staff approve or reject with notes.</p>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">Workflow Tip</h4>
+          <p class="text-sm">Use the status tabs on the Incidents page to filter cases by stage.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Referral Directory -->
+    <section class="mb-16 hotspot" id="referral">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">5. Referral Directory — 176 Verified Services</h2>
+        <p class="text-gray-600 mb-6">Public directory accessible without login. County and category filters. AI-powered search via Gemini.</p>
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <div class="p-4 bg-red-50 rounded-lg">
+            <h3 class="font-bold text-red-900">Nairobi</h3>
+            <p class="text-2xl font-bold text-red-800">139</p>
+            <p class="text-sm text-red-600">Services from NCCG GBV Service Directory (Nov 2023)</p>
+          </div>
+          <div class="p-4 bg-blue-50 rounded-lg">
+            <h3 class="font-bold text-blue-900">Kakamega</h3>
+            <p class="text-2xl font-bold text-blue-800">25</p>
+            <p class="text-sm text-blue-600">Health, police, shelter, psychosocial, legal</p>
+          </div>
+          <div class="p-4 bg-green-50 rounded-lg">
+            <h3 class="font-bold text-green-900">Vihiga</h3>
+            <p class="text-2xl font-bold text-green-800">12</p>
+            <p class="text-sm text-green-600">County referral hospital, police, safe spaces</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">Categories</h4>
+            <p class="text-sm text-gray-600">Health/Clinical, Psychosocial Support, Legal Services, Shelter/Safe Spaces, Economic Empowerment, Hotlines</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">Admin CRUD</h4>
+            <p class="text-sm text-gray-600">Program Leads and Executive Directors can add, edit, deactivate, or delete services via Manage Services page</p>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">AI-Powered Search</h4>
+          <p class="text-sm">Type a description of the situation — Gemini 2.5 matches against all 176 services by type, location, and needs.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Safety & Privacy -->
+    <section class="mb-16 hotspot" id="safety">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">6. Safety & Privacy Features</h2>
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <div class="p-6 bg-red-50 rounded-lg text-center">
+            <div class="text-4xl mb-2">🚪</div>
+            <h3 class="font-bold">Quick Exit</h3>
+            <p class="text-sm text-gray-600">Persistent button clears session, redirects to Google</p>
+          </div>
+          <div class="p-6 bg-blue-50 rounded-lg text-center">
+            <div class="text-4xl mb-2">🔒</div>
+            <h3 class="font-bold">Safety Gate</h3>
+            <p class="text-sm text-gray-600">Consent checkbox before reporting form</p>
+          </div>
+          <div class="p-6 bg-green-50 rounded-lg text-center">
+            <div class="text-4xl mb-2">🕶️</div>
+            <h3 class="font-bold">Anonymous</h3>
+            <p class="text-sm text-gray-600">No PII required for incident reporting</p>
+          </div>
+        </div>
+        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p class="text-sm text-yellow-800">⚠️ <strong>Safety Note:</strong> The Quick Exit button appears on ALL pages and immediately clears sessionStorage before redirecting.</p>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">Trauma-Informed Design</h4>
+          <p class="text-sm">All UX uses calm language, anonymity notices, and progressive disclosure. AI responses follow WHO trauma-informed guidelines.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reports & Analytics -->
+    <section class="mb-16 hotspot" id="reports">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">7. Reports & Analytics</h2>
+        <div class="grid md:grid-cols-4 gap-4 mb-6">
+          <div class="p-4 bg-blue-50 rounded-lg text-center">
+            <div class="text-2xl font-bold text-blue-800">—</div>
+            <div class="text-sm text-blue-600">Total Incidents</div>
+          </div>
+          <div class="p-4 bg-red-50 rounded-lg text-center">
+            <div class="text-2xl font-bold text-red-800">—</div>
+            <div class="text-sm text-red-600">Escalated</div>
+          </div>
+          <div class="p-4 bg-green-50 rounded-lg text-center">
+            <div class="text-2xl font-bold text-green-800">—</div>
+            <div class="text-sm text-green-600">Resolved</div>
+          </div>
+          <div class="p-4 bg-amber-50 rounded-lg text-center">
+            <div class="text-2xl font-bold text-amber-800">—</div>
+            <div class="text-sm text-amber-600">In Progress</div>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">Firestore Reports</h4>
+            <p class="text-sm text-gray-600">Charts: incident type distribution, status breakdown, age/gender demographics, monthly trends. CSV export for donor reporting.</p>
+          </div>
+          <div class="p-4 border border-gray-200 rounded-lg">
+            <h4 class="font-bold mb-2">MongoDB Analytics</h4>
+            <p class="text-sm text-gray-600">Aggregations by incident type, location, severity, or month. Full-text search across historical cases. Trend detection.</p>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">Data Anonymization</h4>
+          <p class="text-sm">All exports automatically anonymize survivor data. No PII in any reports.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Offline-First PWA -->
+    <section class="mb-16 hotspot" id="offline">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">8. Offline-First PWA</h2>
+        <div class="flex items-center gap-6 mb-6">
+          <div class="text-6xl">📱</div>
+          <div>
+            <h3 class="font-bold mb-2">Works Without Internet</h3>
+            <p class="text-gray-600">Submit incidents offline → Queue in localStorage → Auto-sync when connected. Critical for rural Kenya.</p>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center">✓</span>
+            <span>Service Worker caches app shell</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center">✓</span>
+            <span>Dead-letter handling for failed syncs</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center">✓</span>
+            <span>Install as PWA on mobile/desktop</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center">✓</span>
+            <span>Bilingual: English + Swahili with URL-based locale routing</span>
+          </div>
+        </div>
+        <div class="tooltip -bottom-20 left-0">
+          <h4 class="font-bold mb-2">Built for Kenya</h4>
+          <p class="text-sm">Low-connectivity areas in Kakamega, Vihiga, and Nairobi can still report incidents. Data syncs when back online.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hackathon Submission -->
+    <section class="mb-16 hotspot" id="submission">
+      <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">9. Hackathon Submission — Google Cloud Rapid Agent (MongoDB Track)</h2>
+        <div class="space-y-4">
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🏆</span>
+            <div>
+              <h3 class="font-bold">MongoDB MCP Integration</h3>
+              <p class="text-sm opacity-90">3 tools: store_case_document, search_case_documents, aggregate_cases — persistent case storage, full-text search, trend analytics</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🧠</span>
+            <div>
+              <h3 class="font-bold">Gemini 2.5 Flash Reasoning</h3>
+              <p class="text-sm opacity-90">AI risk assessment, service matching against 176 verified referrals, dynamic tool selection based on incident type</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🏥</span>
+            <div>
+              <h3 class="font-bold">FHIR R4 Interoperability</h3>
+              <p class="text-sm opacity-90">Generates healthcare-standard bundles (Patient, Observation, ServiceRequest) for Kenya MoH systems</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🌍</span>
+            <div>
+              <h3 class="font-bold">Real-World Deployment</h3>
+              <p class="text-sm opacity-90">React PWA on Firebase Hosting + MCP server on Cloud Run + Firestore + MongoDB Atlas. 176 verified GBV services. Swahili + English.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="text-2xl">🎥</span>
+            <div>
+              <h3 class="font-bold">Deadline: June 11, 2026</h3>
+              <p class="text-sm opacity-90">Submit hosted project URL, public repo, 3-min demo video. Competing in MongoDB partner track for $5K/$3K/$2K prizes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-center py-8 text-gray-500">
+      <p><strong>Tich Labs Incident Tracker</strong> — AI-Powered SGBV Case Management</p>
+      <p class="text-sm">Google Cloud Rapid Agent Hackathon — MongoDB Partner Track — June 2026</p>
+      <p class="text-sm mt-2"><a href="https://sgbv-incidenttracker.web.app" class="text-blue-600 hover:underline">sgbv-incidenttracker.web.app</a> | <a href="https://github.com/Tich-Labs/tichlabs-rapid-agent" class="text-blue-600 hover:underline">GitHub</a></p>
+    </footer>
+  </div>
+
+  <script>
+    document.querySelectorAll('.hotspot').forEach(section => {
+      section.addEventListener('click', function() {
+        document.querySelectorAll('.hotspot.active').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
