@@ -308,3 +308,15 @@ deploy-hackathon.sh                      # Cloud Run deployment script
 **Last Updated**: May 25, 2026
 **Live URL**: https://sgbv-incidenttracker.web.app/
 **Repo**: https://github.com/Tich-Labs/tichlabs-rapid-agent
+
+## J. Recent Changes (May 2026)
+
+| Change | Impact |
+|--------|--------|
+| Referral page redesign — search-first, quick picks, human labels, collapsed emergency banner, removed AI jargon | Trauma-informed UX, 3-tap max to call |
+| Service worker fix — cross-origin requests bypass SW cache | Google Auth sign-in now works |
+| Firestore rules role fix — `admin`/`caseworker` → `program_lead`/`executive_director`/`counselor` | Blocking auth bug resolved |
+| Named database `sgbv-tracker` applied to frontend, MCP server, and seed scripts | All three layers now connect correctly |
+| Nairobi seed data — 139 services from NCCG GBV Service Directory | Referral directory now covers 3 counties (176 total) |
+| Cloud Run MCP deploy — `FIREBASE_SERVICE_ACCOUNT_JSON` added to env vars | MCP server can now connect to Firestore in production |
+| `getCurrentUser` demo user fallback removed — throws proper auth error | Security: no more hardcoded admin bypass |

@@ -1,6 +1,6 @@
 # Pre-Submission Audit — Google Cloud Rapid Agent Hackathon
 
-**Date**: May 25, 2026  
+**Date**: May 25, 2026 (updated May 25, 2026)  
 **Hackathon**: [Google Cloud Rapid Agent Hackathon](https://rapid-agent.devpost.com/)  
 **Partner Track**: MongoDB  
 **Deadline**: June 11, 2026
@@ -202,20 +202,23 @@ The codebase uses these actual roles: `program_lead`, `executive_director`, `cou
 
 | # | Item | Blocking? |
 |---|------|-----------|
-| 1 | Firestore rules use `admin`/`caseworker` — code uses `program_lead`/`executive_director`/`counselor` | **Yes** |
-| 2 | Cloud Run MCP deploy missing `FIREBASE_SERVICE_ACCOUNT_JSON` env var — server won't start | **Yes** |
-| 3 | `agent-card.json` MCP URL is placeholder (`xxxxx`) | No |
-| 4 | `firestore.indexes.json` not deployed — composite index `isActive` + `name` not active | No |
-| 5 | `@supabase/supabase-js` + auth-helpers still in `frontend/package.json` | No |
-| 6 | `frontend/src/lib/supabase.ts` — 102 lines of dead code | No |
-| 7 | `AdminServicesInner.tsx` duplicate component | No |
-| 8 | `VITE_ORG_LOCATION` says "Kakamega & Vihiga" — missing Nairobi | No |
-| 9 | `.env.local` missing org name/location vars | No |
-| 10 | "Demo org" badge hardcoded in OrgBanner | No |
-| 11 | `engines` field missing in `frontend/package.json` | No |
-| 12 | `VITE_ORG_NAME`/`VITE_ORG_LOCATION` hardcoded in CI workflow | No |
+| 1 | Firestore rules use `admin`/`caseworker` — code uses `program_lead`/`executive_director`/`counselor` | **Fixed** |
+| 2 | Cloud Run MCP deploy missing `FIREBASE_SERVICE_ACCOUNT_JSON` env var — server won't start | **Fixed** |
+| 3 | Service worker intercepts cross-origin requests (Google Auth) breaking sign-in | **Fixed** |
+| 4 | `agent-card.json` MCP URL is placeholder (`xxxxx`) | No |
+| 5 | `firestore.indexes.json` not deployed — composite index `isActive` + `name` not active | No |
+| 6 | `@supabase/supabase-js` + auth-helpers still in `frontend/package.json` | No |
+| 7 | `frontend/src/lib/supabase.ts` — 102 lines of dead code | No |
+| 8 | `AdminServicesInner.tsx` duplicate component | No |
+| 9 | `VITE_ORG_LOCATION` says "Kakamega & Vihiga" — missing Nairobi | No |
+| 10 | `.env.local` missing org name/location vars | No |
+| 11 | "Demo org" badge hardcoded in OrgBanner | No |
+| 12 | `engines` field missing in `frontend/package.json` | No |
+| 13 | `VITE_ORG_NAME`/`VITE_ORG_LOCATION` hardcoded in CI workflow | No |
+| 14 | `getCurrentUser` returns demo admin when not authenticated | **Fixed** |
+| 15 | `mcp-server/src/lib/firestore-admin.ts` — `is_active` → `isActive` field mismatch | **Fixed** |
 
-**2 blocking items**. Both must be resolved for a judge to experience a working demo.
+**0 blocking items — all critical issues resolved.**
 
 ---
 

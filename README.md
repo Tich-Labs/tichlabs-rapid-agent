@@ -7,7 +7,7 @@
 **Live app**: https://sgbv-incidenttracker.web.app/
 **Docs / Interactive guide**: https://sgbv-incidenttracker.web.app/docs/
 **Agent card (A2A)**: https://sgbv-incidenttracker.web.app/docs/agent-card.json
-**MCP server**: https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app/
+**MCP server**: https://tichlabs-sgbv-mcp-740048302235.us-central1.run.app/mcp
 
 ---
 
@@ -38,7 +38,7 @@ This agent doesn't just answer questions. It **reasons through complex SGBV inci
 
 ### The Real-World Challenge
 
-In Kakamega & Vihiga counties, Kenya, overstretched youth protection organizations handle hundreds of SGBV cases with limited resources. Caseworkers manually match survivors to services, assess risk by instinct, and lose institutional knowledge when staff turnover occurs.
+In Nairobi, Kakamega & Vihiga counties, Kenya, overstretched youth protection organizations handle hundreds of SGBV cases with limited resources. Caseworkers manually match survivors to services, assess risk by instinct, and lose institutional knowledge when staff turnover occurs.
 
 This agent tackles that challenge by:
 - **Automating the triage pipeline** — risk assessment → service matching → documentation in under 60 seconds
@@ -53,15 +53,15 @@ This agent tackles that challenge by:
 
 | Layer | Status | Notes |
 |-------|--------|-------|
-| Firebase Auth provider | ✅ Done | Google Sign-In via `signInWithPopup` |
+| Firebase Auth provider | ✅ Done | Google Sign-In. First sign-in auto-creates `program_lead` profile. Admin role set manually via Firestore. |
 | Firestore database | ✅ Done | Named DB `sgbv-tracker`. Collections: users, incidents, referral_services (176 services: Nairobi 139, Kakamega 25, Vihiga 12), audit_log |
-| MCP server | ✅ Done | Firebase Admin SDK for Firestore queries |
-| Frontend pages | ✅ Done | 13 pages across public + staff interfaces |
-| Build verification | ✅ Done | CI passes with Node 22 |
+| MCP server | ✅ Done | Firebase Admin SDK + Gemini 2.5 Flash. 6 tools deployed on Cloud Run. |
+| Frontend pages | ✅ Done | 13 pages. Referral directory redesigned — search-first, trauma-informed UX with quick picks and human-language labels. |
+| Firestore rules | ✅ Done | Role-based access: program_lead/executive_director/counselor/volunteer. Public read on referral_services. |
+| Build verification | ✅ Done | CI builds with Node 22 |
 | Firebase deploy | ✅ Done | Auto-deploys via GitHub Actions on push to `main` |
-| Cloud Run deploy | ✅ Done | MCP server deploys to Cloud Run |
-| Font system | ✅ Done | Geist (sans), JetBrains Mono (mono), Noto Serif (serif) |
-| Minimum text size | ✅ Done | `text-sm` (14px) minimum — no `text-xs` anywhere |
+| Cloud Run deploy | ✅ Done | MCP server deploys via manual dispatch (`deploy-cloud-run.yml`) |
+| Service worker | ✅ Done | Offline-first PWA. Fixed cross-origin intercept for Google Auth. |
 
 ---
 
@@ -97,7 +97,7 @@ This project competes in the **MongoDB partner track**. Our agent demonstrates m
 ├── frontend/              # Vite + React + TypeScript PWA
 │   ├── src/
 │   │   ├── pages/         # App pages (dashboard, incidents, referrals, reports)
-│   │   ├── components/    # Reusable UI components + FirebaseAuthProvider
+│   │   ├── components/    # Reusable UI components (referral cards, quick picks) + FirebaseAuthProvider
 │   │   ├── lib/           # firebase.ts, firestore.ts, fhir utilities
 │   │   ├── hooks/         # use-firestore-query, use-offline-incident-queue
 │   │   └── locales/       # i18n (English, Swahili)
@@ -107,11 +107,15 @@ This project competes in the **MongoDB partner track**. Our agent demonstrates m
 │   └── src/
 │       ├── tools/         # match-services, assess-risk, generate-fhir, mongodb-tools
 │       └── lib/           # LLM providers (Gemini, OpenAI, Groq), Firebase Admin, MongoDB clients
-├── docs/                  # Static documentation + agent card (A2A)
-├── supabase/              # Schema, migrations, seed data (legacy — migrating to Firestore)
-├── agent-builder.json     # Google Cloud Agent Builder configuration
-├── firebase.json          # Firebase Hosting configuration
-└── LICENSE                # Apache 2.0
+├── docs/                  # Guides, audit, UX redesign, agent card, SECRETS reference
+│   ├── guide/             # Interactive admin guide for pilot deployment
+│   ├── presub-audit.md    # Pre-submission audit with open items
+│   ├── referral-redesign.md # UX redesign implementation guide
+│   ├── SECRETS.md          # Complete secrets & environment variables reference
+│   └── ux-audit.md        # UX audit of referral page
+├── firestore.rules         # Firestore security rules (program_lead/executive_director/counselor/volunteer roles)
+├── firestore.indexes.json  # Composite indexes for referral_services queries
+├── frontend/public/sw.js   # Service worker — offline-first PWA, same-origin caching only
 ```
 
 ---
@@ -150,7 +154,7 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=...
 VITE_FIREBASE_APP_ID=...
 
 # MCP Server
-VITE_MCP_SERVER_URL=https://tichlabs-sgbv-mcp-xxxxx-uc.a.run.app/
+VITE_MCP_SERVER_URL=https://tichlabs-sgbv-mcp-740048302235.us-central1.run.app/mcp
 VITE_MCP_API_KEY=your-mcp-api-key-here
 ```
 
@@ -212,14 +216,22 @@ Required GitHub secrets:
 ## Pending Tasks
 
 - [ ] **Demo video** — Record ~3 minute walkthrough (survivor flow → AI → FHIR → admin).
-- [ ] **Devpost submission** — Complete submission form for both hackathons.
-- [ ] **Fix audit log** — Replace `usePaginatedQuery` no-op stub; fix Firestore rules for audit log writes.
+- [ ] **Devpost submission** — Complete submission form.
+- [ ] **Fix audit log** — Replace `usePaginatedQuery` no-op stub.
 - [ ] **Wire up FHIR context** — Make "Generate FHIR" in AI Assistant use actual incident data.
 - [ ] **Anonymous status lookup** — Let survivors check case status with their reference code.
 - [ ] **Complete i18n** — Translate hardcoded English strings in About, Dashboard, AppLayout.
-- [ ] **Multi-tenant support** — `orgs` table, org-aware auth and data isolation (TRACK3 Phase 1).
-- [ ] **PDF export** — Implement jspdf-based report generation.
-- [ ] **Clean dead code** — Remove unused Supabase SQL schema and Convex stubs.
+- [ ] **Multi-tenant support** — `orgs` table, org-aware auth and data isolation.
+- [ ] **Deploy Firestore indexes** — `firebase deploy --only firestore:indexes` for `isActive` + `name` composite index.
+
+## Recently Completed
+
+- [x] **Trauma-informed referral page redesign** — Search-first UI, quick picks, human language labels, collapsed emergency banner, removed AI jargon
+- [x] **Service worker fix** — Cross-origin requests (Google Auth) no longer intercepted by SW cache
+- [x] **Firestore rules role fix** — Roles match codebase: program_lead, executive_director, counselor
+- [x] **Nairobi seed data** — 139 services from NCCG GBV Service Directory
+- [x] **Named database fix** — Both frontend and MCP server use `sgbv-tracker` database
+- [x] **Cloud Run env fix** — `FIREBASE_SERVICE_ACCOUNT_JSON` added to MCP container
 
 ---
 
@@ -229,13 +241,13 @@ Required GitHub secrets:
 |-------------|--------|-------|
 | Hosted project URL | ✅ Done | https://sgbv-incidenttracker.web.app |
 | Public open-source repo | ✅ Done | https://github.com/Tich-Labs/tichlabs-rapid-agent |
-| Open-source license | ✅ Done | Apache 2.0 — [`LICENSE`](LICENSE) |
+| Open-source license | ✅ Done | Apache 2.0 |
 | ~3 minute demo video | ❌ Pending | Walkthrough of agent capabilities |
-| Partner track selected | ✅ Done | MongoDB (Rapid Agent) / Healthcare (Agents Assemble) |
-| Meaningful MCP integration | ✅ Done | 3 MongoDB tools + FHIR R4 bundle generation |
-| Built with Gemini + Agent Builder | ✅ Done | `agent-builder.json` with Gemini 2.5 Flash, grounding, custom tools |
+| Partner track selected | ✅ Done | MongoDB |
+| Meaningful MCP integration | ✅ Done | 3 MongoDB tools + FHIR R4 + 6 MCP tools total |
+| Built with Gemini + Agent Builder | ✅ Done | Gemini 2.5 Flash, `agent-builder.json` configured |
 | Multi-step task execution | ✅ Done | 5-step workflow: assess → match → document → persist → review |
-| Devpost submission form | ❌ Pending | Both hackathons |
+| Devpost submission form | ❌ Pending | |
 
 ## License
 
