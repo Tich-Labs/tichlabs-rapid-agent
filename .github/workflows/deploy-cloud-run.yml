@@ -107,6 +107,18 @@ jobs:
             -t $IMAGE:latest
           docker push $IMAGE --all-tags
 
+      - name: Prepare MCP environment variables
+        run: |
+          cat > /tmp/mcp-env.yaml << 'YAMLEOF'
+          MCP_TRANSPORT: http
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB_NAME: tichlabs_cases
+          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT_JSON: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          YAMLEOF
+
       - name: Deploy MCP server to Cloud Run
         run: |
           IMAGE=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.AR_REPO_MCP }}/mcp-server
@@ -120,7 +132,7 @@ jobs:
             --max-instances 2 \
             --cpu 1 \
             --concurrency 80 \
-            --set-env-vars "MCP_TRANSPORT=http,GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},GEMINI_MODEL=${{ secrets.GEMINI_MODEL }},MONGODB_URI=${{ secrets.MONGODB_URI }},MONGODB_DB_NAME=tichlabs_cases,MCP_API_KEY=${{ secrets.MCP_API_KEY }}"
+            --env-vars-file /tmp/mcp-env.yaml
 
       - name: Show MCP server URL
         run: |
