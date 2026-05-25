@@ -268,7 +268,7 @@ export default function ReferralDirectoryPage() {
 
         {/* ─── QUICK PICKS ─── */}
         <div className="mb-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
             {visiblePicks.map((cat) => (
               <QuickPickCard
                 key={cat.id}

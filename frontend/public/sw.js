@@ -62,7 +62,9 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Network-first for everything else
+  // Network-first for same-origin requests only — skip cross-origin
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
